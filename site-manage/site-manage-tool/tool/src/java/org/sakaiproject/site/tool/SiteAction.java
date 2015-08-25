@@ -296,7 +296,7 @@ public class SiteAction extends PagedResourceActionII {
 			"",
 			"-findCourse", // 53
 			"-questions", // 54
-			"",// 55
+			"-newSiteDelegateConfirm",// 55
 			"",// 56
 			"",// 57
 			"-siteInfo-importSelection",   //58
@@ -814,6 +814,8 @@ public class SiteAction extends PagedResourceActionII {
 	private static final String SAK_PROP_CONT_NO_ROSTER_ENABLED = "sitemanage.continueWithNoRoster";
 	
 	private static final String VM_ADD_ROSTER_AUTH_REQUIRED = "authorizationRequired";
+	
+	private static final String SAK_PROP_DELEGATE_CONFIRM_ENABLED = "site.setup.delegate.confirm";
 
 	/**
 	 * what are the tool ids within Home page?
@@ -3695,7 +3697,20 @@ public class SiteAction extends PagedResourceActionII {
 			}
 			context.put("continueIndex", state.getAttribute(STATE_SITE_SETUP_QUESTION_NEXT_TEMPLATE));
 			return (String) getContext(data).get("template") + TEMPLATE[54];
-		
+
+		case 55:
+			/*
+			 * build context for chef_site-newSiteDelegateConfirm.vm
+			 */
+			String stype = (String) state.getAttribute(STATE_SITE_TYPE);
+			setTypeIntoContext(context, stype);
+
+			if (!"course".equals(stype)) {
+				//addAlert(state, rb.getString("java.nosites"));
+				addAlert(state, rb.getString("sitegen.delegate.confirm.alert.courseonly"));
+			}
+			
+			return (String) getContext(data).get("template") + TEMPLATE[55];
 		case 61:
 			/*
 			 * build context for chef_site-importUser.vm
@@ -5655,17 +5670,22 @@ public class SiteAction extends PagedResourceActionII {
 					}
 				}
 				if (state.getAttribute(STATE_MESSAGE) == null) {
-					if (state.getAttribute(STATE_TEMPLATE_SITE) != null)
-					{
-						// create site based on template
-						doFinish(data);
-					}
-					else
-					{
-						if (getStateSite(state) == null) {
-							state.setAttribute(STATE_TEMPLATE_INDEX, "13");
-						} else {
-							state.setAttribute(STATE_TEMPLATE_INDEX, "44");
+					if (ServerConfigurationService.getBoolean(SAK_PROP_DELEGATE_CONFIRM_ENABLED, false)) {
+						// must confirm first
+						state.setAttribute(STATE_TEMPLATE_INDEX, "55");
+					} else {
+						if (state.getAttribute(STATE_TEMPLATE_SITE) != null)
+						{
+							// create site based on template
+							doFinish(data);
+						}
+						else
+						{
+							if (getStateSite(state) == null) {
+								state.setAttribute(STATE_TEMPLATE_INDEX, "13");
+							} else {
+								state.setAttribute(STATE_TEMPLATE_INDEX, "44");
+							}
 						}
 					}
 				}
@@ -6484,6 +6504,11 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 		String option = data.getParameters().getString("option");
 		if ("continue".equals(option)) {
 			doContinue(data);
+			if ( ((String) state.getAttribute(STATE_TEMPLATE_INDEX)).equals("13")
+					&& ServerConfigurationService.getBoolean(SAK_PROP_DELEGATE_CONFIRM_ENABLED, false)) {
+				// must confirm first
+				state.setAttribute(STATE_TEMPLATE_INDEX, "55");
+			}
 		} else if ("cancel".equals(option)) {
 			doCancel_create(data);
 		} else if ("back".equals(option)) {
@@ -6492,11 +6517,9 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 			doCancel_create(data);
 		} else if ("norosters".equals(option)) {
 			state.setAttribute(STATE_TEMPLATE_INDEX, "13");
-		}
-		else if (option.equalsIgnoreCase("change_user")) {  // SAK-22915
+		} else if (option.equalsIgnoreCase("change_user")) {
 			doChange_user(data);
-		}
-		else if (option.equalsIgnoreCase("change")) {
+		} else if (option.equalsIgnoreCase("change")) {
 			// change term
 			String termId = params.getString("selectTerm");
 			AcademicSession t = cms.getAcademicSession(termId);
@@ -14652,20 +14675,25 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 					state.removeAttribute(STATE_MANUAL_ADD_COURSE_NUMBER);
 					state.removeAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 
-					if (getStateSite(state) == null) {
-						if (state.getAttribute(STATE_TEMPLATE_SITE) != null)
-						{
-							// if creating site using template, stop here and generate the new site
-							// create site based on template
-							doFinish(data);
-						}
-						else
-						{
-							// else follow the normal flow
-							state.setAttribute(STATE_TEMPLATE_INDEX, "13");
-						}
+					if (ServerConfigurationService.getBoolean(SAK_PROP_DELEGATE_CONFIRM_ENABLED, false)) {
+						// must confirm first
+						state.setAttribute(STATE_TEMPLATE_INDEX, "55");
 					} else {
-						state.setAttribute(STATE_TEMPLATE_INDEX, "44");
+						if (getStateSite(state) == null) {
+							if (state.getAttribute(STATE_TEMPLATE_SITE) != null)
+							{
+								// if creating site using template, stop here and generate the new site
+								// create site based on template
+								doFinish(data);
+							}
+							else
+							{
+								// else follow the normal flow
+								state.setAttribute(STATE_TEMPLATE_INDEX, "13");
+							}
+						} else {
+							state.setAttribute(STATE_TEMPLATE_INDEX, "44");
+						}
 					}
 				}
 
@@ -14735,6 +14763,43 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 		prepFindPage(state);
 	}
 
+	public void doNewSiteDelegateConfirm(RunData data) {
+		SessionState state = ((JetspeedRunData) data).getPortletSessionState(((JetspeedRunData) data).getJs_peid());
+		ParameterParser params = data.getParameters();
+		
+		String option = data.getParameters().getString("option");
+		if ("continue".equals(option)) {
+			// user selected an option that is not allowed to continue
+			addAlert(state, rb.getString("sitegen.delegate.confirm.alert.mustbe"));
+			state.setAttribute(STATE_TEMPLATE_INDEX, "55");
+		} else if ("cancel".equals(option)) {
+			doCancel(data);
+		} else if ("back".equals(option)) {
+			doBack(data);
+		} else if ("confirmed".equals(option)) {
+			// user selected an option allowed to continue and passed confirmation
+			if (getStateSite(state) == null) {
+				if (state.getAttribute(STATE_TEMPLATE_SITE) != null)
+				{
+					// if creating site using template, stop here and generate the new site
+					// create site based on template
+					doFinish(data);
+				}
+				else
+				{
+					// else follow the normal flow
+					state.setAttribute(STATE_TEMPLATE_INDEX, "13");
+				}
+			} else {
+				state.setAttribute(STATE_TEMPLATE_INDEX, "44");
+			}
+		} else if ("unconfirmed".equals(option)) {
+			// user selected an option allowed to continue but failed confirmation
+			addAlert(state, rb.getString("sitegen.delegate.confirm.alert.mustfollow"));
+			state.setAttribute(STATE_TEMPLATE_INDEX, "55");
+		}
+	}	
+	
 	/**
 	 * return the title of the 1st section in the chosen list that has an
 	 * enrollment set. No discrimination on section category
