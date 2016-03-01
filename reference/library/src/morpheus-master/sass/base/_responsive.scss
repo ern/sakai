@@ -5,13 +5,13 @@ body{
 				width: 100%;
 				top: 5.5em;
 				left: 0px;
-				@include box-shadow( 0px 0em 1em rgba(0,0,0,0.5) );
+				/* @include box-shadow( 0px 0em 1em rgba(0,0,0,0.5) ); compass */
 				.Mrphs-toolsNav__menuitem--title{
 					display: inline;
 					letter-spacing: 0px;
 					border: 0px none;
-					@include border-radius( 0 );
-					@include box-shadow( none );
+					/* @include border-radius( 0 ); compass */
+					/* @include box-shadow( none ); compass */
 				}
 				> h1.skip{
 					display: block;
@@ -82,7 +82,7 @@ body{
 						padding-top: 3em;
 						position: fixed;
 						width: 85%;
-						@include box-shadow(0 0 20em rgba( 0,0,0,0.8 ) );
+						/* @include box-shadow(0 0 20em rgba( 0,0,0,0.8 ) ); compass */
 					}
 				}
 			}

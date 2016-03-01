@@ -9,17 +9,17 @@
 		width: 100%;
 		margin:  0 0 0 0;
 
-		@include align-items(center);
-		@include box-shadow( inset 0 0 5px rgba(0,0,0,0.25) );
-		@include display-flex(inline-flex);
-		@include flex-direction(row);
-		@include justify-content(space-between);
-		@include transition(top 0.25s linear);
+		/* @include align-items(center); compass */
+		/* @include box-shadow( inset 0 0 5px rgba(0,0,0,0.25) ); compass */
+		/* @include display-flex(inline-flex); compass */
+		/* @include flex-direction(row); compass */
+		/* @include justify-content(space-between); compass */
+		/* @include transition(top 0.25s linear); compass */
 		&.moving{
 			top: -4.2em;
 		}
 		li{
-			@include flex-basis( 50% );
+			/* @include flex-basis( 50% ); compass */
 			&.#{$namespace}skipNav__menuitem--content{
 				display: none;
 			}

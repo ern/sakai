@@ -6,7 +6,7 @@
 }
 
 .blurry{
-	@include filter( blur(0.1em) );
+	/* @include filter( blur(0.1em) );  compass */
 }
 
 @mixin bs-callout($color, $bgcolor) {
@@ -78,8 +78,8 @@
 	padding: 0.3em 2.2em 0.3em 0.5em;
 	text-align: left;
 	max-width: 100%;
-	@include appearance(none);
-	@include border-radius(3px);
+	/* @include appearance(none); compass */
+	/* @include border-radius(3px); compass */
 	&::-ms-expand {
 	    display: none;
 	}
@@ -98,16 +98,16 @@
 	padding: 6px 10px 7px 12px;
 	position: relative;
 	text-decoration: none;
-	@include appearance(none);
-	@include border-radius(3px);
+	/* @include appearance(none); compass */
+	/* @include border-radius(3px); compass */
 	&:hover{
 		text-decoration: none;
-		@include background-image( linear-gradient( $button-color-background-color, $button-color-background-secondary-color ) );
+		/* @include background-image( linear-gradient( $button-color-background-color, $button-color-background-secondary-color ) ); compass */
 	}
 	&:active{
 		text-decoration: none;
 		outline: 0;
-		@include background-image( linear-gradient( $button-color-background-secondary-color, $button-color-background-color ) );
+		/* @include background-image( linear-gradient( $button-color-background-secondary-color, $button-color-background-color ) ); compass */
 	}
 	&[disabled="disabled"],&[disabled],&[disabled="true"]{
 		background: $button-color-background-color;
@@ -133,16 +133,16 @@
 	margin: 0.5em 0.8em 0.5em 0;
 	padding: 0.4em 0.8em 0.45em 0.8em;
 	text-decoration: none;
-	@include appearance(none);
-	@include border-radius(3px);
+	/* @include appearance(none); compass */
+	/* @include border-radius(3px); compass */
 	&:hover{
 		text-decoration: none;
-		@include background-image( linear-gradient( $button-background-secondary-color, $button-background-color ) );
+		/* @include background-image( linear-gradient( $button-background-secondary-color, $button-background-color ) ); compass */
 	}
 	&:active{
 		outline: 0;
 		text-decoration: none;
-		@include background-image( linear-gradient( $button-background-color, $button-background-secondary-color ) );
+		/* @include background-image( linear-gradient( $button-background-color, $button-background-secondary-color ) ); compass */
 	}
 	&[disabled="disabled"],&[disabled],&[disabled="true"]{
 		background: $button-background-color;
@@ -213,8 +213,8 @@ a.noPointers, input.noPointers {
 }
 
 .spinnerBesideContainer { 
-	@include display-flex;
-	@include align-items( center );
+	/* @include display-flex; compass */
+	/* @include align-items( center ); compass */
 	label {
 		margin: 0 4px 0 0;
 	}

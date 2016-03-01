@@ -44,7 +44,7 @@ body.#{$namespace}toolMenu-collapsed{
 				}
 				&.#{$namespace}collapseTools{
 					i{
-						@include transform( rotate(180deg) );
+						/* @include transform( rotate(180deg) ); compass */
 					}
 				}
 			}
@@ -62,7 +62,7 @@ body.#{$namespace}toolMenu-collapsed{
 	display: block;
 	min-width: $tool-menu-width;
 	margin: 0 0 0 0;
-	@include transition( left 0.25s linear);
+	/* @include transition( left 0.25s linear); compass */
 	
 	@media #{$phone}{
 		left: -100%;
@@ -84,8 +84,8 @@ body.#{$namespace}toolMenu-collapsed{
 				letter-spacing: 2em;
 				padding: 0px 0 0 5px;
 				overflow: hidden;
-				@include border-radius( $icon-size );
-				@include box-shadow(  0 0 5px rgba( $background-color ,0.5) );
+				/* @include border-radius( $icon-size ); compass */
+				/* @include box-shadow(  0 0 5px rgba( $background-color ,0.5) ); compass */
 			}
 		}
 	}
@@ -112,8 +112,8 @@ body.#{$namespace}toolMenu-collapsed{
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		@include box-shadow( inset 0 0 8px rgba( $background-color ,0.15) );
-		@include transition( top 0.25s linear );
+		/* @include box-shadow( inset 0 0 8px rgba( $background-color ,0.15) ); compass */
+		/* @include transition( top 0.25s linear ); compass */
 		&.moving{
 			top: -3.3em;
 		}

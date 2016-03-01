@@ -20,9 +20,9 @@
 }
 
 #pageBody{
-	@include align-items(stretch);
-	@include display-flex(flex);
-	@include flex-direction(row);
+	/* @include align-items(stretch); compass */
+	/* @include display-flex(flex); compass */
+	/* @include flex-direction(row); compass */
 	> .#{$namespace}pagebody{
 		width: 100%;
 	}
