@@ -131,128 +131,182 @@ public class ContentReviewFederatedServiceImpl implements ContentReviewService {
 		return providers.stream().filter(crs -> crs.getServiceName().equals(defaultProvider)).collect(Collectors.toList()).get(0);
 	}
 
+	@Override
 	public boolean allowResubmission() {
 		return getSelectedProvider().allowResubmission();
 	}
 
+	@Override
 	public void checkForReports() {
 		// this is a method that the jobs call and should check for reports for all enabled providers
 		providers.stream().filter(provider -> enabledProviders.contains(provider.getServiceName())).forEach(ContentReviewService::checkForReports);
 	}
 
+	@Override
 	public void createAssignment(String arg0, String arg1, Map arg2)
 			throws SubmissionException, TransientSubmissionException {
 		getSelectedProvider().createAssignment(arg0, arg1, arg2);
 	}
 
+	@Override
+	public String getLTIAccess(String taskId, String siteId) {
+		return null;
+	}
+
+	@Override
+	public boolean deleteLTITool(String taskId, String siteId) {
+		return false;
+	}
+
+	@Override
 	public List<ContentReviewItem> getAllContentReviewItems(String arg0, String arg1)
 			throws QueueException, SubmissionException, ReportException {
 		return getSelectedProvider().getAllContentReviewItems(arg0, arg1);
 	}
 
+	@Override
 	public Map getAssignment(String arg0, String arg1) throws SubmissionException, TransientSubmissionException {
 		return getSelectedProvider().getAssignment(arg0, arg1);
 	}
 
+	@Override
 	public Date getDateQueued(String arg0) throws QueueException {
 		return getSelectedProvider().getDateQueued(arg0);
 	}
 
+	@Override
 	public Date getDateSubmitted(String arg0) throws QueueException, SubmissionException {
 		return getSelectedProvider().getDateSubmitted(arg0);
 	}
 
-	public String getIconUrlforScore(Long score) {
-		return getSelectedProvider().getIconUrlforScore(score);
+	@Override
+	public String getIconUrlForScore(Long score) {
+		return getSelectedProvider().getIconUrlForScore(score);
 	}
 
+	@Override
+	public String getIconColorForScore(Long score) {
+		return null;
+	}
+
+	@Override
 	public String getLocalizedStatusMessage(String arg0) {
 		return getSelectedProvider().getLocalizedStatusMessage(arg0);
 	}
 
+	@Override
 	public String getLocalizedStatusMessage(String arg0, String arg1) {
 		return getSelectedProvider().getLocalizedStatusMessage(arg0, arg1);
 	}
 
+	@Override
 	public String getLocalizedStatusMessage(String arg0, Locale arg1) {
 		return getSelectedProvider().getLocalizedStatusMessage(arg0, arg1);
 	}
 
+	@Override
 	public List<ContentReviewItem> getReportList(String siteId)
 			throws QueueException, SubmissionException, ReportException {
 		return getSelectedProvider().getReportList(siteId);
 	}
 
+	@Override
 	public List<ContentReviewItem> getReportList(String siteId, String taskId)
 			throws QueueException, SubmissionException, ReportException {
 		return getSelectedProvider().getReportList(siteId, taskId);
 	}
 
+	@Override
 	public String getReviewReport(String contentId, String assignmentRef, String userId)
 			throws QueueException, ReportException {
 		return getSelectedProvider().getReviewReport(contentId, assignmentRef, userId);
 	}
 
+	@Override
 	public String getReviewReportInstructor(String contentId, String assignmentRef, String userId)
 			throws QueueException, ReportException {
 		return getSelectedProvider().getReviewReportInstructor(contentId, assignmentRef, userId);
 	}
 
+	@Override
 	public String getReviewReportStudent(String contentId, String assignmentRef, String userId)
 			throws QueueException, ReportException {
 		return getSelectedProvider().getReviewReportStudent(contentId, assignmentRef, userId);
 	}
 
+	@Override
 	public Long getReviewStatus(String contentId) throws QueueException {
 		return getSelectedProvider().getReviewStatus(contentId);
 	}
 
+	@Override
 	public String getServiceName() {
 		return getSelectedProvider().getServiceName();
 	}
 
+	@Override
 	public boolean allowAllContent() {
 		return getSelectedProvider().allowAllContent();
 	}
 
+	@Override
 	public boolean isAcceptableContent(ContentResource arg0) {
 		return getSelectedProvider().isAcceptableContent(arg0);
 	}
 
+	@Override
+	public boolean isAcceptableSize(ContentResource resource) {
+		return false;
+	}
+
+	@Override
 	public Map<String, SortedSet<String>> getAcceptableExtensionsToMimeTypes() {
 		return getSelectedProvider().getAcceptableExtensionsToMimeTypes();
 	}
 
+	@Override
 	public Map<String, SortedSet<String>> getAcceptableFileTypesToExtensions() {
 		return getSelectedProvider().getAcceptableFileTypesToExtensions();
 	}
 
+	@Override
 	public boolean isSiteAcceptable(Site arg0) {
 		return getSelectedProvider().isSiteAcceptable(arg0);
 	}
 
+	@Override
+	public boolean isDirectAccess(Site site) {
+		return getSelectedProvider().isDirectAccess(site);
+	}
+
+	@Override
 	public void processQueue() {
 		// this is a method that the jobs call and should process items for all enabled providers
 		providers.stream().filter(provider -> enabledProviders.contains(provider.getServiceName())).forEach(ContentReviewService::processQueue);
 	}
 
-	public void queueContent(String userId, String siteId, String assignmentReference, List<ContentResource> content)
+	@Override
+	public void queueContent(String userId, String siteId, String assignmentReference, List<ContentResource> content, String submissionId, boolean resubmission)
 			throws QueueException {
-		getSelectedProvider().queueContent(userId, siteId, assignmentReference, content);
+		getSelectedProvider().queueContent(userId, siteId, assignmentReference, content, submissionId, resubmission);
 	}
 
-	public void removeFromQueue(String arg0) {
-		getSelectedProvider().removeFromQueue(arg0);
+	@Override
+	public void removeFromQueue(String contentId) {
+		getSelectedProvider().removeFromQueue(contentId);
 	}
 
-	public void resetUserDetailsLockedItems(String arg0) {
-		getSelectedProvider().resetUserDetailsLockedItems(arg0);
+	@Override
+	public void resetUserDetailsLockedItems(String userId) {
+		getSelectedProvider().resetUserDetailsLockedItems(userId);
 	}
 
+	@Override
 	public String getReviewError(String contentId) {
 		return getSelectedProvider().getReviewError(contentId);
 	}
 
+	@Override
 	public int getReviewScore(String contentId, String assignmentRef, String userId)
 			throws QueueException, ReportException, Exception {
 		return getSelectedProvider().getReviewScore(contentId, assignmentRef, userId);

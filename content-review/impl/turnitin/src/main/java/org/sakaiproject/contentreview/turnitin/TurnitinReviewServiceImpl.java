@@ -243,7 +243,12 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 		return true;
 	}
 
-	public String getIconUrlforScore(Long score) {
+	@Override
+	public boolean isDirectAccess(Site site) {
+		return false;
+	}
+
+	public String getIconUrlForScore(Long score) {
 
 		String urlBase = "/library/content-review/score_";
 		String suffix = ".gif";
@@ -260,6 +265,11 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 			return urlBase + "red" + suffix;
 		}
 
+	}
+
+	@Override
+	public String getIconColorForScore(Long score) {
+		return null;
 	}
 
 	/**
@@ -1171,6 +1181,16 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 		}
 	}
 
+	@Override
+	public String getLTIAccess(String taskId, String siteId) {
+		throw new UnsupportedOperationException("This provider " + SERVICE_NAME  + " doesn't support LTI");
+	}
+
+	@Override
+	public boolean deleteLTITool(String taskId, String siteId) {
+		throw new UnsupportedOperationException("This provider " + SERVICE_NAME  + " doesn't support LTI");
+	}
+
 	/**
 	 * Currently public for integration tests. TODO Revisit visibility of
 	 * method.
@@ -2049,6 +2069,11 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 		return turnitinContentValidator.isAcceptableContent(resource);
 	}
 
+	@Override
+	public boolean isAcceptableSize(ContentResource resource) {
+		throw new UnsupportedOperationException("isAcceptableSize is not implemented");
+	}
+
 	/**
 	 * find the next time this item should be tried
 	 * 
@@ -2296,7 +2321,7 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 
 	@Override
 	public boolean allowAllContent() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -2310,7 +2335,7 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 	}
 
 	@Override
-	public void queueContent(String userId, String siteId, String taskId, List<ContentResource> content)
+	public void queueContent(String userId, String siteId, String taskId, List<ContentResource> content, String submissionId, boolean resubmission)
 			throws QueueException {
 
 		log.debug("Method called queueContent()");
@@ -2334,9 +2359,8 @@ public class TurnitinReviewServiceImpl implements ContentReviewService {
 			taskId = siteId + " " + "defaultAssignment";
 		}
 
-		log.debug("Adding content from site " + siteId + " and user: " + userId + " for task: " + taskId
-				+ " to submission queue");
-		crqs.queueContent(getProviderId(), userId, siteId, taskId, content);
+		log.debug("Adding content from site {} and user: {} for task: {} to submission queue", siteId, userId, taskId);
+		crqs.queueContent(getProviderId(), userId, siteId, taskId, content, submissionId, resubmission);
 	}
 
 	@Override

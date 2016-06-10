@@ -254,6 +254,16 @@ public class ContentReviewServiceVeriCite implements ContentReviewService {
 		}.start();
 	}
 
+	@Override
+	public String getLTIAccess(String taskId, String siteId) {
+		throw new UnsupportedOperationException("This provider " + SERVICE_NAME  + " doesn't support LTI");
+	}
+
+	@Override
+	public boolean deleteLTITool(String taskId, String siteId) {
+		throw new UnsupportedOperationException("This provider " + SERVICE_NAME  + " doesn't support LTI");
+	}
+
 	public List<ContentReviewItem> getAllContentReviewItems(String siteId,
 			String taskId) throws QueueException, SubmissionException,
 			ReportException {
@@ -274,7 +284,7 @@ public class ContentReviewServiceVeriCite implements ContentReviewService {
 		return crqs.getDateSubmitted(getProviderId(), contextId);
 	}
 
-	public String getIconUrlforScore(Long score) {
+	public String getIconUrlForScore(Long score) {
 		String urlBase = "/library/content-review/";
 		String suffix = ".png";
 
@@ -291,6 +301,11 @@ public class ContentReviewServiceVeriCite implements ContentReviewService {
 		} else {
 			return urlBase + "redflag" + suffix;
 		}
+	}
+
+	@Override
+	public String getIconColorForScore(Long score) {
+		return null;
 	}
 
 	public String getLocalizedStatusMessage(String arg0) {
@@ -607,12 +622,22 @@ public class ContentReviewServiceVeriCite implements ContentReviewService {
 		return SERVICE_NAME;
 	}
 
-	public boolean isAcceptableContent(ContentResource arg0) {
+	public boolean isAcceptableContent(ContentResource resource) {
 		return true;
 	}
 
-	public boolean isSiteAcceptable(Site arg0) {
+	@Override
+	public boolean isAcceptableSize(ContentResource resource) {
+		throw new UnsupportedOperationException("This provider " + SERVICE_NAME  + " doesn't implement this yet");
+	}
+
+	public boolean isSiteAcceptable(Site site) {
 		return true;
+	}
+
+	@Override
+	public boolean isDirectAccess(Site site) {
+		return false;
 	}
 
 	public void processQueue() {
@@ -757,8 +782,8 @@ public class ContentReviewServiceVeriCite implements ContentReviewService {
 		log.info("Submission VeriCite queue run completed: " + success + " items submitted, " + errors + " errors.");
 	}
 	
-	public void queueContent(String userId, String siteId, String assignmentReference, List<ContentResource> content) throws QueueException{
-		crqs.queueContent(getProviderId(), userId, siteId, assignmentReference, content);
+	public void queueContent(String userId, String siteId, String assignmentReference, List<ContentResource> content, String submissionId, boolean resubmission) throws QueueException{
+		crqs.queueContent(getProviderId(), userId, siteId, assignmentReference, content, submissionId, resubmission);
 	}
 
 	public void removeFromQueue(String contentId) {

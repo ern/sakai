@@ -35,9 +35,11 @@ public interface ContentReviewQueueService {
 	 * @param siteId the site id associated with the item to be reviewed
 	 * @param taskId the task id associated with the item to reviewed
 	 * @param content a {@code java.util.List} of the items to be reviewed
+	 * @param submissionId reference to the submission
+	 * @param resubmission indicates if this is a resubmission
 	 * @throws QueueException
 	 */
-	void queueContent(Integer providerId, String userId, String siteId, String taskId, List<ContentResource> content)
+	void queueContent(Integer providerId, String userId, String siteId, String taskId, List<ContentResource> content, String submissionId, boolean resubmission)
 			throws QueueException;
 
 	/**
@@ -139,10 +141,17 @@ public interface ContentReviewQueueService {
 	 */
 	List<ContentReviewItem> getAllContentReviewItemsGroupedBySiteAndTask(Integer providerId);
 
+	/**
+	 * Gets all items by the external id
+	 * @param externalId the external id
+	 * @return {@code List<ContentReviewItem>}
+     */
+	List<ContentReviewItem> getContentReviewItemsByExternalId(Integer providerId, String externalId);
+
 	/* Its not ideal to directly expose the direct DAO methods here, 
 	 * but this was needed in order to not have to change the
 	 * TurnitinImpl. These should be removed from the service when the
-	 * new TurnitinImpl is written
+	 * new TurnitinImpl is written and the old one is removed.
 	 */
 	/**
 	 * Update an item

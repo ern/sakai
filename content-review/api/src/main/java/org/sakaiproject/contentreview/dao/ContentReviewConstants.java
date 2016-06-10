@@ -31,7 +31,7 @@ public class ContentReviewConstants {
 	public static final String CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY = "Error occurred submitting content - will not retry";
 	public static final Long CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY_CODE = new Long(5);
 
-	public static final String CONTENT_REVIEW_SUBMISSION_ERROR_USER_DETAILS = "Error occurred submitting content - inconplete or Ivalid user details";
+	public static final String CONTENT_REVIEW_SUBMISSION_ERROR_USER_DETAILS = "Error occurred submitting content - inconplete or invalid user details";
 	public static final Long CONTENT_REVIEW_SUBMISSION_ERROR_USER_DETAILS_CODE = new Long(6);
 
 	public static final String CONTENT_REVIEW_REPORT_ERROR_RETRY = "Temporary error occurred retrieving report - will retry";

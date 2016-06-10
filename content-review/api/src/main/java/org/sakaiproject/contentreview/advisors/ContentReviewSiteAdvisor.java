@@ -18,5 +18,28 @@ package org.sakaiproject.contentreview.advisors;
 import org.sakaiproject.site.api.Site;
 
 public interface ContentReviewSiteAdvisor {
-	public boolean siteCanUseReviewService(Site site);
+
+	/**
+	 * Indicates whether a site is allowed to use the Content Review Service
+	 *
+	 * @param site the {@link Site} to check
+	 * @return true if allowed otherwise false
+     */
+	boolean siteCanUseReviewService(Site site);
+
+	/**
+	 * Indicates whether a site is allowed to use LTI Content Review Service
+	 *
+	 * @param site the {@link Site} to check
+	 * @return true if allowed otherwise false
+	 */
+	boolean siteCanUseLTIReviewService(Site site);
+
+	/**
+	 * Indicates whether a site is allowed to use LTI Direct Submission
+	 *
+	 * @param site the {@link Site} to check
+	 * @return true if allowed otherwise false
+	 */
+	boolean siteCanUseDirectReviewService(Site site);
 }

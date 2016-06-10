@@ -15,15 +15,15 @@
  */
 package org.sakaiproject.contentreview.dao;
 
-import java.util.Date;
-import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * Testing for the Evaluation Data Access Layer
@@ -40,7 +40,7 @@ public class ContentReviewDaoImplTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void testSave() {
-		ContentReviewItem itemA = new ContentReviewItem(USER, "site", "task", "content-A", new Date(),
+		ContentReviewItem itemA = new ContentReviewItem("content-A", USER, "site", "task", new Date(),
 				ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
 		itemDao.create(itemA);
 		
@@ -59,7 +59,7 @@ public class ContentReviewDaoImplTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void testDeleteT() {
-		ContentReviewItem itemB = new ContentReviewItem(USER, "site", "task", "content-B", new Date(),
+		ContentReviewItem itemB = new ContentReviewItem("content-B", USER, "site", "task", new Date(),
 				ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
 		itemDao.create(itemB);
 		
@@ -74,7 +74,7 @@ public class ContentReviewDaoImplTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void testDeleteLong() {
-		ContentReviewItem itemC = new ContentReviewItem(USER, "site", "task", "content-C", new Date(),
+		ContentReviewItem itemC = new ContentReviewItem("content-C", USER, "site", "task", new Date(),
 				ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
 		itemDao.create(itemC);
 		
@@ -87,10 +87,9 @@ public class ContentReviewDaoImplTest extends AbstractTransactionalJUnit4SpringC
 		Assert.assertEquals(Optional.empty(), itemDao.get(item.get().getId()));
 	}
 
-	// TODO finish this
 	@Test
 	public void testUpdate() {
-		ContentReviewItem itemD = new ContentReviewItem(USER, "site", "task", "content-D", new Date(),
+		ContentReviewItem itemD = new ContentReviewItem("content-D", USER, "site", "task", new Date(),
 				ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
 		itemDao.create(itemD);
 		
@@ -111,32 +110,4 @@ public class ContentReviewDaoImplTest extends AbstractTransactionalJUnit4SpringC
 		}
 		Assert.fail("Update of itemD failed");
 	}
-
-//	@Test
-//	public void testOptimisticLock() {
-//		itemA = new ContentReviewItem(USER, "site", "task", "content-A", new Date(),
-//				ContentReviewConstants.NOT_SUBMITTED_CODE);
-//		itemDao.save(itemA);
-//
-//		// first test we have saved the item
-//		Assert.assertNotNull(itemA.getId());
-//
-//		itemB = new ContentReviewItem(USER, "site", "task", "content-B", new Date(),
-//				ContentReviewConstants.NOT_SUBMITTED_CODE);
-//		itemDao.create(itemB);
-//		Assert.assertNotNull(itemB.getId());
-//
-//		Assert.assertNotSame(itemA.getId(), itemB.getId());
-//		
-//		Optional<ContentReviewItem> itemC = itemDao.get(itemB.getId());
-//
-//		// update ItemB
-//		itemB.setStatus(ContentReviewConstants.SUBMISSION_ERROR_USER_DETAILS_CODE);
-//		itemDao.save(itemB);
-//
-//		if (itemC.isPresent()) {
-//			itemC.get().setStatus(ContentReviewConstants.SUBMISSION_ERROR_RETRY_CODE);
-//			itemDao.save(itemC.get());
-//		}
-//	}
 }

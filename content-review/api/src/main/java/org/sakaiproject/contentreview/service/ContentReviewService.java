@@ -47,13 +47,16 @@ public interface ContentReviewService {
 	/**
 	 *  Add an item to the Queue for Submission to Turnitin
 	 *  
-	 *  @param userId if nulll current user is used
+	 *  @param userId if null current user is used
 	 *  @param siteId is null current site is used
 	 *  @param taskId reference to the task
 	 *  @param content list of content resources to be queued
-	 *  
+	 *  @param submissionId reference to the submission
+	 *  @param resubmission true if it was a resubmission
+	 *
 	 */
-	public void queueContent(String userId, String siteId, String taskId, List<ContentResource> content) throws QueueException;
+	public void queueContent(String userId, String siteId, String taskId, List<ContentResource> content, String submissionId, boolean resubmission)
+			throws QueueException;
 	
 	/**
 	 *  Retrieve a score for a item
@@ -65,8 +68,8 @@ public interface ContentReviewService {
 	 * @throws ReportException
 	 * @throws Exception
 	  */
-	public int getReviewScore(String contentId, String taskId, String userId) throws QueueException,
-                        ReportException, Exception;
+	public int getReviewScore(String contentId, String taskId, String userId)
+			throws QueueException, ReportException, Exception;
 	
 	/**
 	 *  Get the URL of the report
@@ -76,10 +79,9 @@ public interface ContentReviewService {
 	 * @return the url
 	 * @throws QueueException
 	 * @throws ReportException
-	 * * * @deprecated since Nov 2007, use {@link getReviewReportInstructor(String contentId)} or {@link getReviewReportInstructor(String contentId)}
 	 */
 	public String getReviewReport(String contentId, String assignmentRef, String userId)
-	throws QueueException, ReportException;
+			throws QueueException, ReportException;
 	
 	/**
 	 * Get the URL of a report constructed for a student
@@ -91,7 +93,7 @@ public interface ContentReviewService {
 	 * @throws ReportException
 	 * */
 	public String getReviewReportStudent(String contentId, String assignmentRef, String userId)
-	throws QueueException, ReportException;
+			throws QueueException, ReportException;
 	
 	/**
 	 * Get the URL for a report constructed for an Instructor
@@ -104,7 +106,7 @@ public interface ContentReviewService {
 	 * @throws ReportException
 	 */
 	public String getReviewReportInstructor(String contentId, String assignmentRef, String userId)
-	throws QueueException, ReportException;
+			throws QueueException, ReportException;
 	
 	
 	/**
@@ -114,7 +116,7 @@ public interface ContentReviewService {
 	 * @throws QueueException
 	 */
 	public Long getReviewStatus(String contentId)
-	throws QueueException;
+			throws QueueException;
 	
 	/**
 	 * The date an item was queued
@@ -123,7 +125,7 @@ public interface ContentReviewService {
 	 * @throws QueueException
 	 */
 	public Date getDateQueued(String contextId)
-	throws QueueException;
+			throws QueueException;
 	
 	/**
 	 * The date an item was submitted to the queue
@@ -133,7 +135,7 @@ public interface ContentReviewService {
 	 * @throws SubmissionException
 	 */
 	public Date getDateSubmitted(String contextId)
-	throws QueueException, SubmissionException;
+			throws QueueException, SubmissionException;
 	
 	/**
 	 *  Proccess all pending jobs in the Queue
@@ -156,7 +158,7 @@ public interface ContentReviewService {
 	 * @throws ReportException
 	 */
 	public List<ContentReviewItem> getReportList(String siteId, String taskId)
-	throws QueueException, SubmissionException, ReportException;
+			throws QueueException, SubmissionException, ReportException;
 	
 	
 	/**
@@ -169,7 +171,7 @@ public interface ContentReviewService {
 	 * @throws ReportException
 	 */
 	public List<ContentReviewItem> getReportList(String siteId)
-	throws QueueException, SubmissionException, ReportException;
+			throws QueueException, SubmissionException, ReportException;
 	
 	/**
 	 * This is a complement to getReportList, except that it returns all
@@ -191,7 +193,7 @@ public interface ContentReviewService {
 	 * @return
 	 */
 	public List<ContentReviewItem> getAllContentReviewItems(String siteId, String taskId)
-	throws QueueException, SubmissionException, ReportException;
+			throws QueueException, SubmissionException, ReportException;
 	
 	
 	/**
@@ -221,8 +223,15 @@ public interface ContentReviewService {
 	 * @return
 	 */
 	public boolean isAcceptableContent(ContentResource resource);
-	
-	/**                                                                                                                                                                                                    
+
+	/**
+	 * Is the content resource a size that can be accepted by the service implementation
+	 * @param resource
+	 * @return
+	 */
+	public boolean isAcceptableSize(ContentResource resource);
+
+	/**
 	 * Gets a map of acceptable file extensions for this content-review service to their associated mime types (ie. ".rtf" -> ["text/rtf", "application,rtf"])                                             
 	 */                                                                                                                                                                                                    
 	public Map<String, SortedSet<String>> getAcceptableExtensionsToMimeTypes();                                                                                                                                 
@@ -241,14 +250,30 @@ public interface ContentReviewService {
 	 * 
 	 */
 	public boolean isSiteAcceptable(Site site);
-	
+
+	/**
+	 *  Does the site make use of the direct TII submission mode
+	 *
+	 * @param site
+	 * @return
+	 *
+	 */
+	public boolean isDirectAccess(Site site);
+
 	/**
 	 *  Get a icon URL that for a specific score
 	 * @param score
 	 * @return
 	 */
-	public String getIconUrlforScore(Long score);
-	
+	public String getIconUrlForScore(Long score);
+
+	/**
+	 *  Get a icon colour for a specific score
+	 * @param score
+	 * @return
+	 */
+	public String getIconColorForScore(Long score);
+
 	/**
 	 *  Does the service support resubmissions?
 	 * @return
@@ -259,7 +284,7 @@ public interface ContentReviewService {
 	 *  Remove an item from the review Queue
 	 * @param ContentId
 	 */
-	public void removeFromQueue(String ContentId);
+	public void removeFromQueue(String contentId);
 	
 	/**
 	 * Get a status message for a submission in the locale of the specified user
@@ -311,7 +336,7 @@ public interface ContentReviewService {
          * @throws TransientSubmissionException
 	 */
 	public Map getAssignment(String siteId, String taskId)
-	throws SubmissionException, TransientSubmissionException;
+			throws SubmissionException, TransientSubmissionException;
 	
 	/**
 	 * This is a vendor specific method needed for some deep integrations
@@ -333,5 +358,28 @@ public interface ContentReviewService {
 	 * @throws TransientSubmissionException
 	 */
 	public void createAssignment(String siteId, String taskId, Map extraAsnnOpts)
-	throws SubmissionException, TransientSubmissionException;
+			throws SubmissionException, TransientSubmissionException;
+
+	/**
+	 * Get the URL to access the LTI tool associated with the task
+	 *
+	 * @param taskId
+	 * @param siteId
+	 * @return
+	 * @throws QueueException
+	 * @throws ReportException
+	 */
+	public String getLTIAccess(String taskId, String siteId);
+
+	/**
+	 * Delete the LTI tool associated with the task
+	 *
+	 * @param taskId
+	 * @param siteId
+	 * @return
+	 * @throws QueueException
+	 * @throws ReportException
+	 */
+	public boolean deleteLTITool(String taskId, String siteId);
+
 }

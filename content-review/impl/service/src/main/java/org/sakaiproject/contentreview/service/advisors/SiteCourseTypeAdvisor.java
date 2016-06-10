@@ -15,20 +15,33 @@
  */
 package org.sakaiproject.contentreview.service.advisors;
 
+import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.contentreview.advisors.ContentReviewSiteAdvisor;
 import org.sakaiproject.site.api.Site;
 
 public class SiteCourseTypeAdvisor implements ContentReviewSiteAdvisor {
 
+	@Override
 	public boolean siteCanUseReviewService(Site site) {
-		String type = site.getType();
-		
-		if (type != null ) {
-			if (type.equals("course"))
-				return true;
-		}
-		return false;
-		
+		return isCourse(site);
 	}
 
+	@Override
+	public boolean siteCanUseLTIReviewService(Site site) {
+		return isCourse(site);
+	}
+
+	@Override
+	public boolean siteCanUseDirectReviewService(Site site) {
+		return isCourse(site);
+	}
+
+	private boolean isCourse(Site site) {
+		if (site == null) return false;
+
+		if ("course".equals(site.getType())) {
+			return true;
+		}
+		return false;
+	}
 }

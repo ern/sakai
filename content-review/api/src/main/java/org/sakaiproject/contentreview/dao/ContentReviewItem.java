@@ -47,6 +47,10 @@ public class ContentReviewItem {
 	private String iconUrl;
 	private Long retryCount;
 	private Integer version;
+	private boolean urlAccessed;
+	private String submissionId;
+	private boolean resubmission;
+	private String externalGrade;
 
 	public ContentReviewItem(String contentId, Integer providerId) {
 		this(contentId, null, null, null, new Date(), ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
@@ -61,5 +65,7 @@ public class ContentReviewItem {
 		this.status = status;
 		this.providerId = providerId;
 		this.nextRetryTime = new Date();
+		this.urlAccessed = false;
+		this.resubmission = false;
 	}
 }

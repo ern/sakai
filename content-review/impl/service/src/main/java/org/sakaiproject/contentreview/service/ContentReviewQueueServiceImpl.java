@@ -38,12 +38,9 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 	@Setter
 	private ContentReviewItemDao itemDao;
 	
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#queueContent(java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.util.List, int)
-	 */
 	@Override
 	@Transactional
-	public void queueContent(Integer providerId, String userId, String siteId, String taskId, List<ContentResource> content)
+	public void queueContent(Integer providerId, String userId, String siteId, String taskId, List<ContentResource> content, String submissionId, boolean resubmission)
 			throws QueueException {
 		
 		Objects.requireNonNull(providerId, "providerId cannot be null");
@@ -69,6 +66,8 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 			}
 			
 			ContentReviewItem item = new ContentReviewItem(contentId, userId, siteId, taskId, new Date(), ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, providerId);
+			item.setSubmissionId(submissionId);
+			item.setResubmission(resubmission);
 			
 			log.debug("Adding content: " + contentId + " from site " + siteId + " and user: " + userId + " for task: " + taskId + " to submission queue");
 			
@@ -76,9 +75,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getReviewScore(java.lang.Integer, java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public int getReviewScore(Integer providerId, String contentId) throws QueueException, ReportException, Exception {
@@ -103,9 +99,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return item.getReviewScore().intValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getReviewStatus(java.lang.Integer, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Long getReviewStatus(Integer providerId, String contentId) throws QueueException {
@@ -124,9 +117,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return matchingItem.get().getStatus();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getDateQueued(java.lang.Integer, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Date getDateQueued(Integer providerId, String contentId) throws QueueException {
@@ -144,9 +134,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return matchingItem.get().getDateQueued();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getDateSubmitted(java.lang.Integer, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Date getDateSubmitted(Integer providerId, String contentId) throws QueueException, SubmissionException {
@@ -171,9 +158,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return item.getDateSubmitted();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getAllContentReviewItems(java.lang.Integer, java.lang.String, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public List<ContentReviewItem> getContentReviewItems(Integer providerId, String siteId, String taskId) {
@@ -182,9 +166,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return itemDao.findByProviderAnyMatching(providerId, null, null, siteId, taskId, null, null, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#getAllContentReviewItems(java.lang.Integer, java.lang.String, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public List<ContentReviewItem> getAllContentReviewItemsGroupedBySiteAndTask(Integer providerId) {
@@ -195,10 +176,17 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return itemDao.findByProviderGroupedBySiteAndTask(providerId);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#resetUserDetailsLockedItems(java.lang.Integer, java.lang.String)
-	 */
+	@Override
+	@Transactional(readOnly=true)
+	public List<ContentReviewItem> getContentReviewItemsByExternalId(Integer providerId, String externalId) {
+		Objects.requireNonNull(providerId, "providerId cannot be null");
+
+		log.debug("Returning list of items where externalId = {}", externalId);
+
+		return itemDao.findByProviderAnyMatching(providerId, null, null, null, null, externalId, null, null);
+	}
+
+
 	@Override
 	@Transactional
 	public void resetUserDetailsLockedItems(Integer providerId, String userId) {
@@ -212,9 +200,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.common.service.ContentReviewCommonService#removeFromQueue(java.lang.Integer, java.lang.String)
-	 */
 	@Override
 	@Transactional
 	public void removeFromQueue(Integer providerId, String contentId) {
@@ -227,9 +212,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#getQueuedItem(java.lang.Integer, java.lang.String)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Optional<ContentReviewItem> getQueuedItem(Integer providerId, String contentId) {
@@ -239,18 +221,12 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return itemDao.findByProviderAndContentId(providerId, contentId);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#getQueuedNotSubmittedItems(java.lang.Integer)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public List<ContentReviewItem> getQueuedNotSubmittedItems(Integer providerId) {
 		return itemDao.findByProviderAnyMatching(providerId, null, null, null, null, null, ContentReviewConstants.CONTENT_REVIEW_NOT_SUBMITTED_CODE, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#getNextItemInQueueToSubmit(java.lang.Integer)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Optional<ContentReviewItem> getNextItemInQueueToSubmit(Integer providerId) {
@@ -258,9 +234,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return itemDao.findByProviderSingleItemToSubmit(providerId);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#getAwaitingReports(java.lang.Integer)
-	 */
 	@Override
 	@Transactional(readOnly=true)
 	public List<ContentReviewItem> getAwaitingReports(Integer providerId) {
@@ -268,10 +241,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		return itemDao.findByProviderAwaitingReports(providerId);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#update(org.sakaiproject.contentreview.dao.ContentReviewItem)
-	 */
 	@Override
 	@Transactional
 	public void update(ContentReviewItem item) {
@@ -282,9 +251,6 @@ public class ContentReviewQueueServiceImpl implements ContentReviewQueueService 
 		itemDao.save(item);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.contentreview.service.ContentReviewQueueService#delete(org.sakaiproject.contentreview.dao.ContentReviewItem)
-	 */
 	@Override
 	@Transactional
 	public void delete(ContentReviewItem item) {

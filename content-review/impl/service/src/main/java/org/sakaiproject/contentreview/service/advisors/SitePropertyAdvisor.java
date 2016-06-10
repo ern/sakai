@@ -16,26 +16,41 @@
 package org.sakaiproject.contentreview.service.advisors;
 
 import org.sakaiproject.contentreview.advisors.ContentReviewSiteAdvisor;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
+import org.sakaiproject.entity.api.EntityPropertyTypeException;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.site.api.Site;
 
 import lombok.Setter;
 
-public class SitePropertyAdvisor implements ContentReviewSiteAdvisor {
+import java.util.Optional;
 
-	@Setter
-	private String siteProperty;
-	
-	
+public class SitePropertyAdvisor implements ContentReviewSiteAdvisor {
+	public static final String CAN_USE_REVIEW_SERVICE_SITE_PROPERTY = "useContentReviewService";
+	public static final String CAN_USE_LTI_REVIEW_SERVICE_SITE_PROPERTY = "useLTIContentReviewService";
+	public static final String CAN_USE_DIRECT_REVIEW_SERVICE_SITE_PROPERTY = "useDirectContentReviewService";
+
+	@Override
 	public boolean siteCanUseReviewService(Site site) {
-		
-		ResourceProperties properties = site.getProperties();
-		
-		String prop = (String) properties.get(siteProperty);
-		if (prop != null) {
-			return Boolean.valueOf(prop).booleanValue();
+		return getSitePropertyAsBoolean(site, CAN_USE_REVIEW_SERVICE_SITE_PROPERTY);
+	}
+
+	@Override
+	public boolean siteCanUseLTIReviewService(Site site) {
+		return getSitePropertyAsBoolean(site, CAN_USE_LTI_REVIEW_SERVICE_SITE_PROPERTY);
+	}
+
+	@Override
+	public boolean siteCanUseDirectReviewService(Site site) {
+		return getSitePropertyAsBoolean(site, CAN_USE_DIRECT_REVIEW_SERVICE_SITE_PROPERTY);
+	}
+
+	private boolean getSitePropertyAsBoolean(Site site, String property) {
+		try {
+			return site.getProperties().getBooleanProperty(property);
+		} catch (EntityPropertyNotDefinedException | EntityPropertyTypeException e) {
+			return false;
 		}
-		
-		return false;
 	}
 }
+
