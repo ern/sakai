@@ -229,9 +229,12 @@
     </bean>
 
     <!-- Logout handler terminating local session -->
-    <bean id="logoutHandler"
-          class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
+    <bean id="logoutHandler" class="org.sakaiproject.login.filter.SakaiLogoutSamlFilter">
+        <property name="usageSessionService" value="org.sakaiproject.event.api.UsageSessionService"/>
+        <property name="sessionManager" value="org.sakaiproject.tool.api.SessionManager"/>
         <property name="invalidateHttpSession" value="false"/>
+        <property name="invalidateSakaiSession" value="true"/>
+        <property name="clearAuthentication" value="true"/>
     </bean>
 
     <!-- Override default logout processing filter with the one processing SAML messages -->
