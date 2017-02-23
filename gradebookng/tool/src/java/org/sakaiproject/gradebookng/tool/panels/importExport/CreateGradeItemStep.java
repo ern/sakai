@@ -65,7 +65,7 @@ public class CreateGradeItemStep extends BasePanel {
 
                 final Assignment newAssignment = (Assignment)getDefaultModel().getObject();
 
-                log.debug("Assignment: " + newAssignment);
+                log.debug("GradebookAssignment: " + newAssignment);
 
                 boolean validated = true;
 

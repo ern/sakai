@@ -1235,7 +1235,7 @@ public class GradebookNgBusinessService {
 
 		if (assignmentToMove == null) {
 			// TODO Handle assignment not in gradebook
-			log.error(String.format("Assignment %d not in site %s", assignmentId, siteId));
+			log.error(String.format("GradebookAssignment %d not in site %s", assignmentId, siteId));
 			return;
 		}
 
@@ -1298,7 +1298,7 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Get an Assignment in the current site given the assignment id
+	 * Get an GradebookAssignment in the current site given the assignment id
 	 *
 	 * @param siteId
 	 * @param assignmentId
@@ -1309,7 +1309,7 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Get an Assignment in the specified site given the assignment id
+	 * Get an GradebookAssignment in the specified site given the assignment id
 	 *
 	 * @param siteId
 	 * @param assignmentId
@@ -1324,7 +1324,7 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Get an Assignment in the current site given the assignment name
+	 * Get an GradebookAssignment in the current site given the assignment name
 	 * This should be avoided where possible but is required for the import process to allow modification of assignment point values
 	 *
 	 * @param assignmentName
@@ -1335,7 +1335,7 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Get an Assignment in the specified site given the assignment name
+	 * Get an GradebookAssignment in the specified site given the assignment name
 	 * This should be avoided where possible but is required for the import process to allow modification of assignment point values
 	 *
 	 * @param siteId
