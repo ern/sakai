@@ -44,7 +44,7 @@ public class AdditionalHibernateMappingsImpl implements AdditionalHibernateMappi
     @Setter private Resource[] mappingLocations;
     @Setter private String[] mappingResources;
     @Setter private String[] packagesToScan;
-    @Getter @Setter private Integer sortOrder = Integer.valueOf(Integer.MAX_VALUE);
+    @Getter @Setter private Integer sortOrder = Integer.MAX_VALUE;
 
     @Override
     public void processAdditionalMappings(LocalSessionFactoryBuilder sfb) throws IOException {

@@ -20,23 +20,27 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics;
+package org.sakaiproject.rubrics.logic.impl.repository;
 
 import org.sakaiproject.rubrics.logic.api.model.Criterion;
-import org.sakaiproject.rubrics.logic.api.model.Evaluation;
-import org.sakaiproject.rubrics.logic.api.model.Rating;
-import org.sakaiproject.rubrics.logic.api.model.Rubric;
-import org.sakaiproject.rubrics.logic.api.model.ToolItemRubricAssociation;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
-import org.springframework.hateoas.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-@Configuration
-public class AppRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
+@RepositoryRestResource(collectionResourceRel = "criterions", path = "criterions")
+public interface CriterionRepository extends BaseResourceRepository<Criterion, Long> {
 
     @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        config.exposeIdsFor(Rubric.class, Criterion.class, Rating.class, ToolItemRubricAssociation.class, Evaluation.class, Resource.class);
-    }
+    @PreAuthorize("canRead(#id, 'Criterion')")
+    Criterion findOne(Long id);
+
+    @Override
+    @Query("select resource from Criterion resource where " + QUERY_CONTEXT_CONSTRAINT)
+    Page<Criterion> findAll(Pageable pageable);
+
+    @Override
+    @PreAuthorize("canWrite(#id, 'Criterion')")
+    void delete(Long id);
 }

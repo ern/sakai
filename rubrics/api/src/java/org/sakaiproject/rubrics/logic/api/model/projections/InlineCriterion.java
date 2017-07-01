@@ -20,23 +20,26 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics;
+package org.sakaiproject.rubrics.logic.api.model.projections;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.sakaiproject.rubrics.logic.api.model.Criterion;
-import org.sakaiproject.rubrics.logic.api.model.Evaluation;
 import org.sakaiproject.rubrics.logic.api.model.Rating;
-import org.sakaiproject.rubrics.logic.api.model.Rubric;
-import org.sakaiproject.rubrics.logic.api.model.ToolItemRubricAssociation;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
-import org.springframework.hateoas.Resource;
+import org.springframework.data.rest.core.config.Projection;
 
-@Configuration
-public class AppRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
+import java.util.List;
 
-    @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        config.exposeIdsFor(Rubric.class, Criterion.class, Rating.class, ToolItemRubricAssociation.class, Evaluation.class, Resource.class);
-    }
+@Projection(name = "inlineCriterion", types = { Criterion.class })
+@JsonPropertyOrder({"id", "title", "description", "metadata", "ratings"})
+public interface InlineCriterion {
+
+    Long getId();
+
+    String getTitle();
+
+    String getDescription();
+
+    List<Rating> getRatings();
+
+    Criterion.Metadata getMetadata();
 }

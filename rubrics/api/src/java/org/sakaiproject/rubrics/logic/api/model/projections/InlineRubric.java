@@ -20,30 +20,31 @@
  *
  **********************************************************************************/
 
+package org.sakaiproject.rubrics.logic.api.model.projections;
 
-package org.sakaiproject.rubrics.logic.api;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.HashMap;
-import java.util.Optional;
-
+import org.sakaiproject.rubrics.logic.api.model.Rubric;
 import org.sakaiproject.rubrics.logic.api.model.ToolItemRubricAssociation;
+import org.springframework.data.rest.core.config.Projection;
 
-/**
- *
- */
-public interface RubricsService {
+import java.util.List;
 
-    public boolean hasAssociatedRubric(String toolId, String associatedToolItemId);
+@Projection(name = "inlineRubric", types = { Rubric.class })
+@JsonPropertyOrder({"id", "title", "description", "metadata", "criterions"})
+public interface InlineRubric {
 
-    public Optional<ToolItemRubricAssociation> getRubricAssociation(String toolId,
-            String associatedToolItemId) throws Exception;
+    Long getId();
 
-    public void saveRubricAssociation(String toolId, String associatedToolItemId, HashMap<String,String> params);
+    String getTitle();
 
-    public void saveRubricEvaluation(String toolId, String associatedToolItemId, String evaluatedItemId,
-            String evaluatedItemOwnerId, String evaluatorId, HashMap<String,String> params);
+    String getDescription();
 
-    public String generateJsonWebToken(String tool);
+    List<InlineCriterion> getCriterions();
 
-    public String generateLang();
+    Rubric.Metadata getMetadata();
+
+    @JsonIgnore
+    List<ToolItemRubricAssociation> getToolItemAssociations();
 }

@@ -20,30 +20,27 @@
  *
  **********************************************************************************/
 
+package org.sakaiproject.rubrics.logic.api.model;
 
-package org.sakaiproject.rubrics.logic.api;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Optional;
-
-import org.sakaiproject.rubrics.logic.api.model.ToolItemRubricAssociation;
+import javax.persistence.MappedSuperclass;
+import java.time.Instant;
 
 /**
- *
+ * Base type for representing the core metadata common to all resources.
  */
-public interface RubricsService {
+@MappedSuperclass
+@Data
+public class BaseMetadata {
 
-    public boolean hasAssociatedRubric(String toolId, String associatedToolItemId);
+    protected Instant created;
+    protected Instant modified;
+    protected String ownerId;
+    protected String ownerType;
+    protected String creatorId;
 
-    public Optional<ToolItemRubricAssociation> getRubricAssociation(String toolId,
-            String associatedToolItemId) throws Exception;
-
-    public void saveRubricAssociation(String toolId, String associatedToolItemId, HashMap<String,String> params);
-
-    public void saveRubricEvaluation(String toolId, String associatedToolItemId, String evaluatedItemId,
-            String evaluatedItemOwnerId, String evaluatorId, HashMap<String,String> params);
-
-    public String generateJsonWebToken(String tool);
-
-    public String generateLang();
+    @JsonIgnore
+    protected boolean shared;
 }

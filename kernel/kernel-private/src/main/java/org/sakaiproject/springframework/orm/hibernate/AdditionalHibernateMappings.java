@@ -32,8 +32,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
  *
  * @see AddableSessionFactoryBean
  */
-public interface AdditionalHibernateMappings extends Comparable<AdditionalHibernateMappings>
-{
+public interface AdditionalHibernateMappings extends Comparable<AdditionalHibernateMappings> {
 	Integer getSortOrder();
 	void processAdditionalMappings(LocalSessionFactoryBuilder localSessionFactoryBuilder) throws IOException;
 	void setAnnotatedClasses(Class<?>... annotatedClasses);
@@ -45,5 +44,4 @@ public interface AdditionalHibernateMappings extends Comparable<AdditionalHibern
 	void setMappingResources(String... mappingResources);
 	void setPackagesToScan(String... packagesToScan);
 	void setSortOrder(Integer sortOrder);
-
 }
