@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sakaiproject.rubrics.logic.model;
+package org.sakaiproject.rubrics.logic;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.sakaiproject.rubrics.logic.model.BaseResource;
+import org.sakaiproject.rubrics.logic.model.Criterion;
+import org.sakaiproject.rubrics.logic.model.Evaluation;
+import org.sakaiproject.rubrics.logic.model.Rating;
+import org.sakaiproject.rubrics.logic.model.Rubric;
+import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
 
 public enum Role {
 

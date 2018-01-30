@@ -24,6 +24,7 @@ package org.sakaiproject.rubrics.logic.model;
 
 
 import lombok.Data;
+import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.Embedded;

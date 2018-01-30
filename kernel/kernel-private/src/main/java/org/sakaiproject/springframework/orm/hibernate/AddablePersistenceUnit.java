@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
@@ -17,18 +16,18 @@ import lombok.extern.slf4j.Slf4j;
  * Created by enietzel on 6/21/17.
  */
 @Slf4j
-public class AddableJPAPersistenceUnit implements PersistenceUnitPostProcessor, ApplicationContextAware {
+public class AddablePersistenceUnit implements PersistenceUnitPostProcessor, ApplicationContextAware {
 
     @Setter private ApplicationContext applicationContext;
 
     @Override
     public void postProcessPersistenceUnitInfo(MutablePersistenceUnitInfo pui) {
-        List<AdditionalJPAPersistentUnit> units = new ArrayList<>();
-        String[] unitNames = applicationContext.getBeanNamesForType(AdditionalJPAPersistentUnit.class, false, false);
+        List<AdditionalPersistentUnit> units = new ArrayList<>();
+        String[] unitNames = applicationContext.getBeanNamesForType(AdditionalPersistentUnit.class, false, false);
 
         for (String name : unitNames) {
             try {
-                units.add((AdditionalJPAPersistentUnit) applicationContext.getBean(name));
+                units.add((AdditionalPersistentUnit) applicationContext.getBean(name));
 
                 Collections.sort(units);
 

@@ -442,7 +442,6 @@
 				<prop key="net.sf.ehcache.configurationResourceName">/org/sakaiproject/memory/api/ehcache.xml</prop>
 			</props>
 		</property>
-		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService"/>
 	</bean>
 
     <!--  The "Global" Hibernate Session Factory -->
@@ -453,6 +452,8 @@
 		<property name="dataSource" ref="javax.sql.LazyDataSource" />
 
 		<property name="hibernateProperties" ref="hibernateProperties"/>
+
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService"/>
 	</bean>
 
 	<!--  The "Global" Transaction Manager -->
@@ -463,21 +464,23 @@
 		<property name="dataSource" ref="javax.sql.LazyDataSource" />
 	</bean>
 
+	<bean id="org.sakaiproject.springframework.orm.hibernate.SakaiPersistenceUnitManager"
+		  class="org.sakaiproject.springframework.orm.hibernate.SakaiPersistenceUnitManager">
+		<property name="dataSource" ref="javax.sql.LazyDataSource"/>
+		<property name="persistenceUnitPostProcessors">
+			<list>
+				<bean class="org.sakaiproject.springframework.orm.hibernate.AddablePersistenceUnit"/>
+			</list>
+		</property>
+	</bean>
+
 	<!--  The "Global" JPA Entity Manager Factory -->
 	<bean id="org.sakaiproject.springframework.orm.jpa.EntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="javax.sql.LazyDataSource"/>
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
 		</property>
 		<property name="jpaProperties" ref="hibernateProperties"/>
-		<property name="persistenceUnitManager">
-			<bean class="org.sakaiproject.springframework.orm.hibernate.SakaiPersistenceUnitManager"/>
-		</property>
-		<property name="persistenceUnitPostProcessors">
-			<list>
-				<bean class="org.sakaiproject.springframework.orm.hibernate.AddableJPAPersistenceUnit"/>
-			</list>
-		</property>
+		<property name="persistenceUnitManager" ref="org.sakaiproject.springframework.orm.hibernate.SakaiPersistenceUnitManager"/>
 	</bean>
 
 	<!--  The "Global" JPA Transaction Manager -->

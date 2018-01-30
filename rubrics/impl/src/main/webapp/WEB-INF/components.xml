@@ -18,4 +18,17 @@
         <property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
         <property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService"/>
     </bean>
+
+    <bean id="org.sakaiproject.springframework.orm.hibernate.AdditionalPersistentUnit.rubrics"
+          class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalPersistentUnitImpl">
+        <property name="annotatedClasses">
+            <list>
+                <value>org.sakaiproject.rubrics.logic.model.Criterion</value>
+                <value>org.sakaiproject.rubrics.logic.model.Evaluation</value>
+                <value>org.sakaiproject.rubrics.logic.model.Rating</value>
+                <value>org.sakaiproject.rubrics.logic.model.Rubric</value>
+                <value>org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation</value>
+            </list>
+        </property>
+    </bean>
 </beans>

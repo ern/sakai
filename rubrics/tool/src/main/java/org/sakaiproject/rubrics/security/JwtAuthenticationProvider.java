@@ -24,8 +24,8 @@ package org.sakaiproject.rubrics.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.rubrics.logic.model.AuthenticatedRequestContext;
-import org.sakaiproject.rubrics.logic.model.JwtAuthenticationToken;
+import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
+import org.sakaiproject.rubrics.logic.JwtAuthenticationToken;
 import org.sakaiproject.rubrics.security.exception.JwtTokenMalformedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

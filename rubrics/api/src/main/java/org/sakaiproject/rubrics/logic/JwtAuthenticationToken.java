@@ -20,7 +20,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics.logic.model;
+package org.sakaiproject.rubrics.logic;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 /**

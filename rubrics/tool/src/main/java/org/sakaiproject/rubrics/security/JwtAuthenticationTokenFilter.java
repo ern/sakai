@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.rubrics.logic.model.JwtAuthenticationToken;
+import org.sakaiproject.rubrics.logic.JwtAuthenticationToken;
 import org.sakaiproject.rubrics.security.exception.JwtTokenMissingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

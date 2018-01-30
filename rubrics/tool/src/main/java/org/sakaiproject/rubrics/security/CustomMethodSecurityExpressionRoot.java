@@ -25,12 +25,12 @@ package org.sakaiproject.rubrics.security;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sakaiproject.rubrics.logic.model.AuthenticatedRequestContext;
+import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.rubrics.logic.model.BaseResource;
 import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.sakaiproject.rubrics.logic.model.Evaluation;
 import org.sakaiproject.rubrics.logic.model.Rating;
-import org.sakaiproject.rubrics.logic.model.Role;
+import org.sakaiproject.rubrics.logic.Role;
 import org.sakaiproject.rubrics.logic.model.Rubric;
 import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
 import org.sakaiproject.rubrics.logic.repository.BaseResourceRepository;

@@ -5,7 +5,7 @@ import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
 /**
  * Created by enietzel on 6/21/17.
  */
-public interface AdditionalJPAPersistentUnit extends Comparable<AdditionalJPAPersistentUnit> {
+public interface AdditionalPersistentUnit extends Comparable<AdditionalPersistentUnit> {
     Integer getSortOrder();
     void processAdditionalUnit(MutablePersistenceUnitInfo pui);
     void setAnnotatedClasses(Class<?>... annotatedClasses);

@@ -5,8 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.spi.PersistenceUnitInfo;
+import javax.sql.DataSource;
 
+import lombok.Setter;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
 
@@ -17,6 +20,8 @@ public class SakaiPersistenceUnitManager extends DefaultPersistenceUnitManager {
 
     private String defaultPersistenceUnitName = "sakai";
     private PersistenceUnitInfo defaultPersistenceUnitInfo;
+    @Setter private DataSource dataSource;
+    @Setter private DataSource jtaDataSource;
 
     @Override
     public void preparePersistenceUnitInfos() {
@@ -25,10 +30,10 @@ public class SakaiPersistenceUnitManager extends DefaultPersistenceUnitManager {
         pui.setExcludeUnlistedClasses(true);
 
         if (pui.getJtaDataSource() == null) {
-            pui.setJtaDataSource(getDefaultJtaDataSource());
+            pui.setJtaDataSource(jtaDataSource);
         }
         if (pui.getNonJtaDataSource() == null) {
-            pui.setNonJtaDataSource(getDefaultDataSource());
+            pui.setNonJtaDataSource(dataSource);
         }
 
         postProcessPersistenceUnitInfo(pui);
