@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.sakaiproject.rubrics.logic.exception.UnprocessableEntityException;
 import org.sakaiproject.rubrics.logic.model.Criterion;
+import org.sakaiproject.rubrics.logic.model.CriterionOutcome;
 import org.sakaiproject.rubrics.logic.model.Evaluation;
 import org.sakaiproject.rubrics.logic.model.Rubric;
 import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
@@ -57,9 +58,9 @@ public class EvaluationEventHandler {
 
             Rubric rubric = toolItemRubricAssociation.getRubric();
             List<Long> criterionIds = rubric.getCriterions().stream().map(Criterion::getId).collect(Collectors.toList());
-            List<Evaluation.CriterionOutcome> criterionOutcomes = evaluation.getCriterionOutcomes();
+            List<CriterionOutcome> criterionOutcomes = evaluation.getCriterionOutcomes();
             List<Long> criterionOutcomeReferenceCriterionIds = criterionOutcomes.stream().map(
-                    Evaluation.CriterionOutcome::getCriterionId).collect(Collectors.toList());
+                    CriterionOutcome::getCriterionId).collect(Collectors.toList());
 
             Collections.sort(criterionIds);
             Collections.sort(criterionOutcomeReferenceCriterionIds);
