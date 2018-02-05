@@ -42,7 +42,7 @@ public class BasePage extends WebPage implements IHeaderContributor {
 
 	private static final Logger log = Logger.getLogger(BasePage.class);
 
-	@SpringBean(name="org.sakaiproject.rubrics.logic.RubricsService")
+	@SpringBean(name="org.sakaiproject.rubrics.logic.api.RubricsService")
 	protected RubricsService rubricsService;
 
 	//Link<Void> firstLink;

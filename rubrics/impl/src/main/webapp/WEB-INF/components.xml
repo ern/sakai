@@ -24,6 +24,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.sakaiproject.rubrics.logic.model.Criterion</value>
+                <value>org.sakaiproject.rubrics.logic.model.CriterionOutcome</value>
                 <value>org.sakaiproject.rubrics.logic.model.Evaluation</value>
                 <value>org.sakaiproject.rubrics.logic.model.Rating</value>
                 <value>org.sakaiproject.rubrics.logic.model.Rubric</value>
