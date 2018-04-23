@@ -161,6 +161,7 @@ public class AddOrEditGradeItemPanel extends BasePanel {
 						final boolean success = AddOrEditGradeItemPanel.this.businessService.updateAssignment(assignment);
 
 						if (success) {
+							rubricsService.saveRubricAssociation("sakai.gradebookng", assignment.getId().toString(), getRubricParameters(""));
 							getSession().success(MessageFormat.format(getString("message.edititem.success"), assignment.getName()));
 							setResponsePage(getPage().getPageClass(),
 									new PageParameters().add(GradebookPage.FOCUS_ASSIGNMENT_ID_PARAM, assignment.getId()));
@@ -190,6 +191,7 @@ public class AddOrEditGradeItemPanel extends BasePanel {
 							success = false;
 						}
 						if (success) {
+							rubricsService.saveRubricAssociation("sakai.gradebookng", assignmentId.toString(), getRubricParameters(""));
 							getSession()
 									.success(MessageFormat.format(getString("notification.addgradeitem.success"), assignment.getName()));
 							setResponsePage(getPage().getPageClass(),

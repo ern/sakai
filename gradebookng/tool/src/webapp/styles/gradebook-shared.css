@@ -31,3 +31,7 @@
 .control-label.required:before {
   content: '*';
 }
+
+.gb-summary-grade-score-rubric {
+  cursor: pointer;
+}
