@@ -36,6 +36,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.rubrics.RubricsConfiguration;
 import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.rubrics.logic.Role;
@@ -61,6 +62,9 @@ public class JwtTokenUtil implements Serializable {
     @Autowired
     RubricsConfiguration rubricsConfiguration;
 
+    @Autowired
+    ServerConfigurationService serverConfigurationService;
+
     private JWT decodeToken(String token) {
 
         JWT jwt = null;
@@ -71,7 +75,7 @@ public class JwtTokenUtil implements Serializable {
 
             // First verify it
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(
-                    rubricsConfiguration.getIntegration().getTokenSecret()))
+                    serverConfigurationService.getString(rubricsConfiguration.RUBRICS_TOKEN_SIGNING_SHARED_SECRET_PROPERTY, rubricsConfiguration.RUBRICS_TOKEN_SIGNING_SHARED_SECRET_DEFAULT)))
                     .build(); //Reusable verifier instance
             verifier.verify(token);
 
@@ -126,7 +130,7 @@ public class JwtTokenUtil implements Serializable {
     private boolean isSakaiSessionStillValid(String session) {
         try {
 
-            URL url = new URL(rubricsConfiguration.getIntegration().getSakaiRestUrl() + "sakai/checkSession?sessionid=" + session);
+            URL url = new URL(serverConfigurationService.getServerUrl() + "/sakai-ws/rest/sakai/checkSession?sessionid=" + session);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
