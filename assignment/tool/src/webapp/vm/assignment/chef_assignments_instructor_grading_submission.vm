@@ -38,7 +38,7 @@
     #end
     #if ($alertMessage)
         <div class="alertMessage"><strong>$tlang.getString("gen.alert")</strong> $alertMessage</div>
-        <div style="display:block;clear:both"></div>#end
+    #end
 
     ## the form
     <form name="gradeForm" id="gradeForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;" autocomplete="off">
@@ -46,6 +46,8 @@
         <input type="hidden" name="option" id="option" value=""/>
         <input type="hidden" name="view" id="view" value=""/>
         <input type="hidden" name="submissionId" id="submissionId" value="$!submissionReference"/>
+        <input type="hidden" name="submitterId" id="submitterId" value="$!submitterId"/>
+        <input type="hidden" name="assignmentId" id="assignmentId" value="$!assignmentReference"/>
 
         <div class="navPanel">
             <div class="highlight gradingHeader">
@@ -69,7 +71,6 @@
                 $tlang.getString("grading.reminder.body")
 
             </div>
-            ## SAK-29314
             <div class="navigator">
                 <fieldset class="roundedBorder">
                     <legend>$tlang.getString( "nav.header" )</legend>
@@ -575,7 +576,7 @@
                         </p>
                     #end
 
-                    #if ($assignment.IsGroup)
+                        #if ($assignment.IsGroup)
                         <div class="form-group" id="tempGradeOverride">
                             <input type="checkbox" id="allowGradeOverrideToggle"
                                    #if ($value_grades && $value_grades.size() > 0) checked="checked"#end

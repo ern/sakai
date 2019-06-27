@@ -1356,7 +1356,7 @@
 			hide-student-preview="$tlang.getString("option.studentpreview")"
 		></sakai-rubric-association>
 
-		## SAK-17606 - Show the anonymous grading checkbox if enabled
+		## Show the anonymous grading checkbox if enabled
 		#if( $enableAnonGrading || $value_CheckAnonymousGrading)
 			#set ($anonDisabled = !$enableAnonGrading || $forceAnonGrading)
 			<div class="checkbox">

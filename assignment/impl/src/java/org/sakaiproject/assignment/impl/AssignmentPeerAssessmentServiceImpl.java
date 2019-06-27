@@ -258,7 +258,7 @@ public class AssignmentPeerAssessmentServiceImpl extends HibernateDaoSupport imp
     }
 
     public List<PeerAssessmentItem> getPeerAssessmentItems(final Collection<String> submissionsIds, Integer scaledFactor) {
-        List<PeerAssessmentItem> listPeerAssessmentItem = new ArrayList<>();
+        final List<PeerAssessmentItem> listPeerAssessmentItem = new ArrayList<>();
         if (submissionsIds == null || submissionsIds.size() == 0) {
             //return an empty list
             return listPeerAssessmentItem;
@@ -269,7 +269,7 @@ public class AssignmentPeerAssessmentServiceImpl extends HibernateDaoSupport imp
             return q.list();
         };
 
-        listPeerAssessmentItem = getHibernateTemplate().execute(hcb);
+        listPeerAssessmentItem.addAll(getHibernateTemplate().execute(hcb));
 
         for (PeerAssessmentItem item : listPeerAssessmentItem) {
             item.setScaledFactor(scaledFactor);
