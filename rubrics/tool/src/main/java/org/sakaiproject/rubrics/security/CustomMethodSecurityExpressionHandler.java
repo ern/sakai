@@ -23,11 +23,11 @@
 package org.sakaiproject.rubrics.security;
 
 import org.aopalliance.intercept.MethodInvocation;
-import org.sakaiproject.rubrics.logic.repository.CriterionRepository;
-import org.sakaiproject.rubrics.logic.repository.EvaluationRepository;
-import org.sakaiproject.rubrics.logic.repository.RatingRepository;
-import org.sakaiproject.rubrics.logic.repository.RubricRepository;
-import org.sakaiproject.rubrics.logic.repository.ToolItemRubricAssociationRepository;
+import org.sakaiproject.rubrics.repository.CriterionRepository;
+import org.sakaiproject.rubrics.repository.EvaluationRepository;
+import org.sakaiproject.rubrics.repository.RatingRepository;
+import org.sakaiproject.rubrics.repository.RubricRepository;
+import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;

@@ -22,7 +22,10 @@
 
 package org.sakaiproject.rubrics;
 
-import org.sakaiproject.rubrics.security.JwtAuthenticationProvider;
+import java.util.Arrays;
+
+import org.sakaiproject.rubrics.security.SakaiAuthenticationProvider;
+import org.sakaiproject.rubrics.security.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,12 +38,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.sakaiproject.rubrics.security.JwtAuthenticationEntryPoint;
-import org.sakaiproject.rubrics.security.JwtAuthenticationTokenFilter;
-import org.sakaiproject.rubrics.security.JwtAuthenticationSuccessHandler;
-
-import java.util.Arrays;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
@@ -49,7 +46,7 @@ import java.util.Arrays;
 public class SecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Autowired
-    private JwtAuthenticationProvider authenticationProvider;
+    private SakaiAuthenticationProvider authenticationProvider;
 
     @Bean
     @Override
@@ -65,22 +62,11 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
     @Configuration
     public static class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Autowired
-        private JwtAuthenticationEntryPoint unauthorizedHandler;
-
-        @Bean
-        public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-            JwtAuthenticationTokenFilter authenticationTokenFilter = new JwtAuthenticationTokenFilter();
-            authenticationTokenFilter.setAuthenticationManager(authenticationManager());
-            authenticationTokenFilter.setAuthenticationSuccessHandler(new JwtAuthenticationSuccessHandler());
-            return authenticationTokenFilter;
-        }
-
         @Override
         protected void configure(HttpSecurity httpSecurity) throws Exception {
             httpSecurity
                     .csrf().disable() // we don't need CSRF because our token is invulnerable
-                    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                    .exceptionHandling().authenticationEntryPoint(new UnauthorizedAuthenticationEntryPoint())
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
@@ -95,8 +81,6 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                     ).permitAll()
                     .anyRequest().authenticated();
 
-            // Custom JWT based security filter
-            httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
             // disable page caching
             httpSecurity.headers().cacheControl();
         }

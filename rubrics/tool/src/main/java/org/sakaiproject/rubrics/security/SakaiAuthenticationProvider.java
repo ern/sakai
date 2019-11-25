@@ -22,44 +22,48 @@
 
 package org.sakaiproject.rubrics.security;
 
+import static org.sakaiproject.rubrics.logic.RubricsConstants.RBCS_TOOL;
+
+import javax.annotation.Resource;
+
 import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.rubrics.logic.JwtAuthenticationToken;
 import org.sakaiproject.rubrics.security.exception.JwtTokenMalformedException;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Component;
 
 /**
  * Used for checking the token from the request and supply the UserDetails if the token is valid
  */
 @Component
-public class JwtAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    @Resource(name = "org.sakaiproject.tool.api.SessionManager")
+    private SessionManager sessionManager;
+    @Resource(name = "org.sakaiproject.tool.api.ToolManager")
+    private ToolManager toolManager;
 
     @Override
-    public boolean supports(Class<?> authentication) {
-        return (JwtAuthenticationToken.class.isAssignableFrom(authentication));
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+
     }
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails,
-            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-    }
-
-    @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException {
-        JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
-        String token = jwtAuthenticationToken.getToken();
-        AuthenticatedRequestContext parsedSession = jwtTokenUtil.getAuthenticatedUser(token);
-        if (parsedSession == null) {
-            throw new JwtTokenMalformedException(String.format("JWT token is not valid: %s", token));
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+        Session session = sessionManager.getCurrentSession();
+        if (session == null) {
+            throw new SessionAuthenticationException(String.format("Sakai session does not exists for request, user = %s", username));
         }
-        return parsedSession;
+        AuthenticatedRequestContext authenticatedRequestContext = new AuthenticatedRequestContext(
+                session.getUserId(), RBCS_TOOL, toolManager.getCurrentPlacement().getContext(), "site");
+        return authenticatedRequestContext;
     }
 }

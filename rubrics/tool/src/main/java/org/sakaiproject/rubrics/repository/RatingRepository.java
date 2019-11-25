@@ -20,28 +20,27 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics.logic.model.projections;
+package org.sakaiproject.rubrics.repository;
 
-import java.util.List;
-
-import org.sakaiproject.rubrics.logic.model.Criterion;
-import org.sakaiproject.rubrics.logic.model.Metadata;
 import org.sakaiproject.rubrics.logic.model.Rating;
-import org.springframework.data.rest.core.config.Projection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+@RepositoryRestResource(collectionResourceRel = "ratings", path = "ratings")
+public interface RatingRepository extends MetadataRepository<Rating, Long> {
 
-@Projection(name = "inlineCriterion", types = { Criterion.class })
-@JsonPropertyOrder({"id", "title", "description", "metadata", "ratings"})
-public interface InlineCriterion {
+    @Override
+    @PreAuthorize("canRead(#id, 'Rating')")
+    Rating findOne(Long id);
 
-    Long getId();
+    @Override
+    @Query("select resource from Rating resource where " + QUERY_CONTEXT_CONSTRAINT)
+    Page<Rating> findAll(Pageable pageable);
 
-    String getTitle();
-
-    String getDescription();
-
-    List<Rating> getRatings();
-
-    Metadata getMetadata();
+    @Override
+    @PreAuthorize("canWrite(#id, 'Rating')")
+    void delete(Long id);
 }

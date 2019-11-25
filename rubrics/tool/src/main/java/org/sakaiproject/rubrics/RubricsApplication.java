@@ -22,6 +22,8 @@
 
 package org.sakaiproject.rubrics;
 
+import static org.sakaiproject.rubrics.logic.RubricsConstants.RBCS_TOOL;
+
 import java.util.Arrays;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
@@ -88,7 +90,7 @@ public class RubricsApplication extends SpringBootServletInitializer {
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean frb = new FilterRegistrationBean();
         frb.setName("sakai.request");
-        frb.setServletNames(Arrays.asList("sakai.rubrics", "dispatcherServlet"));
+        frb.setServletNames(Arrays.asList(RBCS_TOOL, "dispatcherServlet"));
         frb.setFilter(new RequestFilter());
         frb.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE);
         return frb;

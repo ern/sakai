@@ -55,8 +55,6 @@ public interface RubricsService {
                               String evaluatorId,
                               Map<String, String> params);
 
-    String generateJsonWebToken(String tool);
-
     String getCurrentSessionId();
 
     String generateLang();

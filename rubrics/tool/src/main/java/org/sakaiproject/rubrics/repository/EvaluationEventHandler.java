@@ -20,7 +20,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics.logic.repository;
+package org.sakaiproject.rubrics.repository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

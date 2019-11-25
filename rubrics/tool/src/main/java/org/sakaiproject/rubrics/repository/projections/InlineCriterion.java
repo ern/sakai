@@ -4,7 +4,7 @@
  *
  * Original developers:
  *
- *   Unicon based on code created by pascal alma
+ *   Unicon
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +20,28 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics.security;
+package org.sakaiproject.rubrics.repository.projections;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.sakaiproject.rubrics.logic.model.Criterion;
+import org.sakaiproject.rubrics.logic.model.Metadata;
+import org.sakaiproject.rubrics.logic.model.Rating;
+import org.springframework.data.rest.core.config.Projection;
 
-import lombok.extern.slf4j.Slf4j;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-/**
- * Defines where to go after successful login. In this implementation just make sure nothing is done (REST API
- * contains no pages)
- */
-@Slf4j
-public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+@Projection(name = "inlineCriterion", types = { Criterion.class })
+@JsonPropertyOrder({"id", "title", "description", "metadata", "ratings"})
+public interface InlineCriterion {
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        log.debug("Authenticated: {}", authentication.isAuthenticated());
-    }
+    Long getId();
+
+    String getTitle();
+
+    String getDescription();
+
+    List<Rating> getRatings();
+
+    Metadata getMetadata();
 }

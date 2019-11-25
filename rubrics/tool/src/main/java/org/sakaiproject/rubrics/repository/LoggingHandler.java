@@ -1,4 +1,4 @@
-package org.sakaiproject.rubrics.logic.repository;
+package org.sakaiproject.rubrics.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
