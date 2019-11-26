@@ -33,12 +33,12 @@ import org.sakaiproject.rubrics.logic.model.Modifiable;
 import org.sakaiproject.rubrics.logic.model.Rating;
 import org.sakaiproject.rubrics.logic.model.Rubric;
 import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
-import org.sakaiproject.rubrics.repository.CriterionRepository;
-import org.sakaiproject.rubrics.repository.EvaluationRepository;
-import org.sakaiproject.rubrics.repository.MetadataRepository;
-import org.sakaiproject.rubrics.repository.RatingRepository;
-import org.sakaiproject.rubrics.repository.RubricRepository;
-import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRepository;
+import org.sakaiproject.rubrics.repository.CriterionRestRepository;
+import org.sakaiproject.rubrics.repository.EvaluationRestRepository;
+import org.sakaiproject.rubrics.repository.MetadataRestRepository;
+import org.sakaiproject.rubrics.repository.RatingRestRepository;
+import org.sakaiproject.rubrics.repository.RubricRestRepository;
+import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestRepository;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
@@ -67,24 +67,24 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 
     private static final String DEFAULT_RESOURCE_COPY_ID = "default";
 
-    private final Map<String, MetadataRepository<? extends Modifiable, Long>> repositories;
+    private final Map<String, MetadataRestRepository<? extends Modifiable, Long>> repositories;
 
     private AuthenticatedRequestContext authenticatedRequestContext;
 
-    public CustomMethodSecurityExpressionRoot(RubricRepository rubricRepository,
-                                              CriterionRepository criterionRepository,
-                                              RatingRepository ratingRepository,
-                                              EvaluationRepository evaluationRepository,
-                                              ToolItemRubricAssociationRepository toolItemRubricAssociationRepository,
+    public CustomMethodSecurityExpressionRoot(RubricRestRepository rubricRestRepository,
+                                              CriterionRestRepository criterionRestRepository,
+                                              RatingRestRepository ratingRestRepository,
+                                              EvaluationRestRepository evaluationRestRepository,
+                                              ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository,
                                               Authentication authentication) {
         super(authentication);
         authenticatedRequestContext = (AuthenticatedRequestContext) super.authentication.getPrincipal();
         this.repositories = new HashMap<>();
-        repositories.put(Rubric.class.getSimpleName(), rubricRepository);
-        repositories.put(Criterion.class.getSimpleName(), criterionRepository);
-        repositories.put(Rating.class.getSimpleName(), ratingRepository);
-        repositories.put(Evaluation.class.getSimpleName(), evaluationRepository);
-        repositories.put(ToolItemRubricAssociation.class.getSimpleName(), toolItemRubricAssociationRepository);
+        repositories.put(Rubric.class.getSimpleName(), rubricRestRepository);
+        repositories.put(Criterion.class.getSimpleName(), criterionRestRepository);
+        repositories.put(Rating.class.getSimpleName(), ratingRestRepository);
+        repositories.put(Evaluation.class.getSimpleName(), evaluationRestRepository);
+        repositories.put(ToolItemRubricAssociation.class.getSimpleName(), toolItemRubricAssociationRestRepository);
     }
 
     /**

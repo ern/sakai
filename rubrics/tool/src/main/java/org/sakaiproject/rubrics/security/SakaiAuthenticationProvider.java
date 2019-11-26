@@ -27,12 +27,9 @@ import static org.sakaiproject.rubrics.logic.RubricsConstants.RBCS_TOOL;
 import javax.annotation.Resource;
 
 import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
-import org.sakaiproject.rubrics.logic.JwtAuthenticationToken;
-import org.sakaiproject.rubrics.security.exception.JwtTokenMalformedException;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;

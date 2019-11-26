@@ -20,7 +20,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics.repository;
+package org.sakaiproject.rubrics.logic.repository;
 
 import java.io.Serializable;
 
@@ -28,7 +28,6 @@ import org.sakaiproject.rubrics.logic.model.Modifiable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -39,40 +38,18 @@ public interface MetadataRepository<T extends Modifiable, ID extends Serializabl
 
     @Override
     @PreAuthorize("canWrite(#resource)")
-    <S extends T> S save(@Param("resource") S resource);
+    <S extends T> S save(S resource);
 
-    /**
-     * Updating all or part of the resource collection is not supported. Always results in a
-     * {@link HttpStatus#METHOD_NOT_ALLOWED} response via {@code RestResource(exported = false)}.
-     * <p>Individual resource {@link #save} operations must be used instead.</p>
-     *
-     * @param iterable set of rubrics
-     */
     @Override
-    @RestResource(exported = false)
     <S extends T> Iterable<S> save(Iterable<S> iterable);
 
     @Override
     @PreAuthorize("canWrite(#resource)")
-    void delete(@Param("resource") T resource);
+    void delete(T resource);
 
-    /**
-     * Deleting all the resource collection is not supported. Always results in a
-     * {@link HttpStatus#METHOD_NOT_ALLOWED} response via {@code RestResource(exported = false)}.
-     * <p>Individual resource {@link #delete} operations must be used instead.</p>
-     */
     @Override
-    @RestResource(exported = false)
     void deleteAll();
 
-    /**
-     * Deleting all or part of the resource collection is not supported. Always results in a
-     * {@link HttpStatus#METHOD_NOT_ALLOWED} response via {@code RestResource(exported = false)}.
-     * <p>Individual resource {@link #delete} operations must be used instead.</p>
-     *
-     * @param iterable set of rubrics
-     */
     @Override
-    @RestResource(exported = false)
     void delete(Iterable<? extends T> iterable);
 }

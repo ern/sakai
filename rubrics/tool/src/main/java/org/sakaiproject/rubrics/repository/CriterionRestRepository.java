@@ -22,25 +22,25 @@
 
 package org.sakaiproject.rubrics.repository;
 
-import org.sakaiproject.rubrics.logic.model.Rating;
+import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@RepositoryRestResource(collectionResourceRel = "ratings", path = "ratings")
-public interface RatingRepository extends MetadataRepository<Rating, Long> {
+@RepositoryRestResource(collectionResourceRel = "criterions", path = "criterions")
+public interface CriterionRestRepository extends MetadataRestRepository<Criterion, Long> {
 
     @Override
-    @PreAuthorize("canRead(#id, 'Rating')")
-    Rating findOne(Long id);
+    @PreAuthorize("canRead(#id, 'Criterion')")
+    Criterion findOne(Long id);
 
     @Override
-    @Query("select resource from Rating resource where " + QUERY_CONTEXT_CONSTRAINT)
-    Page<Rating> findAll(Pageable pageable);
+    @Query("select resource from Criterion resource where " + QUERY_CONTEXT_CONSTRAINT)
+    Page<Criterion> findAll(Pageable pageable);
 
     @Override
-    @PreAuthorize("canWrite(#id, 'Rating')")
+    @PreAuthorize("canWrite(#id, 'Criterion')")
     void delete(Long id);
 }

@@ -23,11 +23,11 @@
 package org.sakaiproject.rubrics.security;
 
 import org.aopalliance.intercept.MethodInvocation;
-import org.sakaiproject.rubrics.repository.CriterionRepository;
-import org.sakaiproject.rubrics.repository.EvaluationRepository;
-import org.sakaiproject.rubrics.repository.RatingRepository;
-import org.sakaiproject.rubrics.repository.RubricRepository;
-import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRepository;
+import org.sakaiproject.rubrics.repository.CriterionRestRepository;
+import org.sakaiproject.rubrics.repository.EvaluationRestRepository;
+import org.sakaiproject.rubrics.repository.RatingRestRepository;
+import org.sakaiproject.rubrics.repository.RubricRestRepository;
+import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
@@ -42,25 +42,25 @@ public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurity
     private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
     @Autowired
-    private RubricRepository rubricRepository;
+    private RubricRestRepository rubricRestRepository;
 
     @Autowired
-    private CriterionRepository criterionRepository;
+    private CriterionRestRepository criterionRestRepository;
 
     @Autowired
-    private RatingRepository ratingRepository;
+    private RatingRestRepository ratingRestRepository;
 
     @Autowired
-    private EvaluationRepository evaluationRepository;
+    private EvaluationRestRepository evaluationRestRepository;
 
     @Autowired
-    private ToolItemRubricAssociationRepository toolItemRubricAssociationRepository;
+    private ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository;
 
     protected MethodSecurityExpressionOperations createSecurityExpressionRoot(
             Authentication authentication, MethodInvocation invocation) {
         CustomMethodSecurityExpressionRoot root =
-                new CustomMethodSecurityExpressionRoot(rubricRepository, criterionRepository, ratingRepository,
-                        evaluationRepository, toolItemRubricAssociationRepository, authentication);
+                new CustomMethodSecurityExpressionRoot(rubricRestRepository, criterionRestRepository, ratingRestRepository,
+                        evaluationRestRepository, toolItemRubricAssociationRestRepository, authentication);
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(this.trustResolver);
         root.setRoleHierarchy(getRoleHierarchy());

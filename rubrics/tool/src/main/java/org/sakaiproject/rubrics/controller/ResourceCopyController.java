@@ -28,9 +28,9 @@ import org.sakaiproject.rubrics.RubricsConfiguration;
 import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.sakaiproject.rubrics.logic.model.Rating;
 import org.sakaiproject.rubrics.logic.model.Rubric;
-import org.sakaiproject.rubrics.repository.CriterionRepository;
-import org.sakaiproject.rubrics.repository.RatingRepository;
-import org.sakaiproject.rubrics.repository.RubricRepository;
+import org.sakaiproject.rubrics.repository.CriterionRestRepository;
+import org.sakaiproject.rubrics.repository.RatingRestRepository;
+import org.sakaiproject.rubrics.repository.RubricRestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -52,13 +52,13 @@ public class ResourceCopyController {
     RubricsConfiguration rubricsConfiguration;
 
     @Autowired
-    private RubricRepository rubricRepository;
+    private RubricRestRepository rubricRestRepository;
 
     @Autowired
-    private CriterionRepository criterionRepository;
+    private CriterionRestRepository criterionRestRepository;
 
     @Autowired
-    private RatingRepository ratingRepository;
+    private RatingRestRepository ratingRestRepository;
 
     @Autowired
     RepositoryEntityLinks repositoryEntityLinks;
@@ -77,11 +77,11 @@ public class ResourceCopyController {
             sourceRubric = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRubric();
             clonedRubric = sourceRubric.clone();
         } else {
-            sourceRubric = rubricRepository.findOne(Long.parseLong(sourceId));
+            sourceRubric = rubricRestRepository.findOne(Long.parseLong(sourceId));
             clonedRubric = sourceRubric.clone();
             clonedRubric.setTitle(sourceRubric.getTitle() + " Copy");
         }
-        clonedRubric = rubricRepository.save(clonedRubric);
+        clonedRubric = rubricRestRepository.save(clonedRubric);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Rubric.class).slash(clonedRubric.getId()).toUri());
         return new ResponseEntity<Rubric>(clonedRubric, headers, HttpStatus.CREATED);
@@ -91,9 +91,9 @@ public class ResourceCopyController {
     @RequestMapping(value = "/rubrics/clone", method = RequestMethod.POST, headers = {X_COPY_HEADER,X_SITE_HEADER})
     ResponseEntity<Rubric> copyRubricToSite(@Param("sourceId") @RequestHeader(value = X_COPY_HEADER) String sourceId, @RequestHeader(value = X_SITE_HEADER) String site)
             throws CloneNotSupportedException {
-        Rubric sourceRubric = rubricRepository.findOne(Long.parseLong(sourceId));
+        Rubric sourceRubric = rubricRestRepository.findOne(Long.parseLong(sourceId));
         Rubric clonedRubric = sourceRubric.clone(site);
-        clonedRubric = rubricRepository.save(clonedRubric);
+        clonedRubric = rubricRestRepository.save(clonedRubric);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Rubric.class).slash(clonedRubric.getId()).toUri());
         return new ResponseEntity<Rubric>(clonedRubric, headers, HttpStatus.CREATED);
@@ -109,11 +109,11 @@ public class ResourceCopyController {
             sourceCriterion = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultCriterion();
             clonedCriterion = sourceCriterion.clone();
         } else {
-            sourceCriterion = criterionRepository.findOne(Long.parseLong(sourceId));
+            sourceCriterion = criterionRestRepository.findOne(Long.parseLong(sourceId));
             clonedCriterion = sourceCriterion.clone();
             clonedCriterion.setTitle(sourceCriterion.getTitle() + " Copy");
         }
-        clonedCriterion = criterionRepository.save(clonedCriterion);
+        clonedCriterion = criterionRestRepository.save(clonedCriterion);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Criterion.class).slash(clonedCriterion.getId()).toUri());
         return new ResponseEntity<Criterion>(clonedCriterion, headers, HttpStatus.CREATED);
@@ -129,11 +129,11 @@ public class ResourceCopyController {
             sourceRating = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRating();
             clonedRating = sourceRating.clone();
         } else {
-            sourceRating = ratingRepository.findOne(Long.parseLong(sourceId));
+            sourceRating = ratingRestRepository.findOne(Long.parseLong(sourceId));
             clonedRating = sourceRating.clone();
             clonedRating.setTitle(sourceRating.getTitle() + " Copy");
         }
-        clonedRating = ratingRepository.save(clonedRating);
+        clonedRating = ratingRestRepository.save(clonedRating);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Rating.class).slash(clonedRating.getId()).toUri());
         return new ResponseEntity<Rating>(clonedRating, headers, HttpStatus.CREATED);

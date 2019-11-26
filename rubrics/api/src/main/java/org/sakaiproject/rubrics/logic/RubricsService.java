@@ -36,13 +36,13 @@ public interface RubricsService {
 
     public static final String REFERENCE_ROOT = Entity.SEPARATOR + "rubrics";
 
+    public static final String CONFIG_FINE_TUNE_POINTS = "rbcs-config-fineTunePoints";
+    public static final String CONFIG_HIDE_STUDENT_PREVIEW = "rbcs-config-hideStudentPreview";
+
     boolean hasAssociatedRubric(String toolId,
                                 String associatedToolItemId);
 
-    Optional<ToolItemRubricAssociation> getRubricAssociation(String toolId,
-                                                             String associatedToolItemId) throws Exception;
-
-    Optional<ToolItemRubricAssociation> getRubricAssociation(String toolId, String associatedToolItemId, String siteId) throws Exception;
+    Optional<ToolItemRubricAssociation> getRubricAssociation(String toolId, String associatedToolItemId) throws Exception;
 
     void saveRubricAssociation(String toolId,
                                String associatedToolItemId,
@@ -59,7 +59,7 @@ public interface RubricsService {
 
     String generateLang();
 
-    String getRubricEvaluationObjectId(String associationId, String userId, String toolId);
+    String getRubricEvaluationObjectId(String associationId, String userId);
 
     void deleteRubricAssociation(String query, String toolId);
 

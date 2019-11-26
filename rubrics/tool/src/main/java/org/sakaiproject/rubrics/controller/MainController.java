@@ -20,8 +20,6 @@ public class MainController {
 
     @GetMapping("/index")
     public String index(ModelMap model) {
-        String token = rubricsService.generateJsonWebToken("sakai.rubrics");
-        model.addAttribute("token", token);
         model.addAttribute("sakaiSessionId", rubricsService.getCurrentSessionId());
         return "index";
     }

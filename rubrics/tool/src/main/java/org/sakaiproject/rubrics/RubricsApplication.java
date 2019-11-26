@@ -25,9 +25,13 @@ package org.sakaiproject.rubrics;
 import static org.sakaiproject.rubrics.logic.RubricsConstants.RBCS_TOOL;
 
 import java.util.Arrays;
+import java.util.EnumSet;
+
 import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -36,24 +40,37 @@ import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.ToolListener;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.WebApplicationInitializer;
 
 @Configuration
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-@SpringBootApplication
+@ComponentScan
 @Slf4j
-public class RubricsApplication extends SpringBootServletInitializer {
+public class RubricsApplication implements WebApplicationInitializer {
+
+    @Override
+    public void onStartup(ServletContext container) {
+
+        container.addListener(ToolListener.class);
+        ServletRegistration.Dynamic dispatcher
+            = container.addServlet(RBCS_TOOL, new DispatcherServlet(new AnnotationConfigWebApplicationContext()));
+        dispatcher.setLoadOnStartup(0);
+        dispatcher.addMapping("/", "/index");
+
+        FilterRegistration.Dynamic reqFilter = container.addFilter("sakai.request", new RequestFilter());
+        reqFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
+    }
 
     /**
      * Required per http://docs.spring.io/spring-boot/docs/current/reference/html/howto-traditional-deployment.html
@@ -63,6 +80,7 @@ public class RubricsApplication extends SpringBootServletInitializer {
      * @return
      */
 
+    /*
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         ConfigurableApplicationContext sharedAc = ((SpringCompMgr) ComponentManager.getInstance()).getApplicationContext();
@@ -95,4 +113,5 @@ public class RubricsApplication extends SpringBootServletInitializer {
         frb.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE);
         return frb;
     }
+    */
 }

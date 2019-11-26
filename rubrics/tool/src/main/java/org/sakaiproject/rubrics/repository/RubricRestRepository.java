@@ -22,25 +22,39 @@
 
 package org.sakaiproject.rubrics.repository;
 
-import org.sakaiproject.rubrics.logic.model.Criterion;
+import java.util.List;
+
+import org.sakaiproject.rubrics.logic.model.Rubric;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@RepositoryRestResource(collectionResourceRel = "criterions", path = "criterions")
-public interface CriterionRepository extends MetadataRepository<Criterion, Long> {
+@RepositoryRestResource(collectionResourceRel = "rubrics", path = "rubrics")
+public interface RubricRestRepository extends MetadataRestRepository<Rubric, Long> {
 
     @Override
-    @PreAuthorize("canRead(#id, 'Criterion')")
-    Criterion findOne(Long id);
+    @PreAuthorize("canRead(#id, 'Rubric')")
+    Rubric findOne(Long id);
 
     @Override
-    @Query("select resource from Criterion resource where " + QUERY_CONTEXT_CONSTRAINT)
-    Page<Criterion> findAll(Pageable pageable);
+    @Query("select resource from Rubric resource where " + QUERY_CONTEXT_CONSTRAINT)
+    Page<Rubric> findAll(Pageable pageable);
 
     @Override
-    @PreAuthorize("canWrite(#id, 'Criterion')")
+    @PreAuthorize("canWrite(#id, 'Rubric')")
     void delete(Long id);
+
+    @RestResource(path = "shared-only", rel = "shared-only")
+    @PreAuthorize("hasRole('ROLE_EDITOR')")
+    @Query("select r from Rubric r where r.metadata.shared = true order by r.title")
+    List<Rubric> getAllSharedRubrics();
+
+    @RestResource(path = "rubrics-from-site", rel = "rubrics-from-site")
+    @PreAuthorize("hasRole('ROLE_EDITOR')")
+    @Query("select r from Rubric r where r.metadata.ownerId = :siteId ")
+    List<Rubric> getRubricsFromSite(@Param("siteId") String siteId);
 }
