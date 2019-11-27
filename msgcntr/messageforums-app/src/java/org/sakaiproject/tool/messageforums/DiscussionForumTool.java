@@ -9184,11 +9184,6 @@ public class DiscussionForumTool {
 		return list;
 	}
 
-	public String getRbcsToken() {
-		log.debug("getRbcsToken()");
-		return "";
-	}
-
 	public void keepStateDetails(ActionEvent e) {//this is currently only used for rubrics, but could be used to avoid repeating code on each submit action
 		List rbcsDetails = getRequestParamArrayValueLike("rbcs-state-details");
 		if(rbcsDetails != null){

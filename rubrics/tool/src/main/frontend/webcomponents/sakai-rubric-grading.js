@@ -13,16 +13,9 @@ export class SakaiRubricGrading extends RubricsElement {
     SakaiRubricsLanguage.loadTranslations().then(result => this.i18nLoaded = result );
   }
 
-  set token(newValue) {
-    this._token = "Bearer " + newValue;
-  }
-
-  get token() { return this._token; }
-
   static get properties() {
 
     return {
-      token: String,
       entityId: {attribute: "entity-id", type: String},
       toolId: {attribute: "tool-id", type: String},
       stateDetails: {attribute: "state-details", type: String},
@@ -36,7 +29,7 @@ export class SakaiRubricGrading extends RubricsElement {
 
     super.attributeChangedCallback(name, oldVal, newVal);
 
-    if (this.entityId && this.toolId && this.token) {
+    if (this.entityId && this.toolId) {
       this.getAssociation();
     }
   }
@@ -74,7 +67,6 @@ export class SakaiRubricGrading extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/rubric-associations/search/by-tool-item-ids?toolId=${this.toolId}&itemId=${this.entityId}`,
-      headers: {"authorization": this.token}
     })
     .done(data => {
 
@@ -87,15 +79,11 @@ export class SakaiRubricGrading extends RubricsElement {
 
   getRubric(rubricId) {
 
-    $.ajax({
-      url: `/rubrics-service/rest/rubrics/${rubricId}?projection=inlineRubric`,
-      headers: {"authorization": this.token},
-    })
+    $.ajax({ url: `/rubrics-service/rest/rubrics/${rubricId}?projection=inlineRubric`})
     .done(rubric => {
 
       $.ajax({
         url: `/rubrics-service/rest/evaluations/search/by-tool-item-and-associated-item-and-evaluated-item-ids?toolId=${this.toolId}&itemId=${this.entityId}&evaluatedItemId=${this.evaluatedItemId}`,
-        headers: {"authorization": this.token}
       })
       .done(data => {
 

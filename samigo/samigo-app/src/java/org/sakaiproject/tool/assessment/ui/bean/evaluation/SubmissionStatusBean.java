@@ -90,9 +90,6 @@ public class SubmissionStatusBean implements Serializable, PhaseAware {
   
   private Boolean releasedToGroups = null;
 
-  // Rubrics
-  private String rbcsToken;
-
   /**
    * Creates a new SubmissionStatusBean object.
    */
@@ -715,12 +712,4 @@ public class SubmissionStatusBean implements Serializable, PhaseAware {
 		}
 		return releasedToGroups;
 	}
-
-  public String getRbcsToken() {
-    return rbcsToken;
-  }
-
-  public void setRbcsToken(String rbcsToken) {
-    this.rbcsToken = rbcsToken;
-  }
 }

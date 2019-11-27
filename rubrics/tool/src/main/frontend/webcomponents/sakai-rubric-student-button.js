@@ -11,14 +11,13 @@ class SakaiRubricStudentButton extends RubricsElement {
 
     this.hidden = true;
     this.instructor = false;
-
+    this.rubricsUtils.initLightbox(true);
     SakaiRubricsLanguage.loadTranslations().then(result => this.i18nLoaded = result);
   }
 
   static get properties() {
 
     return {
-      token: { type: String },
       entityId: { attribute: "entity-id", type: String },
       toolId: { attribute: "tool-id", type: String },
       evaluatedItemId: { attribute: "evaluated-item-id", type: String},
@@ -31,18 +30,10 @@ class SakaiRubricStudentButton extends RubricsElement {
 
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (this.token && this.toolId && this.entityId) {
+    if (this.toolId && this.entityId) {
       this.setHidden();
     }
   }
-
-  set token(newValue) {
-
-    this._token = newValue;
-    this.rubricsUtils.initLightbox(this._token, true);
-  }
-
-  get token() { return this._token; }
 
   render() {
 
@@ -59,7 +50,7 @@ class SakaiRubricStudentButton extends RubricsElement {
 
   setHidden() {
 
-    SakaiRubricsHelpers.get("/rubrics-service/rest/rubric-associations/search/by-tool-item-ids", "Bearer " + this.token, { params: {toolId: this.toolId, itemId: this.entityId }})
+    SakaiRubricsHelpers.get("/rubrics-service/rest/rubric-associations/search/by-tool-item-ids", { params: {toolId: this.toolId, itemId: this.entityId }})
     .then(data => {
 
       const association = data._embedded["rubric-associations"][0];

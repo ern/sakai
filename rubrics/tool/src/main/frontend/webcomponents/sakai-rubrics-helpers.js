@@ -9,7 +9,7 @@ export class SakaiRubricsHelpers {
     return response;
   }
 
-  static get(url, token, extraOptions) {
+  static get(url, extraOptions) {
 
     if (extraOptions.params) {
       var usp = new URLSearchParams();
@@ -19,8 +19,8 @@ export class SakaiRubricsHelpers {
 
     var options = {
       method: "GET",
+      credentials: "same-origin",
       headers: {
-        "Authorization": token,
         "Accept": "application/json",
         "Content-Type": "application/json",
       }
@@ -31,7 +31,7 @@ export class SakaiRubricsHelpers {
     return fetch(url, options).then(SakaiRubricsHelpers.handleErrors).then(response => response.json());
   }
 
-  static post(url, token, extraOptions) {
+  static post(url, extraOptions) {
 
     var body
       = extraOptions.body ? Object.entries(extraOptions.body).reduce((acc, [k,v]) => acc.append(k,v), new FormData())
@@ -39,8 +39,8 @@ export class SakaiRubricsHelpers {
 
     var options = {
       method: "POST",
+      credentials: "same-origin",
       headers: {
-        "Authorization": token,
         "Content-Type": "application/json",
       },
       body: body,

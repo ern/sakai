@@ -18,7 +18,7 @@ class SakaiRubricsManager extends RubricsElement {
   }
 
   static get properties() {
-    return { token: String, i18nLoaded: Boolean };
+    return { i18nLoaded: Boolean };
   }
 
   shouldUpdate(changedProperties) {
@@ -45,7 +45,7 @@ class SakaiRubricsManager extends RubricsElement {
         </div>
 
         <div role="tabpanel" aria-labelledby="site-rubrics-title" id="site_rubrics">
-          <sakai-rubrics-list @sharing-change="${this.handleSharingChange}" @copy-share-site="${this.copyShareSite}" token="Bearer ${this.token}"></sakai-rubrics-list>
+          <sakai-rubrics-list @sharing-change="${this.handleSharingChange}" @copy-share-site="${this.copyShareSite}"></sakai-rubrics-list>
         </div>
 
         <div id="shared-rubrics-title" aria-expanded="${this.sharedRubricsExpanded}" role="tab" aria-multiselectable="true" class="manager-collapse-title" title="${tr("toggle_shared_rubrics")}" tabindex="0" @click="${this.toggleSharedRubrics}">
@@ -61,7 +61,7 @@ class SakaiRubricsManager extends RubricsElement {
 
         <div role="tabpanel" aria-labelledby="shared-rubrics-title" id="shared_rubrics">
           <div id="sharedlist">
-            <sakai-rubrics-shared-list token="Bearer ${this.token}" id="sakai-rubrics-shared-list" @copy-share-site="${this.copyShareSite}" ></sakai-rubrics-shared-list>
+            <sakai-rubrics-shared-list id="sakai-rubrics-shared-list" @copy-share-site="${this.copyShareSite}" ></sakai-rubrics-shared-list>
           </div>
         </div>
 

@@ -42,12 +42,6 @@
       <script src="/samigo-app/js/finInputValidator.js"></script>
       <script type="module" src="/rubrics-service/webcomponents/rubric-association-requirements.js<h:outputText value="#{questionScores.CDNQuery}" />"></script>
 
-    <h:panelGroup rendered="#{delivery.actionString == 'reviewAssessment'}">
-      <script>
-        var rbcstoken = '<h:outputText value="#{delivery.rbcsToken}" />';
-      </script>
-    </h:panelGroup>
-
 	<h:outputText value="#{delivery.mathJaxHeader}" escape="false" rendered="#{delivery.actionString=='takeAssessmentViaUrl' and delivery.isMathJaxEnabled}"/>
       </head>
 	<body>
@@ -350,7 +344,6 @@ document.links[newindex].onclick();
 
        <h:panelGroup rendered="#{delivery.actionString == 'reviewAssessment' and delivery.feedbackComponent.showItemLevel}">
          <sakai-rubric-student
-           token='<h:outputText value="#{delivery.rbcsToken}" />'
            tool-id="sakai.samigo"
            entity-id='<h:outputText value="pub.#{delivery.assessmentId}.#{question.itemData.itemId}"/>'
            evaluated-item-id='<h:outputText value="#{delivery.assessmentGradingId}.#{question.itemData.itemId}" />'>
@@ -359,7 +352,6 @@ document.links[newindex].onclick();
 
        <h:panelGroup rendered="#{delivery.actionString == 'takeAssessment'}">
            <sakai-rubric-student-preview-button
-                token="<h:outputText value="#{delivery.rbcsToken}" />"
                 tool-id="sakai.samigo"
                 entity-id="<h:outputText value="pub.#{delivery.assessmentId}.#{question.itemData.itemId}" />"></sakai-rubric-student-preview-button>
        </h:panelGroup>

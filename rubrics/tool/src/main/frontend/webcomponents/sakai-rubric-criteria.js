@@ -14,7 +14,6 @@ export class SakaiRubricCriteria extends RubricsElement {
   static get properties() {
 
     return {
-      token: { type: String },
       rubricId: { attribute: "rubric-id", type: String },
       criteria: { type: Array }
     };
@@ -53,7 +52,7 @@ export class SakaiRubricCriteria extends RubricsElement {
             <h4 class="criterion-title">
               <span @focus="${this.onFocus}" @focusout="${this.focusOut}" tabindex="0" role="button" title="${tr("drag_order")}" class="reorder-icon fa fa-bars"></span>
               ${c.title}
-              <sakai-rubric-criterion-edit @criterion-edited="${this.criterionEdited}" criterion="${JSON.stringify(c)}" token="${this.token}"></sakai-rubric-criterion-edit>
+              <sakai-rubric-criterion-edit @criterion-edited="${this.criterionEdited}" criterion="${JSON.stringify(c)}"></sakai-rubric-criterion-edit>
             </h4>
             <p>
               ${c.description}
@@ -90,7 +89,7 @@ export class SakaiRubricCriteria extends RubricsElement {
           </div>
           <div class="criterion-actions">
             <span @focus="${this.onFocus}" @focusout="${this.focusOut}" tabindex="0" role="button" data-criterion-id="${c.id}" title="${tr("copy")} ${c.title}" class="clone fa fa-copy" @click="${this.cloneCriterion}"></span>
-            <sakai-item-delete criterion-id="${c.id}" criterion="${JSON.stringify(c)}" rubric-id="${this.rubricId}" @delete-item="${this.deleteCriterion}" token="${this.token}"></sakai-item-delete>
+            <sakai-item-delete criterion-id="${c.id}" criterion="${JSON.stringify(c)}" rubric-id="${this.rubricId}" @delete-item="${this.deleteCriterion}"></sakai-item-delete>
           </div>
         </div>
       `)}
@@ -118,7 +117,6 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/rubrics/${this.rubricId}/criterions`,
-      headers: {"authorization": this.token},
       method: "PUT",
       contentType: "text/uri-list",
       data: urlList
@@ -159,7 +157,6 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/ratings/${e.detail.id}`,
-      headers: {"authorization": this.token},
       contentType: "application/json",
       method: "PATCH",
       data: JSON.stringify(e.detail)
@@ -201,7 +198,7 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: "/rubrics-service/rest/ratings",
-      headers: {"Content-Type": "application/json" , "x-copy-source": "default", "authorization": this.token, "lang": portal.locale},
+      headers: {"Content-Type": "application/json" , "x-copy-source": "default", "lang": portal.locale},
       method: "POST",
       data: "{}"
     })
@@ -258,7 +255,7 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: "/rubrics-service/rest/criterions/",
-      headers: {"x-copy-source": e.target.dataset.criterionId, "authorization": this.token, "lang": portal.locale},
+      headers: {"x-copy-source": e.target.dataset.criterionId, "lang": portal.locale},
       contentType: "application/json",
       method: "POST",
       data: "{}"
@@ -285,7 +282,6 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/rubrics/${this.rubricId}/criterions`,
-      headers: {"authorization": this.token},
       method: "POST",
       contentType: "text/uri-list",
       data: urlList
@@ -310,7 +306,7 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: "/rubrics-service/rest/criterions/",
-      headers: {"Content-Type": "application/json", "x-copy-source": "default", "authorization": this.token, "lang": portal.locale},
+      headers: {"Content-Type": "application/json", "x-copy-source": "default", "lang": portal.locale},
       method: "POST",
       data: "{}"
     })
@@ -322,7 +318,6 @@ export class SakaiRubricCriteria extends RubricsElement {
 
     $.ajax({
       url: url,
-      headers: {"authorization": this.token},
       method: "PUT",
       contentType: "text/uri-list",
       data: urlList

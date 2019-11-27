@@ -9,7 +9,6 @@ export class SakaiRubricCriterionEdit extends RubricsElement {
 
     super();
 
-    this.token = "";
     this.criterion = {};
     this.criterionClone = {};
   }
@@ -17,7 +16,6 @@ export class SakaiRubricCriterionEdit extends RubricsElement {
   static get properties() {
 
     return {
-      token: String,
       criterion: { type: Object, notify: true }
     };
   }
@@ -145,13 +143,12 @@ export class SakaiRubricCriterionEdit extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/criterions/${this.criterion.id}`,
-      headers: {"authorization": this.token},
       method: "PATCH",
       contentType: "application/json",
       data: JSON.stringify(data)
     })
-      .done(data => this.updateUi(data))
-      .fail((jqXHR, error, message) => {console.log(error); console.log(message); });
+    .done(data => this.updateUi(data))
+    .fail((jqXHR, error, message) => {console.log(error); console.log(message); });
 
     // hide the popover
     this.hideToolTip();

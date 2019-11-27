@@ -8,7 +8,6 @@ export class SakaiRubricPreview extends RubricsElement {
 
     super();
 
-    this.token = "";
     this.rubricId = 0;
     this.rubric = {};
     this.gradeFieldId = 0;
@@ -17,7 +16,6 @@ export class SakaiRubricPreview extends RubricsElement {
   static get properties() {
 
     return {
-      token: String,
       rubric: {type: Object},
       rubricId: { attribute: "rubric-id", type: Number },
       gradeFieldId: String,
@@ -44,7 +42,6 @@ export class SakaiRubricPreview extends RubricsElement {
       <p>${this.rubric.description}</p>
 
       <sakai-rubric-criterion-preview
-        token="${this.token}"
         criteria="${JSON.stringify(this.rubric.criterions)}"
         gradeFieldId="${this.gradeFieldId}"
         ></sakai-rubric-criterion-preview>
@@ -57,7 +54,6 @@ export class SakaiRubricPreview extends RubricsElement {
 
       $.ajax({
         url: `/rubrics-service/rest/rubrics/${this.rubricId}?projection=inlineRubric`,
-        headers: {"authorization": this.token},
         contentType: "application/json"
       })
       .done(data => this.rubric = data)

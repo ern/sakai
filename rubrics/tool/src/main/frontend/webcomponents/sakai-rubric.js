@@ -28,16 +28,11 @@ export class SakaiRubric extends RubricsElement {
   }
 
   static get properties() {
-    return { rubric: {type: Object}, token: { type: String } , shareIcon: { type: String }};
-  }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if ("token" === name) {
-      this.updateRubricConfig.headers = { "authorization": newValue };
-    }
+    return {
+      rubric: { type: Object },
+      shareIcon: String,
+    };
   }
 
   set rubric(newValue) {
@@ -69,7 +64,7 @@ export class SakaiRubric extends RubricsElement {
           ${this.rubric.metadata.locked ?
             html`<span tabindex="0" role="display" title="${this.rubric.title} ${tr("is_locked")}" class="locked fa fa-lock"></span>`
             :
-            html`<sakai-rubric-edit @show-tooltip="${this.showToolTip}" @update-rubric-title="${this.updateRubricTitle}" rubric="${JSON.stringify(this.rubric)}" token="${this.token}"></sakai-rubric-edit>`
+            html`<sakai-rubric-edit @show-tooltip="${this.showToolTip}" @update-rubric-title="${this.updateRubricTitle}" rubric="${JSON.stringify(this.rubric)}"></sakai-rubric-edit>`
           }
         </div>
 
@@ -96,7 +91,7 @@ export class SakaiRubric extends RubricsElement {
             html`
             <div class="action-container">
               <span class="hidden-sm hidden-xs sr-only"><sr-lang key="remove_label" /></span>
-              <sakai-item-delete token="${this.token}" rubric="${JSON.stringify(this.rubric)}" class="sakai-rubric"></sakai-item-delete>
+              <sakai-item-delete rubric="${JSON.stringify(this.rubric)}" class="sakai-rubric"></sakai-item-delete>
             </div>
             `
             :
@@ -108,9 +103,9 @@ export class SakaiRubric extends RubricsElement {
       <div class="collapse-details" role="tabpanel" aria-labelledby="rubric_toggle_${this.rubric.id}" id="collapse_${this.rubric.id}">
         <div class="rubric-details style-scope sakai-rubric">
           ${this.rubric.metadata.locked ?
-            html`<sakai-rubric-criteria-readonly criteria="${JSON.stringify(this.rubric.criterions)}" token="${this.token}"></sakai-rubric-criteria-readonly>`
+            html`<sakai-rubric-criteria-readonly criteria="${JSON.stringify(this.rubric.criterions)}"></sakai-rubric-criteria-readonly>`
             :
-            html`<sakai-rubric-criteria rubric-id="${this.rubric.id}" criteria="${JSON.stringify(this.rubric.criterions)}" token="${this.token}"></sakai-rubric-criteria>`
+            html`<sakai-rubric-criteria rubric-id="${this.rubric.id}" criteria="${JSON.stringify(this.rubric.criterions)}"></sakai-rubric-criteria>`
           }
         </div>
       </div>

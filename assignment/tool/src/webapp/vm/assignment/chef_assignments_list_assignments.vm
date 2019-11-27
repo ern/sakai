@@ -254,7 +254,6 @@
 
 										#if ($rubricsService.hasAssociatedRubric("sakai.assignment", $assignment.getId()))
 										<sakai-rubric-student-button
-											token="$!rbcs-token"
 											tool-id="sakai.assignment"
 											evaluated-item-id="$submission.Id"
 											entity-id="$assignment.Id"
@@ -311,7 +310,6 @@
 											$validator.escapeHtml($assignment.Title)</a>
 											#if ($rubricsService.hasAssociatedRubric("sakai.assignment", $assignment.getId()))
 												<sakai-rubric-student-button
-													token="$!rbcs-token"
 													tool-id="sakai.assignment"
 													evaluated-item-id="$submission.Id"
 													entity-id="$assignment.Id">
@@ -322,7 +320,6 @@
 											$validator.escapeHtml($assignment.Title)
 											#if ($rubricsService.hasAssociatedRubric("sakai.assignment", $assignment.getId()))
 												<sakai-rubric-student-button
-													token="$!rbcs-token"
 													tool-id="sakai.assignment"
 													evaluated-item-id="$submission.Id"
 													entity-id="$assignment.Id">
@@ -392,7 +389,6 @@
 												</strong>
 											#end
 											<sakai-rubric-student-button
-												token="$!rbcs-token"
 												tool-id="sakai.assignment"
 												evaluated-item-id="$submission.Id"
 												entity-id="$assignment.Id">

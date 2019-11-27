@@ -378,8 +378,6 @@
 			</h:panelGroup>
 		</h:panelGrid>
 		<sakai-rubric-association styleClass="checkbox" style="margin-left:10px;display:none"
-
-			token='<h:outputText value="#{ForumTool.rbcsToken}"/>'
 			dont-associate-label='<h:outputText value="#{msgs.topic_dont_associate_label}" />'
 			dont-associate-value="0"
 			associate-label='<h:outputText value="#{msgs.topic_associate_label}" />'

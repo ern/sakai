@@ -7,21 +7,17 @@ import {SakaiRubricsHelpers} from "./sakai-rubrics-helpers.js";
 
 export class SakaiRubricsList extends RubricsElement {
 
+  constructor() {
+
+    super();
+    this.getRubrics();
+  }
+
   static get properties() {
 
     return {
-      token: { type: String },
       rubrics: { type: Array },
     };
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if ("token" === name) {
-      this.getRubrics(newValue);
-    }
   }
 
   shouldUpdate(changedProperties) {
@@ -35,7 +31,7 @@ export class SakaiRubricsList extends RubricsElement {
         <div role="tablist">
         ${repeat(this.rubrics, r => r.id, r => html`
           <div class="rubric-item" id="rubric_item_${r.id}">
-            <sakai-rubric @clone-rubric="${this.cloneRubric}" @delete-item="${this.deleteRubric}" token="${this.token}" rubric="${JSON.stringify(r)}"></sakai-rubric>
+            <sakai-rubric @clone-rubric="${this.cloneRubric}" @delete-item="${this.deleteRubric}" rubric="${JSON.stringify(r)}"></sakai-rubric>
           </div>
         `)}
         </div>
@@ -51,21 +47,21 @@ export class SakaiRubricsList extends RubricsElement {
   }
 
   refresh() {
-    this.getRubrics(this.token);
+    this.getRubrics();
   }
 
-  getRubrics(token, extraParams = {}) {
+  getRubrics(extraParams = {}) {
 
     var params = {"projection": "inlineRubric"};
     Object.assign(params, extraParams);
 
-    SakaiRubricsHelpers.get("/rubrics-service/rest/rubrics", token, { params })
+    SakaiRubricsHelpers.get("/rubrics-service/rest/rubrics", { params })
       .then(data => {
 
         this.rubrics = data._embedded.rubrics;
 
         if (data.page.size <= this.rubrics.length){
-          this.getRubrics(token, { "size": this.rubrics.length + 25 });
+          this.getRubrics({ "size": this.rubrics.length + 25 });
         }
       });
   }
@@ -108,7 +104,7 @@ export class SakaiRubricsList extends RubricsElement {
 
   cloneRubric(e) {
 
-    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", this.token, {
+    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", {
       extraHeaders: {"x-copy-source": e.detail.id, "lang": portal.locale}
     })
     .then(data => this.createRubricResponse(data));
@@ -116,7 +112,7 @@ export class SakaiRubricsList extends RubricsElement {
 
   createNewRubric() {
 
-    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", this.token, {
+    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", {
       extraHeaders: {"x-copy-source" :"default", "lang": portal.locale}
     })
     .then(data => this.createRubricResponse(data));

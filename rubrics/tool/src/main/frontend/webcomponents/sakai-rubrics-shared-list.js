@@ -6,21 +6,18 @@ import {SakaiRubricsHelpers} from "./sakai-rubrics-helpers.js";
 
 export class SakaiRubricsSharedList extends RubricsElement {
 
+  constructor() {
+
+    super();
+
+    this.getSharedRubrics();
+  }
+
   static get properties() {
 
     return {
-      token: { type: String },
       rubrics: { type: Array },
     };
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if ("token" === name) {
-      this.getSharedRubrics(newValue);
-    }
   }
 
   shouldUpdate(changedProperties) {
@@ -33,7 +30,7 @@ export class SakaiRubricsSharedList extends RubricsElement {
       <div role="tablist">
       ${repeat(this.rubrics, r => r.id, r => html`
         <div class="rubric-item" id="rubric_item_${r.id}">
-          <sakai-rubric-readonly token="${this.token}" rubric="${JSON.stringify(r)}" @copy-to-site="${this.copyToSite}"></sakai-rubric-readonly>
+          <sakai-rubric-readonly rubric="${JSON.stringify(r)}" @copy-to-site="${this.copyToSite}"></sakai-rubric-readonly>
         </div>
       `)}
       </div>
@@ -41,21 +38,21 @@ export class SakaiRubricsSharedList extends RubricsElement {
   }
 
   refresh() {
-    this.getSharedRubrics(this.token);
+    this.getSharedRubrics();
   }
 
-  getSharedRubrics(token) {
+  getSharedRubrics() {
 
     var params = {"projection": "inlineRubric"};
 
-    SakaiRubricsHelpers.get("/rubrics-service/rest/rubrics/search/shared-only", token, { params })
+    SakaiRubricsHelpers.get("/rubrics-service/rest/rubrics/search/shared-only", { params })
       .then(data => this.rubrics = data._embedded.rubrics );
   }
 
   copyToSite(e) {
 
     var options = { extraHeaders: { "x-copy-source": e.detail, "lang": portal.locale  } };
-    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", this.token, options)
+    SakaiRubricsHelpers.post("/rubrics-service/rest/rubrics/", options)
       .then(data => this.dispatchEvent(new CustomEvent("copy-share-site")));
   }
 }

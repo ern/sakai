@@ -10,6 +10,7 @@ export class SakaiRubricStudentPreviewButton extends RubricsElement {
     super();
 
     this.display = "button";
+    this.rubricsUtils.initLightbox();
 
     SakaiRubricsLanguage.loadTranslations().then(result => this.i18nLoaded = result );
   }
@@ -17,7 +18,6 @@ export class SakaiRubricStudentPreviewButton extends RubricsElement {
   static get properties() {
 
     return {
-      token: { type: String },
       display: { type: String },
       toolId: { attribute: "tool-id", type: String },
       entityId: { attribute: "entity-id", type: String },
@@ -25,19 +25,11 @@ export class SakaiRubricStudentPreviewButton extends RubricsElement {
     };
   }
 
-  set token(newValue) {
-
-    this.rubricsUtils.initLightbox(newValue);
-    this._token = "Bearer " + newValue;
-  }
-
-  get token() { return this._token; }
-
   attributeChangedCallback(name, oldValue, newValue) {
 
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (this.token && this.toolId && this.entityId) {
+    if (this.toolId && this.entityId) {
       this.getRubricId();
     }
   }
@@ -59,7 +51,7 @@ export class SakaiRubricStudentPreviewButton extends RubricsElement {
 
   getRubricId() {
 
-    SakaiRubricsHelpers.get("/rubrics-service/rest/rubric-associations/search/by-tool-item-ids", this.token, { params: {toolId: this.toolId, itemId: this.entityId }})
+    SakaiRubricsHelpers.get("/rubrics-service/rest/rubric-associations/search/by-tool-item-ids", { params: {toolId: this.toolId, itemId: this.entityId }})
     .then(data => {
 
       const association = data._embedded["rubric-associations"][0];

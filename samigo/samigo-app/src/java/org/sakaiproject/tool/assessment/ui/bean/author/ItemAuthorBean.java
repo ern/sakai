@@ -149,8 +149,6 @@ public class ItemAuthorBean implements Serializable {
 
   private String language;
 
-  // Rubrics
-  private String rbcsToken;
   private String rubricStateDetails;
 
   public String getLanguage() {
@@ -1607,14 +1605,6 @@ public class ItemAuthorBean implements Serializable {
         }else {
             return (ServerConfigurationService.getBoolean("samigo.author.multitag.singlequestion.check", false) && !getMultiTagsSingleQuestion());
         }
-    }
-
-    public String getRbcsToken() {
-        return rbcsToken;
-    }
-
-    public void setRbcsToken(String rbcsToken) {
-        this.rbcsToken = rbcsToken;
     }
 
     public String getRubricStateDetails() {

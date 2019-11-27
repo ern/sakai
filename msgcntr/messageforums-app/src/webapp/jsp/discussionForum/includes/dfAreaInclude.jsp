@@ -95,7 +95,6 @@ $(document).ready(function() {
 				<h:panelGroup rendered="#{forum.hasRubric == 'true'}">
 					<sakai-rubric-student-preview-button
 						display="icon"
-						token="<h:outputText value="#{ForumTool.rbcsToken}" />"
 						tool-id="sakai.gradebookng"
 						entity-id="<h:outputText value="#{forum.gradeAssign}" />">
 					</sakai-rubric-student-preview-button>
@@ -237,7 +236,6 @@ $(document).ready(function() {
 							<h:panelGroup rendered="#{topic.hasRubric == 'true'}">
 								<sakai-rubric-student-preview-button
 									display="icon"
-									token="<h:outputText value="#{ForumTool.rbcsToken}" />"
 									tool-id="sakai.gradebookng"
 									entity-id="<h:outputText value="#{topic.gradeAssign}" />">
 								</sakai-rubric-student-preview-button>

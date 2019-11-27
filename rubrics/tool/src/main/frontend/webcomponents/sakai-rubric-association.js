@@ -11,24 +11,14 @@ class SakaiRubricAssociation extends RubricsElement {
 
     this.configurationOptions = [];
     this.selectedConfigOptions = {};
-
+    this.rubricsUtils.initLightbox();
     this.isAssociated = false;
-
     SakaiRubricsLanguage.loadTranslations().then(result => this.i18nLoaded = result );
   }
-
-  set token(newValue) {
-
-    this.rubricsUtils.initLightbox(newValue);
-    this._token = "Bearer " + newValue;
-  }
-
-  get token() { return this._token; }
 
   static get properties() {
 
     return {
-      token: String,
       isAssociated: Boolean,
       entityId: { attribute: "entity-id", type: String },
       toolId: { attribute: "tool-id", type: String },
@@ -44,14 +34,13 @@ class SakaiRubricAssociation extends RubricsElement {
     };
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  set toolId(newValue) {
 
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (this.token && this.toolId) {
-      this.getAssociation();
-    }
+    this._toolId = newValue;
+    this.getAssociation();
   }
+
+  get toolId() { return this._toolId; }
 
   shouldUpdate(changedProperties) {
     return this.i18nLoaded && this.rubrics && this.rubrics.length > 0;
@@ -111,7 +100,6 @@ class SakaiRubricAssociation extends RubricsElement {
 
     $.ajax({
       url: `/rubrics-service/rest/rubric-associations/search/by-tool-item-ids?toolId=${this.toolId}&itemId=${this.entityId}`,
-      headers: {"authorization": this.token},
       contentType: "application/json"
     })
     .done(data => {
@@ -133,7 +121,6 @@ class SakaiRubricAssociation extends RubricsElement {
 
     $.ajax({
       url: "/rubrics-service/rest/rubrics",
-      headers: {"authorization": this.token},
       data: data || {}
     })
     .done(data => this.handleRubrics(data))

@@ -324,8 +324,6 @@
 				</div>
 			
 		<sakai-rubric-association styleClass="checkbox" style="margin-left:10px;display:none;"
-
-			token='<h:outputText value="#{ForumTool.rbcsToken}"/>'
 			dont-associate-label='<h:outputText value="#{msgs.forum_dont_associate_label}" />'
 			dont-associate-value="0"
 			associate-label='<h:outputText value="#{msgs.forum_associate_label}" />'
@@ -334,7 +332,6 @@
 			tool-id="sakai.gradebookng"
 			fine-tune-points='<h:outputText value="#{msgs.option_pointsoverride}" />'
 			hide-student-preview='<h:outputText value="#{msgs.option_studentpreview}" />'
-
 		></sakai-rubric-association>
 
 			<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}">

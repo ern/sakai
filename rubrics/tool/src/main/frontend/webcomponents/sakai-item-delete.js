@@ -23,7 +23,6 @@ export class SakaiItemDelete extends RubricsElement {
   static get properties() {
 
     return {
-      token: { type: String},
       rubricId: {attribute: "rubric-id", type: String},
       rubric: { type: Object },
       criterionId: {attribute: "criterion-id", type: String},
@@ -140,7 +139,6 @@ export class SakaiItemDelete extends RubricsElement {
     $.ajax({
       url: url,
       method: "DELETE",
-      headers: {"authorization": this.token},
       contentType: "application/json"
     })
     .done(data => this.updateUi(data))
