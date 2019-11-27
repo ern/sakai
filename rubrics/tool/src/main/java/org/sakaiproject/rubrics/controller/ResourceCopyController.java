@@ -22,9 +22,6 @@
 
 package org.sakaiproject.rubrics.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.sakaiproject.rubrics.RubricsConfiguration;
 import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.sakaiproject.rubrics.logic.model.Rating;
 import org.sakaiproject.rubrics.logic.model.Rubric;
@@ -43,13 +40,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 @RepositoryRestController
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceCopyController {
-
-    @Autowired
-    RubricsConfiguration rubricsConfiguration;
 
     @Autowired
     private RubricRestRepository rubricRestRepository;
@@ -73,14 +70,14 @@ public class ResourceCopyController {
             throws CloneNotSupportedException {
         Rubric sourceRubric = null;
         Rubric clonedRubric = null;
-        if ("default".equalsIgnoreCase(sourceId)) {
-            sourceRubric = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRubric();
-            clonedRubric = sourceRubric.clone();
-        } else {
+        // if ("default".equalsIgnoreCase(sourceId)) {
+        //     sourceRubric = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRubric();
+        //     clonedRubric = sourceRubric.clone();
+        // } else {
             sourceRubric = rubricRestRepository.findOne(Long.parseLong(sourceId));
             clonedRubric = sourceRubric.clone();
             clonedRubric.setTitle(sourceRubric.getTitle() + " Copy");
-        }
+        // }
         clonedRubric = rubricRestRepository.save(clonedRubric);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Rubric.class).slash(clonedRubric.getId()).toUri());
@@ -105,14 +102,14 @@ public class ResourceCopyController {
             throws CloneNotSupportedException {
         Criterion sourceCriterion = null;
         Criterion clonedCriterion = null;
-        if ("default".equalsIgnoreCase(sourceId)) {
-            sourceCriterion = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultCriterion();
-            clonedCriterion = sourceCriterion.clone();
-        } else {
+        // if ("default".equalsIgnoreCase(sourceId)) {
+        //     sourceCriterion = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultCriterion();
+        //     clonedCriterion = sourceCriterion.clone();
+        // } else {
             sourceCriterion = criterionRestRepository.findOne(Long.parseLong(sourceId));
             clonedCriterion = sourceCriterion.clone();
             clonedCriterion.setTitle(sourceCriterion.getTitle() + " Copy");
-        }
+        // }
         clonedCriterion = criterionRestRepository.save(clonedCriterion);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Criterion.class).slash(clonedCriterion.getId()).toUri());
@@ -125,14 +122,14 @@ public class ResourceCopyController {
             throws CloneNotSupportedException {
         Rating sourceRating = null;
         Rating clonedRating = null;
-        if ("default".equalsIgnoreCase(sourceId)) {
-            sourceRating = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRating();
-            clonedRating = sourceRating.clone();
-        } else {
+        // if ("default".equalsIgnoreCase(sourceId)) {
+        //     sourceRating = rubricsConfiguration.getInstance().getDefaultLayoutConfiguration(lang).getDefaultRating();
+        //     clonedRating = sourceRating.clone();
+        // } else {
             sourceRating = ratingRestRepository.findOne(Long.parseLong(sourceId));
             clonedRating = sourceRating.clone();
             clonedRating.setTitle(sourceRating.getTitle() + " Copy");
-        }
+        // }
         clonedRating = ratingRestRepository.save(clonedRating);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(repositoryEntityLinks.linkFor(Rating.class).slash(clonedRating.getId()).toUri());

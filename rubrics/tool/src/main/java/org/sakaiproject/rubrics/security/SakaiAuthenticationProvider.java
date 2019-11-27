@@ -30,6 +30,7 @@ import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -41,7 +42,7 @@ import org.springframework.stereotype.Component;
  * Used for checking the token from the request and supply the UserDetails if the token is valid
  */
 @Component
-public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider implements AuthenticationProvider {
 
     @Resource(name = "org.sakaiproject.tool.api.SessionManager")
     private SessionManager sessionManager;

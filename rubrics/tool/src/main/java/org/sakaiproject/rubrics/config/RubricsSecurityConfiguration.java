@@ -20,7 +20,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics;
+package org.sakaiproject.rubrics.config;
 
 import java.util.Arrays;
 
@@ -43,7 +43,7 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends GlobalMethodSecurityConfiguration {
+public class RubricsSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     @Autowired
     private SakaiAuthenticationProvider authenticationProvider;

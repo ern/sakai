@@ -30,26 +30,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.rubrics.RubricsConfiguration;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @BasePathAwareController
 @RequestMapping(value="/translations")
 @NoArgsConstructor
 @Slf4j
 public class TranslationsController {
-
-    @Autowired
-    RubricsConfiguration rubricsConfiguration;
 
     @Autowired
     ServerConfigurationService serverConfigurationService;

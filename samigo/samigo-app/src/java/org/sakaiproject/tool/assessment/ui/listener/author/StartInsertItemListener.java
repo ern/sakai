@@ -149,7 +149,6 @@ public class StartInsertItemListener implements ValueChangeListener
       itemauthorbean.setTagsList(null);
       itemauthorbean.setResourceHash(null);
       itemauthorbean.setItemId("");
-      itemauthorbean.setRbcsToken(rubricsService.generateJsonWebToken(RubricsConstants.RBCS_TOOL_SAMIGO));
       itemauthorbean.setRubricStateDetails("");
 
     log.debug("new itemtype." + newitemtype);

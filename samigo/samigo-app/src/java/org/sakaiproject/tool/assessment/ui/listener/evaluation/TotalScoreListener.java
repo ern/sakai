@@ -203,8 +203,6 @@ import org.sakaiproject.util.FormattedText;
     	questionbean.setAudioMaxDisplayedScoreRows(5);
     }
 
-    submissionbean.setRbcsToken(rubricsService.generateJsonWebToken(RubricsConstants.RBCS_TOOL_SAMIGO));
-
     if (!totalScores(pubAssessment, bean, false))
     {
       throw new RuntimeException("failed to call totalScores.");

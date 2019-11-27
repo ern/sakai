@@ -9186,7 +9186,7 @@ public class DiscussionForumTool {
 
 	public String getRbcsToken() {
 		log.debug("getRbcsToken()");
-		return rubricsService.generateJsonWebToken(RubricsConstants.RBCS_TOOL_FORUMS);
+		return "";
 	}
 
 	public void keepStateDetails(ActionEvent e) {//this is currently only used for rubrics, but could be used to avoid repeating code on each submit action

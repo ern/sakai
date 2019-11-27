@@ -364,7 +364,6 @@ public class ItemModifyListener implements ActionListener
                     nextpage = "imageMapItem";
                     break;
         }
-        itemauthorbean.setRbcsToken(rubricsService.generateJsonWebToken(RubricsConstants.RBCS_TOOL_SAMIGO));
         itemauthorbean.setRubricStateDetails("");
     }
     catch(RuntimeException e)

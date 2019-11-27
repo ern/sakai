@@ -20,7 +20,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.rubrics;
+package org.sakaiproject.rubrics.config;
 
 import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.sakaiproject.rubrics.logic.model.CriterionOutcome;
@@ -28,16 +28,19 @@ import org.sakaiproject.rubrics.logic.model.Evaluation;
 import org.sakaiproject.rubrics.logic.model.Rating;
 import org.sakaiproject.rubrics.logic.model.Rubric;
 import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.hateoas.Resource;
+import org.springframework.stereotype.Component;
 
-@Configuration
-public class AppRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
+@Component
+public class RubricsRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(Rubric.class, Criterion.class, Rating.class, ToolItemRubricAssociation.class, Evaluation.class, Resource.class, CriterionOutcome.class);
+        config.setBasePath("/rest");
+        config.setReturnBodyOnCreate(true);
+        config.setReturnBodyOnUpdate(true);
     }
 }

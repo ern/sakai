@@ -29,7 +29,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-//@RepositoryRestResource(collectionResourceRel = "ratings", path = "ratings")
+@RepositoryRestResource(collectionResourceRel = "ratings", path = "ratings")
 public interface RatingRestRepository extends MetadataRestRepository<Rating, Long> {
 
     @Override
