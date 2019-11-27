@@ -377,7 +377,6 @@ public class DiscussionForumTool {
   private boolean gradeByLetter;
 
   private static final String RUBRIC_STATE_DETAILS = "rbcs-state-details";
-  private static final String RUBRIC_TOKEN = "rbcs-token";
   private String rbcsStateDetails = "";
 
   /**
