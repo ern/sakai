@@ -1,5 +1,11 @@
 package org.sakaiproject.rubrics.config;
 
+import org.sakaiproject.rubrics.logic.model.Criterion;
+import org.sakaiproject.rubrics.logic.model.CriterionOutcome;
+import org.sakaiproject.rubrics.logic.model.Evaluation;
+import org.sakaiproject.rubrics.logic.model.Rating;
+import org.sakaiproject.rubrics.logic.model.Rubric;
+import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
 import org.sakaiproject.util.ResourceLoaderMessageSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -8,7 +14,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.data.web.config.HateoasAwareSpringDataWebConfiguration;
+import org.springframework.hateoas.Resource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -20,16 +33,18 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 
-@ComponentScan(basePackages = "org.sakaiproject.rubrics")
+@ComponentScan({"org.sakaiproject.rubrics"})
 @Configuration
+@EnableJpaRepositories({"org.sakaiproject.rubrics.repository"})
+@EnableSpringConfigured
 @EnableWebMvc
-@Import({RepositoryRestMvcConfiguration.class, RubricsRepositoryRestConfiguration.class, RubricsSecurityConfiguration.class})
-public class RubricsThymeleafConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+@Import({RubricsRepositoryRestMvcConfiguration.class})
+public class RubricsMvcConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
-    @Setter
-    private ApplicationContext applicationContext;
+    @Setter private ApplicationContext applicationContext;
 
     @Bean
     public ViewResolver viewResolver() {
@@ -66,9 +81,9 @@ public class RubricsThymeleafConfiguration extends WebMvcConfigurerAdapter imple
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/css/");
-        registry.addResourceHandler("/icons/**").addResourceLocations("classpath:/icons/");
+        // registry.addResourceHandler("/css/**").addResourceLocations("classpath:/css/");
+        // registry.addResourceHandler("/icons/**").addResourceLocations("classpath:/icons/");
+        registry.addResourceHandler("/webcomponents/**").addResourceLocations("classpath:/static/webcomponents/");
         super.addResourceHandlers(registry);
     }
-
 }

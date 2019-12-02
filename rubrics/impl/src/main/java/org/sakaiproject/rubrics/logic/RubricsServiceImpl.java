@@ -86,48 +86,20 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
 
     private static final String SITE_CONTEXT_TYPE = "site";
 
-    @Getter
-    @Setter
-    private ToolManager toolManager;
-
-    @Getter @Setter
-    private SessionManager sessionManager;
-
-    @Getter @Setter
-    private UserDirectoryService userDirectoryService;
-
-    @Getter @Setter
-    private SecurityService securityService;
-
-    @Getter @Setter
-    private EventTrackingService eventTrackingService;
-
-    @Getter @Setter
-    private ServerConfigurationService serverConfigurationService;
-
-    @Getter @Setter
-    private SiteService siteService;
-
-    @Getter @Setter
-    private FunctionManager functionManager;
-
-    @Getter @Setter
-    private AuthzGroupService authzGroupService;
-
-    @Getter @Setter
-    private EntityManager entityManager;
-
-    @Getter @Setter
-    private MemoryService memoryService;
-
-    @Resource
-    private ToolItemRubricAssociationRepository associationRepository;
-
-    @Resource
-    private EvaluationRepository evaluationRepository;
-
-    @Autowired
-    private RubricRepository rubricRepository;
+    @Setter private AuthzGroupService authzGroupService;
+    @Setter private EntityManager entityManager;
+    @Setter private EvaluationRepository evaluationRepository;
+    @Setter private EventTrackingService eventTrackingService;
+    @Setter private FunctionManager functionManager;
+    @Setter private MemoryService memoryService;
+    @Setter private RubricRepository rubricRepository;
+    @Setter private SecurityService securityService;
+    @Setter private ServerConfigurationService serverConfigurationService;
+    @Setter private SessionManager sessionManager;
+    @Setter private SiteService siteService;
+    @Setter private ToolItemRubricAssociationRepository associationRepository;
+    @Setter private ToolManager toolManager;
+    @Setter private UserDirectoryService userDirectoryService;
 
     private Cache<String, Boolean> hasAssociatedRubricCache;
 

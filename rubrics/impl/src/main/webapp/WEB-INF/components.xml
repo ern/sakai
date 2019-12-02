@@ -4,21 +4,17 @@
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:jpa="http://www.springframework.org/schema/data/jpa"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/data/jpa
-        http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <!--context:component-scan base-package="org.sakaiproject.rubrics.logic"/-->
-    <jpa:repositories base-package="org.sakaiproject.rubrics.logic.repository"/>
+<!--    <context:component-scan base-package="org.sakaiproject.rubrics.logic"/>-->
+<!--    <jpa:repositories base-package="org.sakaiproject.rubrics.logic.repository"/>-->
 
     <!-- ProjectLogic -->
     <bean id="org.sakaiproject.rubrics.logic.RubricsService"
-        class="org.sakaiproject.rubrics.logic.RubricsServiceImpl"
-        init-method="init">
-        <!-- API injection -->
+          class="org.sakaiproject.rubrics.logic.RubricsServiceImpl"
+          init-method="init">
         <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
         <property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
@@ -30,6 +26,9 @@
         <property name="authzGroupService" ref="org.sakaiproject.authz.api.AuthzGroupService"/>
         <property name="entityManager" ref="org.sakaiproject.entity.api.EntityManager"/>
         <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService"/>
+<!--        <property name="rubricRepository" ref="org.sakaiproject.rubrics.logic.repository.RubricRepository"/>-->
+<!--        <property name="evaluationRepository" ref="org.sakaiproject.rubrics.logic.repository.EvaluationRepository"/>-->
+<!--        <property name="associationRepository" ref="org.sakaiproject.rubrics.logic.repository.ToolItemRubricAssociationRepository"/>-->
     </bean>
 
 	<bean id="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappings.rubrics"
@@ -46,8 +45,4 @@
             </list>
         </property>
     </bean>
-
-    <bean id="org.springframework.hateoas.hal.HalConfiguration.rubrics"
-        class="org.springframework.hateoas.hal.HalConfiguration" />
-
 </beans>

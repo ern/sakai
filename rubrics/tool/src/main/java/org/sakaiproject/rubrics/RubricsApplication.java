@@ -31,7 +31,7 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
-import org.sakaiproject.rubrics.config.RubricsThymeleafConfiguration;
+import org.sakaiproject.rubrics.config.RubricsMvcConfiguration;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.SakaiContextLoaderListener;
 import org.sakaiproject.util.ToolListener;
@@ -39,22 +39,24 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-
 public class RubricsApplication implements WebApplicationInitializer {
 
     @Override
-    public void onStartup(ServletContext container) {
+    public void onStartup(ServletContext servletContext) {
 
+        // Spring webapp configuration
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(RubricsThymeleafConfiguration.class);
-        SakaiContextLoaderListener contextLoaderListener = new SakaiContextLoaderListener(context);
-        container.addListener(ToolListener.class);
-        container.addListener(contextLoaderListener);
-        ServletRegistration.Dynamic dispatcher = container.addServlet(RBCS_TOOL, new DispatcherServlet(context));
+        context.register(RubricsMvcConfiguration.class);
+        servletContext.addListener(ToolListener.class);
+        servletContext.addListener(new SakaiContextLoaderListener(context));
+
+        // Rubrics servlet configuration
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet(RBCS_TOOL, new DispatcherServlet(context));
         dispatcher.setLoadOnStartup(0);
         dispatcher.addMapping("/", "/index");
 
-        FilterRegistration.Dynamic reqFilter = container.addFilter("sakai.request", new RequestFilter());
+        // Sakai RequestFilter
+        FilterRegistration.Dynamic reqFilter = servletContext.addFilter("sakai.request", new RequestFilter());
         reqFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
     }
 }
