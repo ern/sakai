@@ -19,7 +19,9 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -46,6 +48,14 @@ import org.sakaiproject.util.IdPwEvidence;
 @SOAPBinding(style= SOAPBinding.Style.RPC, use= SOAPBinding.Use.LITERAL)
 @Slf4j
 public class SakaiLogin extends AbstractWebService {
+
+    protected boolean m_displayModJkWarning = true;
+
+    protected String cookieName = "JSESSIONID";
+    protected static final String SAKAI_COOKIE_NAME = "sakai.cookieName";
+    protected static final String SAKAI_COOKIE_DOMAIN = "sakai.cookieDomain";
+    protected static final String SAKAI_SERVERID = "sakai.serverId";
+
 
     //I don't see a simpler way of doing this 
     //https://stackoverflow.com/a/13408147/3708872
@@ -131,6 +141,27 @@ public class SakaiLogin extends AbstractWebService {
                 // we can do anyways.
 
                 usageSessionService.login(a.getUid(), id, ipAddress, "SakaiLogin", UsageSessionService.EVENT_LOGIN_WS);
+
+                HttpServletResponse res = (HttpServletResponse) message.get(AbstractHTTPDestination.HTTP_RESPONSE);
+
+                // retrieve the configured cookie name, if any
+                if (System.getProperty(SAKAI_COOKIE_NAME) != null) {
+                    cookieName = System.getProperty(SAKAI_COOKIE_NAME);
+                }
+
+                // retrieve the configured cookie domain, if any
+
+                Cookie c = new Cookie(cookieName, s.getId() + "." + getCookieSuffix());
+                c.setPath("/");
+                c.setMaxAge(-1);
+                if (System.getProperty(SAKAI_COOKIE_DOMAIN) != null) {
+                    c.setDomain(System.getProperty(SAKAI_COOKIE_DOMAIN));
+                }
+                if (request.isSecure() == true)
+                {
+                    c.setSecure(true);
+                }
+                res.addCookie(c);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Sakai Web Services Login id=" + id + " ip=" + ipAddress + " session=" + s.getId());
@@ -233,4 +264,22 @@ public class SakaiLogin extends AbstractWebService {
         return login(id, pw) + "," + serverConfigurationService.getString("webservices.directurl", serverConfigurationService.getString("serverUrl"));
     }
 
+    /**
+     * Get cookie suffix from the serverId.
+     * We can't do this at init time as it might not have been set yet (sakai hasn't started).
+     * @return The cookie suffix to use.
+     */
+    private String getCookieSuffix() {
+
+        // compute the session cookie suffix, based on this configured server id
+        String suffix = System.getProperty(SAKAI_SERVERID);
+        if ((suffix == null) || (suffix.length() == 0)) {
+            if (m_displayModJkWarning) {
+                log.warn("no sakai.serverId system property set - mod_jk load balancing will not function properly");
+            }
+            m_displayModJkWarning = false;
+            suffix = "sakai";
+        }
+        return suffix;
+    }
 }

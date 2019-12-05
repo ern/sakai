@@ -24,6 +24,7 @@ package org.sakaiproject.rubrics.config;
 
 import java.util.Arrays;
 
+import org.sakaiproject.rubrics.security.CustomMethodSecurityExpressionRoot;
 import org.sakaiproject.rubrics.security.SakaiAuthenticationProvider;
 import org.sakaiproject.rubrics.security.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -56,7 +58,7 @@ public class RubricsSecurityConfiguration extends GlobalMethodSecurityConfigurat
 
     @Bean
     public SecurityEvaluationContextExtension securityEvaluationContextExtension(){
-        return new SecurityEvaluationContextExtension();
+        return new RubricsEvaluationContextExtension();
     }
 
     @Configuration

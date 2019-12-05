@@ -42,6 +42,7 @@ public interface RubricRestRepository extends MetadataRestRepository<Rubric, Lon
 
     @Override
     @Query("select resource from Rubric resource where " + QUERY_CONTEXT_CONSTRAINT)
+    //@Query("select resource from Rubric resource")
     Page<Rubric> findAll(Pageable pageable);
 
     @Override
