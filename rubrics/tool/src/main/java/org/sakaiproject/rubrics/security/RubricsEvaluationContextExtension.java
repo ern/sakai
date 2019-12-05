@@ -22,72 +22,40 @@
 
 package org.sakaiproject.rubrics.security;
 
-import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
+
+
+
+import org.sakaiproject.rubrics.repository.CriterionRestRepository;
+import org.sakaiproject.rubrics.repository.EvaluationRestRepository;
+import org.sakaiproject.rubrics.repository.RatingRestRepository;
+import org.sakaiproject.rubrics.repository.RubricRestRepository;
+import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * <p>
- * By defining this object as a Bean, Spring Security is exposed as SpEL expressions for
- * creating Spring Data queries.
- *
- * <p>
- * With Java based configuration, we can define the bean using the following:
- *
- * <p>
- * For example, if you return a UserDetails that extends the following User object:
- *
- * <pre>
- * &#064;Entity
- * public class User {
- *     &#064;GeneratedValue(strategy = GenerationType.AUTO)
- *     &#064;Id
- *     private Long id;
- *
- *     ...
- * }
- * </pre>
- *
- * <p>
- * And you have a Message object that looks like the following:
- *
- * <pre>
- * &#064;Entity
- * public class Message {
- *     &#064;Id
- *     &#064;GeneratedValue(strategy = GenerationType.AUTO)
- *     private Long id;
- *
- *     &#064;OneToOne
- *     private User to;
- *
- *     ...
- * }
- * </pre>
- *
- * You can use the following {@code Query} annotation to search for only messages that are
- * to the current user:
- *
- * <pre>
- * &#064;Repository
- * public interface SecurityMessageRepository extends MessageRepository {
- *
- * 	&#064;Query(&quot;select m from Message m where m.to.id = ?#{ principal?.id }&quot;)
- * 	List&lt;Message&gt; findAll();
- * }
- * </pre>
- *
- * This works because the principal in this instance is a User which has an id field on
- * it.
- *
- * @since 4.0
- * @author Rob Winch
- */
-public class RubricsEvaluationContextExtension extends EvaluationContextExtensionSupport {
+public class RubricsEvaluationContextExtension extends SecurityEvaluationContextExtension {
 
 	private Authentication authentication;
+
+    @Autowired
+    private RubricRestRepository rubricRestRepository;
+
+    @Autowired
+    private CriterionRestRepository criterionRestRepository;
+
+    @Autowired
+    private RatingRestRepository ratingRestRepository;
+
+    @Autowired
+    private EvaluationRestRepository evaluationRestRepository;
+
+    @Autowired
+    private ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository;
 
 	/**
 	 * Creates a new instance that uses the current {@link Authentication} found on the
@@ -112,7 +80,12 @@ public class RubricsEvaluationContextExtension extends EvaluationContextExtensio
 	@Override
 	public Object getRootObject() {
 		Authentication authentication = getAuthentication();
-		return new CustomMethodSecurityExpressionRoot(authentication) {
+		return new CustomMethodSecurityExpressionRoot(this.rubricRestRepository
+                                                            , this.criterionRestRepository
+                                                            , this.ratingRestRepository
+                                                            , this.evaluationRestRepository
+                                                            , this.toolItemRubricAssociationRestRepository
+                                                            , this.authentication) {
 		};
 	}
 

@@ -56,8 +56,10 @@ public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurity
     @Autowired
     private ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository;
 
+    @Override
     protected MethodSecurityExpressionOperations createSecurityExpressionRoot(
             Authentication authentication, MethodInvocation invocation) {
+            System.out.println("HERE4");
         CustomMethodSecurityExpressionRoot root =
                 new CustomMethodSecurityExpressionRoot(rubricRestRepository, criterionRestRepository, ratingRestRepository,
                         evaluationRestRepository, toolItemRubricAssociationRestRepository, authentication);

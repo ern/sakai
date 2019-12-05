@@ -24,12 +24,16 @@ package org.sakaiproject.rubrics.config;
 
 import java.util.Arrays;
 
+import org.sakaiproject.rubrics.security.CustomMethodSecurityExpressionHandler;
 import org.sakaiproject.rubrics.security.CustomMethodSecurityExpressionRoot;
+import org.sakaiproject.rubrics.security.RubricsEvaluationContextExtension;
+import org.sakaiproject.rubrics.security.SakaiAuthenticationManager;
 import org.sakaiproject.rubrics.security.SakaiAuthenticationProvider;
 import org.sakaiproject.rubrics.security.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -48,18 +52,41 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 public class RubricsSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     @Autowired
-    private SakaiAuthenticationProvider authenticationProvider;
+    //private SakaiAuthenticationProvider authenticationProvider;
+    private SakaiAuthenticationManager authenticationManager;
 
-    @Bean
+    @Autowired
+    private CustomMethodSecurityExpressionHandler expressionHandler;
+    //private CustomMethodSecurityExpressionHandler customMethodSecurityExpressionHandler;
+
+    //@Bean
     @Override
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(Arrays.asList(authenticationProvider));
+    public AuthenticationManager authenticationManager() throws Exception {
+        System.out.println("HERE1");
+        //return new ProviderManager(Arrays.asList(authenticationProvider));
+        return this.authenticationManager;
     }
 
     @Bean
     public SecurityEvaluationContextExtension securityEvaluationContextExtension(){
+        System.out.println("HERE2");
         return new RubricsEvaluationContextExtension();
     }
+
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        System.out.println("HERE3");
+        System.out.println(this.expressionHandler == null);
+        return this.expressionHandler;
+    }
+
+    /*
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        System.out.println("HERE3");
+        return this.customMethodSecurityExpressionHandler;
+    }
+    */
 
     @Configuration
     public static class WebSecurityConfig extends WebSecurityConfigurerAdapter {

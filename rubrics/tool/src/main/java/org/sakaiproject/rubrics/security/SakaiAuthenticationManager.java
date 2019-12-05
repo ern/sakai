@@ -30,9 +30,10 @@ import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
@@ -42,7 +43,7 @@ import org.springframework.stereotype.Component;
  * Used for checking the token from the request and supply the UserDetails if the token is valid
  */
 @Component
-public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider implements AuthenticationProvider {
+public class SakaiAuthenticationManager implements AuthenticationManager {
 
     @Resource(name = "org.sakaiproject.tool.api.SessionManager")
     private SessionManager sessionManager;
@@ -50,20 +51,16 @@ public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticati
     private ToolManager toolManager;
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-
-    }
-
-    @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         System.out.println("HERERERERERER");
         Session session = sessionManager.getCurrentSession();
         if (session == null) {
-            throw new SessionAuthenticationException(String.format("Sakai session does not exists for request, user = %s", username));
+            //throw new SessionAuthenticationException(String.format("Sakai session does not exists for request, user = %s", username));
+            throw new SessionAuthenticationException(String.format("Sakai session does not exists for request"));
         }
         AuthenticatedRequestContext authenticatedRequestContext = new AuthenticatedRequestContext(
                 session.getUserId(), RBCS_TOOL, toolManager.getCurrentPlacement().getContext(), "site");
-        return authenticatedRequestContext;
+        return authentication;
     }
 }
