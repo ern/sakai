@@ -42,7 +42,8 @@ import org.springframework.stereotype.Component;
  * Used for checking the token from the request and supply the UserDetails if the token is valid
  */
 @Component
-public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider implements AuthenticationProvider {
+//public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider implements AuthenticationProvider {
+public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Resource(name = "org.sakaiproject.tool.api.SessionManager")
     private SessionManager sessionManager;
@@ -51,6 +52,7 @@ public class SakaiAuthenticationProvider extends AbstractUserDetailsAuthenticati
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+        System.out.println("HERERERERERER");
 
     }
 

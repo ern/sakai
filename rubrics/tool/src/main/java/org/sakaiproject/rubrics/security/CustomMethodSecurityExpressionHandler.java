@@ -29,15 +29,18 @@ import org.sakaiproject.rubrics.repository.RatingRestRepository;
 import org.sakaiproject.rubrics.repository.RubricRestRepository;
 import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.expression.AbstractSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
+//public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurityExpressionHandler {
+public class CustomMethodSecurityExpressionHandler extends AbstractSecurityExpressionHandler<FilterInvocation> {
 
     private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
@@ -57,8 +60,9 @@ public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurity
     private ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository;
 
     @Override
-    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(
-            Authentication authentication, MethodInvocation invocation) {
+    public MethodSecurityExpressionOperations createSecurityExpressionRoot(
+            //Authentication authentication, MethodInvocation invocation) {
+            Authentication authentication, FilterInvocation invocation) {
             System.out.println("HERE4");
         CustomMethodSecurityExpressionRoot root =
                 new CustomMethodSecurityExpressionRoot(rubricRestRepository, criterionRestRepository, ratingRestRepository,

@@ -32,6 +32,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
 import org.sakaiproject.rubrics.config.RubricsMvcConfiguration;
+import org.sakaiproject.rubrics.config.RubricsSecurityConfiguration;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.SakaiContextLoaderListener;
 import org.sakaiproject.util.ToolListener;
@@ -39,14 +40,20 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+//public class RubricsApplication implements WebApplicationInitializer {
 public class RubricsApplication implements WebApplicationInitializer {
+//public class RubricsApplication extends AbstractSecurityWebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) {
+    //public void afterSpringSecurityFilterChain(ServletContext servletContext) {
 
         // Spring webapp configuration
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(RubricsMvcConfiguration.class);
+        //context.register(RubricsSecurityConfiguration.class);
         servletContext.addListener(ToolListener.class);
         servletContext.addListener(new SakaiContextLoaderListener(context));
 
@@ -58,5 +65,9 @@ public class RubricsApplication implements WebApplicationInitializer {
         // Sakai RequestFilter
         FilterRegistration.Dynamic reqFilter = servletContext.addFilter("sakai.request", new RequestFilter());
         reqFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
+
+        //FilterRegistration.Dynamic secFilter = servletContext.addFilter("springSecurityFilterChain", "org.springframework.web.filter.DelegatingFilterProxy");
+        //secFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
+        //secFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
     }
 }

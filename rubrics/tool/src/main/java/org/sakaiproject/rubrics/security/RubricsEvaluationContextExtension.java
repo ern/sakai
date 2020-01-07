@@ -19,17 +19,15 @@
  * limitations under the License.
  *
  **********************************************************************************/
-
 package org.sakaiproject.rubrics.security;
-
-
-
 
 import org.sakaiproject.rubrics.repository.CriterionRestRepository;
 import org.sakaiproject.rubrics.repository.EvaluationRestRepository;
 import org.sakaiproject.rubrics.repository.RatingRestRepository;
 import org.sakaiproject.rubrics.repository.RubricRestRepository;
 import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestRepository;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.SessionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
@@ -37,10 +35,14 @@ import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import javax.annotation.Resource;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RubricsEvaluationContextExtension extends SecurityEvaluationContextExtension {
 
-	private Authentication authentication;
+	//private Authentication authentication;
 
     @Autowired
     private RubricRestRepository rubricRestRepository;
@@ -57,44 +59,46 @@ public class RubricsEvaluationContextExtension extends SecurityEvaluationContext
     @Autowired
     private ToolItemRubricAssociationRestRepository toolItemRubricAssociationRestRepository;
 
+    @Resource(name = "org.sakaiproject.tool.api.SessionManager")
+    private SessionManager sessionManager;
+
 	/**
 	 * Creates a new instance that uses the current {@link Authentication} found on the
 	 * {@link org.springframework.security.core.context.SecurityContextHolder}.
 	 */
+    /*
 	public RubricsEvaluationContextExtension() {
 	}
+    */
 
 	/**
 	 * Creates a new instance that always uses the same {@link Authentication} object.
 	 *
 	 * @param authentication the {@link Authentication} to use
 	 */
+    /*
 	public RubricsEvaluationContextExtension(Authentication authentication) {
 		this.authentication = authentication;
 	}
+    */
 
 	public String getExtensionId() {
-		return "security";
+		return "rubrics";
 	}
 
 	@Override
 	public Object getRootObject() {
-		Authentication authentication = getAuthentication();
+        System.out.println("GETROOTOBJECT");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Session session = sessionManager.getCurrentSession();
+        String userId = session.getUserId();
+        System.out.println("USERID: " + userId);
 		return new CustomMethodSecurityExpressionRoot(this.rubricRestRepository
                                                             , this.criterionRestRepository
                                                             , this.ratingRestRepository
                                                             , this.evaluationRestRepository
                                                             , this.toolItemRubricAssociationRestRepository
-                                                            , this.authentication) {
+                                                            , authentication) {
 		};
-	}
-
-	private Authentication getAuthentication() {
-		if (this.authentication != null) {
-			return this.authentication;
-		}
-
-		SecurityContext context = SecurityContextHolder.getContext();
-		return context.getAuthentication();
 	}
 }
