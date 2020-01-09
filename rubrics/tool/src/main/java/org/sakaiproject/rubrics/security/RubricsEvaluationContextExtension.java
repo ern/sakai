@@ -21,6 +21,7 @@
  **********************************************************************************/
 package org.sakaiproject.rubrics.security;
 
+import org.sakaiproject.rubrics.logic.AuthenticatedRequestContext;
 import org.sakaiproject.rubrics.repository.CriterionRestRepository;
 import org.sakaiproject.rubrics.repository.EvaluationRestRepository;
 import org.sakaiproject.rubrics.repository.RatingRestRepository;
@@ -29,7 +30,9 @@ import org.sakaiproject.rubrics.repository.ToolItemRubricAssociationRestReposito
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
+import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.core.Authentication;
@@ -38,6 +41,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+
+import static org.sakaiproject.rubrics.logic.RubricsConstants.RBCS_TOOL;
 
 @Component
 public class RubricsEvaluationContextExtension extends SecurityEvaluationContextExtension {
@@ -61,6 +66,9 @@ public class RubricsEvaluationContextExtension extends SecurityEvaluationContext
 
     @Resource(name = "org.sakaiproject.tool.api.SessionManager")
     private SessionManager sessionManager;
+
+    @Resource(name = "org.sakaiproject.tool.api.ToolManager")
+    private ToolManager toolManager;
 
 	/**
 	 * Creates a new instance that uses the current {@link Authentication} found on the
@@ -93,6 +101,9 @@ public class RubricsEvaluationContextExtension extends SecurityEvaluationContext
         Session session = sessionManager.getCurrentSession();
         String userId = session.getUserId();
         System.out.println("USERID: " + userId);
+        AuthenticatedRequestContext authenticatedRequestContext = new AuthenticatedRequestContext(
+                session.getUserId(), RBCS_TOOL, toolManager.getCurrentPlacement().getContext(), "site");
+        authentication = new UsernamePasswordAuthenticationToken(authenticatedRequestContext, userId);
 		return new CustomMethodSecurityExpressionRoot(this.rubricRestRepository
                                                             , this.criterionRestRepository
                                                             , this.ratingRestRepository

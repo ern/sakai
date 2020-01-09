@@ -24,6 +24,7 @@ import org.springframework.data.web.config.HateoasAwareSpringDataWebConfiguratio
 import org.springframework.hateoas.Resource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.TemplateEngine;
@@ -32,6 +33,8 @@ import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import org.sakaiproject.util.RequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;

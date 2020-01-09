@@ -40,6 +40,8 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import org.springframework.web.filter.DelegatingFilterProxy;
+
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 //public class RubricsApplication implements WebApplicationInitializer {
@@ -47,27 +49,26 @@ public class RubricsApplication implements WebApplicationInitializer {
 //public class RubricsApplication extends AbstractSecurityWebApplicationInitializer {
 
     @Override
-    public void onStartup(ServletContext servletContext) {
+    public void onStartup(ServletContext sc) {
     //public void afterSpringSecurityFilterChain(ServletContext servletContext) {
 
         // Spring webapp configuration
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(RubricsMvcConfiguration.class);
-        //context.register(RubricsSecurityConfiguration.class);
-        servletContext.addListener(ToolListener.class);
-        servletContext.addListener(new SakaiContextLoaderListener(context));
+        sc.addListener(ToolListener.class);
+        sc.addListener(new SakaiContextLoaderListener(context));
 
         // Rubrics servlet configuration
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet(RBCS_TOOL, new DispatcherServlet(context));
+        ServletRegistration.Dynamic dispatcher = sc.addServlet(RBCS_TOOL, new DispatcherServlet(context));
         dispatcher.setLoadOnStartup(0);
         dispatcher.addMapping("/", "/index");
 
         // Sakai RequestFilter
-        FilterRegistration.Dynamic reqFilter = servletContext.addFilter("sakai.request", new RequestFilter());
+        FilterRegistration.Dynamic reqFilter = sc.addFilter("sakai.request", new RequestFilter());
         reqFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
 
-        //FilterRegistration.Dynamic secFilter = servletContext.addFilter("springSecurityFilterChain", "org.springframework.web.filter.DelegatingFilterProxy");
-        //secFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
-        //secFilter.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, RBCS_TOOL);
+        final DelegatingFilterProxy springSecurityFilterChain = new DelegatingFilterProxy("springSecurityFilterChain");
+        final FilterRegistration.Dynamic addedFilter = sc.addFilter("springSecurityFilterChain", springSecurityFilterChain);
+        addedFilter.addMappingForUrlPatterns(null, false, "/*");
     }
 }

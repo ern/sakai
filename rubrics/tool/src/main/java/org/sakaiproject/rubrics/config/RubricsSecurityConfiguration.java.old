@@ -24,8 +24,6 @@ package org.sakaiproject.rubrics.config;
 
 import java.util.Arrays;
 
-import org.sakaiproject.util.RequestFilter;
-
 import org.sakaiproject.rubrics.security.CustomMethodSecurityExpressionHandler;
 import org.sakaiproject.rubrics.security.CustomMethodSecurityExpressionRoot;
 import org.sakaiproject.rubrics.security.RubricsEvaluationContextExtension;
@@ -33,11 +31,9 @@ import org.sakaiproject.rubrics.security.SakaiAuthenticationProvider;
 import org.sakaiproject.rubrics.security.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -52,16 +48,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.data.repository.query.spi.EvaluationContextExtension;
 
-import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
-
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
-
-
 @SuppressWarnings("SpringJavaAutowiringInspection")
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableWebSecurity(debug = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 //public class RubricsSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 public class RubricsSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private SakaiAuthenticationProvider authenticationProvider;
 
     @Autowired
     private CustomMethodSecurityExpressionHandler expressionHandler;
@@ -69,14 +64,18 @@ public class RubricsSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private RubricsEvaluationContextExtension securityExtension;
 
-    @Autowired
-    private SakaiAuthenticationProvider authenticationProvider;
-
     @Bean
     public EvaluationContextExtension securityExtension() {
         System.out.println("HERE1");
         System.out.println("SEC EXTENSION NULL: " + (this.securityExtension == null));
         return this.securityExtension;
+    }
+
+    @Bean
+    protected AuthenticationManager authenticationManager() {
+
+        System.out.println("HERE2");
+        return new ProviderManager(Arrays.asList(authenticationProvider));
     }
 
     /*
@@ -99,26 +98,35 @@ public class RubricsSecurityConfiguration extends WebSecurityConfigurerAdapter {
     //@Configuration
     //public static class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        //@Autowired
-        //private SakaiAuthenticationProvider authenticationProvider;
-
-        /*
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.expressionHandler(this.expressionHandler);
-        }
-        */
-
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            System.out.println("CONFIGUREHTTP");
             http
-                .authorizeRequests().regexMatchers("/rest.*").authenticated();
+                //.csrf().disable() // we don't need CSRF because our token is invulnerable
+                .exceptionHandling().authenticationEntryPoint(new UnauthorizedAuthenticationEntryPoint())
+                //.and()
+                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().antMatchers(
+                        "/",
+                        "/index",
+                        "/favicon.ico",
+                        "/*.html",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js"
+                ).permitAll()
+                .anyRequest().authenticated();
+
+            // disable page caching
+            http.headers().cacheControl();
         }
 
-        @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             System.out.println("CONFIGUREAUTH");
             auth.authenticationProvider(this.authenticationProvider);
         }
+
+
     //}
 }
