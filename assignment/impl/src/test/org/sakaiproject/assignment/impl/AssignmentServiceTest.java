@@ -54,6 +54,8 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 
+import org.hibernate.NonUniqueResultException;
+import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,6 +103,11 @@ import org.w3c.dom.NodeList;
 
 import com.github.javafaker.Faker;
 
+import io.hypersistence.optimizer.HypersistenceOptimizer;
+import io.hypersistence.optimizer.core.config.HibernateConfig;
+import io.hypersistence.optimizer.core.event.ChainEventHandler;
+import io.hypersistence.optimizer.core.event.ListEventHandler;
+import io.hypersistence.optimizer.core.event.LogEventHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -120,11 +127,14 @@ public class AssignmentServiceTest extends AbstractTransactionalJUnit4SpringCont
     @Autowired private SessionManager sessionManager;
     @Autowired private ServerConfigurationService serverConfigurationService;
     @Autowired private SiteService siteService;
+    @Autowired private UserDirectoryService userDirectoryService;
     @Resource(name = "org.sakaiproject.time.api.UserTimeService")
     private UserTimeService userTimeService;
-    @Autowired private UserDirectoryService userDirectoryService;
+    @Resource(name = "org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory")
+    private SessionFactory sessionFactory;
 
     private ResourceLoader resourceLoader;
+    private final ListEventHandler listEventHandler = new ListEventHandler();
 
     @Before
     public void setUp() {
@@ -143,6 +153,11 @@ public class AssignmentServiceTest extends AbstractTransactionalJUnit4SpringCont
         when(resourceLoader.getString("assignment.copy")).thenReturn("Copy");
         ((AssignmentServiceImpl) assignmentService).setResourceLoader(resourceLoader);
         when(userTimeService.getLocalTimeZone()).thenReturn(TimeZone.getDefault());
+
+        new HypersistenceOptimizer(
+                new HibernateConfig(sessionFactory).setEventHandler(
+                        new ChainEventHandler(Arrays.asList(listEventHandler, LogEventHandler.INSTANCE))))
+                .init();
     }
 
     @Test
