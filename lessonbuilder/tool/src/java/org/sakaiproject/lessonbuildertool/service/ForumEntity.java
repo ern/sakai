@@ -931,7 +931,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 			item.setPermissionLevel(contributorLevel);
 			item.setPermissionLevelName("Contributor");
-			permissionLevelManager.saveDBMembershipItem(item, new PermissionsMask());
+			permissionLevelManager.saveDBMembershipItem(item, contributorMask);
 		    }
 		} else if (!item.getPermissionLevelName().equals("Owner")) {  // only group members are contributors
 		    // remove contributor from anything else, both groups and roles
@@ -943,7 +943,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 		    item.setPermissionLevel(noneLevel);
 		    item.setPermissionLevelName("None");
-		    permissionLevelManager.saveDBMembershipItem(item, new PermissionsMask());
+		    permissionLevelManager.saveDBMembershipItem(item, ownerMask);
 		}			
 	    }
 	    for (String newGroupName: addGroupNames) {
@@ -955,7 +955,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 		membershipItem = permissionLevelManager.
 		    createDBMembershipItem(newGroupName, "Contributor", MembershipItem.TYPE_GROUP);
 		membershipItem.setPermissionLevel(contributorLevel);
-		membershipItem = permissionLevelManager.saveDBMembershipItem(membershipItem, new PermissionsMask());
+		membershipItem = permissionLevelManager.saveDBMembershipItem(membershipItem, contributorMask);
 		oldMembershipItemSet.add(membershipItem);
 	    }
 
@@ -975,7 +975,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 			
 			item.setPermissionLevel(contributorLevel);
 			item.setPermissionLevelName("Contributor");
-			permissionLevelManager.saveDBMembershipItem(item, new PermissionsMask());
+			permissionLevelManager.saveDBMembershipItem(item, contributorMask);
 		    }
 		} else if (!item.getPermissionLevelName().equals("None")) {
 		    // kill other contributors
@@ -985,7 +985,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 		    item.setPermissionLevel(noneLevel);
 		    item.setPermissionLevelName("None");
-		    permissionLevelManager.saveDBMembershipItem(item, new PermissionsMask());
+		    permissionLevelManager.saveDBMembershipItem(item, noneMask);
 		}			
 	    }
 	}
