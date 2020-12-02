@@ -22,7 +22,6 @@ package org.sakaiproject.api.app.messageforums;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,190 +29,111 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is critical for the interaction with AuthorizationManager.
- * This class will be used for creating Authorizations and querying 
+ * This class will be used for creating Authorizations and querying
  * Authorizations. The implementation of this class is not thread safe.
- * 
+ *
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
  * @version $Id: PermissionsMask.java 632 2005-07-14 21:22:50 +0000 (Thu, 14 Jul 2005) janderse@umich.edu $
  */
 @Slf4j
-public class PermissionsMask implements Map
-{
+public class PermissionsMask implements Map<String, Boolean> {
 
-  private Map map;
+    final private Map<String, Boolean> map;
 
-  /**
-   * @see HashMap#HashMap()
-   */
-  public PermissionsMask()
-  {
-    map = new HashMap();
-  }
-
-  /**
-   * @see HashMap#HashMap(int)
-   */
-  public PermissionsMask(int initialCapacity)
-  {
-    map = new HashMap(initialCapacity);
-  }
-
-  /**
-   * @see HashMap#HashMap(int, float)
-   */
-  public PermissionsMask(int initialCapacity, float loadFactor)
-  {
-    map = new HashMap(initialCapacity, loadFactor);
-  }
-
-  /**
-   * @see java.util.Map#clear()
-   */
-  public void clear()
-  {
-    map.clear();
-  }
-
-  /**
-   * @see java.util.Map#containsKey(java.lang.Object)
-   */
-  public boolean containsKey(Object key)
-  {
-    return map.containsKey(key);
-  }
-
-  /**
-   * @see java.util.Map#containsValue(java.lang.Object)
-   */
-  public boolean containsValue(Object value)
-  {
-    return map.containsValue(value);
-  }
-
-  /**
-   * @see java.util.Map#entrySet()
-   */
-  public Set entrySet()
-  {
-    return map.entrySet();
-  }
-
-  /**
-   * @see java.util.Map#equals(java.lang.Object)
-   */
-  public boolean equals(Object o)
-  {
-    return map.equals(o);
-  }
-
-  /**
-   * @see java.util.Map#get(java.lang.Object)
-   */
-  public Object get(Object key)
-  {
-    return map.get(key);
-  }
-
-  /**
-   * @see java.util.Map#hashCode()
-   */
-  public int hashCode()
-  {
-    return map.hashCode();
-  }
-
-  /**
-   * @see java.util.Map#isEmpty()
-   */
-  public boolean isEmpty()
-  {
-    return map.isEmpty();
-  }
-
-  /**
-   * @see java.util.Map#keySet()
-   */
-  public Set keySet()
-  {
-    return map.keySet();
-  }
-
-  /**
-   * @param key Must be of type String.
-   * @param value Must be of type Boolean or null.
-   * @see java.util.Map#put(java.lang.Object, java.lang.Object)
-   */
-  public Object put(Object key, Object value)
-  {
-    if (log.isDebugEnabled())
-    {
-      log.debug("put(Object " + key + ", Object " + value + ")");
-    }
-    if (key == null || !(key instanceof String))
-      throw new IllegalArgumentException("Illegal key argument passed!");
-    if (value != null && !(value instanceof Boolean))
-      throw new IllegalArgumentException("Illegal value argument passed!");
-
-    return map.put(key, value);
-  }
-
-  /**
-   * @throws IllegalArgumentException if the specified map is null or any of the
-   * keys are not Strings.
-   * @see java.util.Map#putAll(java.util.Map)
-   */
-  public void putAll(Map t)
-  {
-    if (log.isDebugEnabled())
-    {
-      log.debug("putAll(Map " + t + ")");
-    }
-    if (t == null)
-      throw new IllegalArgumentException("Illegal map argument passed!");
-    for (Iterator iter = t.entrySet().iterator(); iter.hasNext();)
-    {
-      Map.Entry entry = (Entry) iter.next();
-      if (!(entry.getKey() instanceof String))
-        throw new IllegalArgumentException(
-            "Illegal key found in Map, must be a String!");
-      if (entry.getValue() != null && !(entry.getValue() instanceof Boolean))
-        throw new IllegalArgumentException(
-            "Illegal value found in Map; must be a Boolean or null!");
+    public PermissionsMask() {
+        map = new HashMap<>();
     }
 
-    map.putAll(t);
-  }
+    public PermissionsMask(int initialCapacity) {
+        map = new HashMap<>(initialCapacity);
+    }
 
-  /**
-   * @see java.util.Map#remove(java.lang.Object)
-   */
-  public Object remove(Object key)
-  {
-    return map.remove(key);
-  }
+    public PermissionsMask(int initialCapacity, float loadFactor) {
+        map = new HashMap<>(initialCapacity, loadFactor);
+    }
 
-  /**
-   * @see java.util.Map#size()
-   */
-  public int size()
-  {
-    return map.size();
-  }
+    @Override
+    public void clear() {
+        map.clear();
+    }
 
-  /**
-   * @see java.util.Map#values()
-   */
-  public Collection values()
-  {
-    return map.values();
-  }
+    @Override
+    public boolean containsKey(Object key) {
+        return map.containsKey(key);
+    }
 
-  /**
-   * @see java.lang.Object#toString()
-   */
-  public String toString()
-  {
-    return map.toString();
-  }
+    @Override
+    public boolean containsValue(Object value) {
+        return map.containsValue(value);
+    }
 
+    @Override
+    public Set<Map.Entry<String, Boolean>> entrySet() {
+        return map.entrySet();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return map.equals(o);
+    }
+
+    @Override
+    public Boolean get(Object key) {
+        return map.get(key);
+    }
+
+    @Override
+    public int hashCode() {
+        return map.hashCode();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return map.isEmpty();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return map.keySet();
+    }
+
+    @Override
+    public Boolean put(String key, Boolean value) {
+        log.debug("put(String {}, Boolean {})", key, value);
+        if (key == null) throw new IllegalArgumentException("Illegal key argument passed!");
+        if (value == null) throw new IllegalArgumentException("Illegal value argument passed!");
+        return map.put(key, value);
+    }
+
+    /**
+     * @throws IllegalArgumentException if the specified map is null or any of the
+     *                                  keys are not Strings.
+     * @see java.util.Map#putAll(java.util.Map)
+     */
+    @Override
+    public void putAll(Map<? extends String, ? extends Boolean> m) {
+        log.debug("putAll(Map {})", m);
+        if (m == null) throw new IllegalArgumentException("Illegal map argument passed!");
+        map.putAll(m);
+    }
+
+    @Override
+    public Boolean remove(Object key) {
+        return map.remove(key);
+    }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
+
+    @Override
+    public Collection<Boolean> values() {
+        return map.values();
+    }
+
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 }

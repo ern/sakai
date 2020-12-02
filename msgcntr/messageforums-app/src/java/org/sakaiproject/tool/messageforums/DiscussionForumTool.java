@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
@@ -97,7 +98,6 @@ import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.api.app.messageforums.MembershipItem;
-import org.sakaiproject.component.app.messageforums.dao.hibernate.DBMembershipItemImpl;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.util.comparator.ForumBySortIndexAscAndCreatedDateDesc;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -913,9 +913,16 @@ public class DiscussionForumTool {
     		return null;
     	}
     }
-    
-    setObjectPermissions(template.getArea());
-    areaManager.saveArea(template.getArea());    
+
+    if (permissions != null) {
+      for (PermissionBean permission : permissions) {
+        DBMembershipItem item = permission.getItem();
+        PermissionsMask mask = createMaskFromPermissionBean(permission);
+        permissionLevelManager.saveDBMembershipItem(item, mask);
+      }
+    }
+
+    areaManager.saveArea(template.getArea());
     return gotoMain();
   }
 
@@ -1448,8 +1455,16 @@ public class DiscussionForumTool {
 	}
 
     saveForumSelectedAssignment(forum);
-    saveForumAttach(forum);  
-    setObjectPermissions(forum);
+    saveForumAttach(forum);
+    if (permissions != null) {
+      for (PermissionBean permission : permissions) {
+        DBMembershipItem i = permission.getItem();
+        if (i != null) {
+          PermissionsMask mask = createMaskFromPermissionBean(permission);
+          permissionLevelManager.saveDBMembershipItem(i, mask);
+        }
+      }
+    }
     if (draft)
       forum = forumManager.saveForumAsDraft(forum);
     else
@@ -1940,7 +1955,15 @@ public class DiscussionForumTool {
         }
         saveTopicSelectedAssignment(topic);
         saveTopicAttach(topic);
-        setObjectPermissions(topic);
+        if (permissions != null) {
+          for (PermissionBean permission : permissions) {
+            DBMembershipItem i = permission.getItem();
+            if (i != null) {
+              PermissionsMask mask = createMaskFromPermissionBean(permission);
+              permissionLevelManager.saveDBMembershipItem(i, mask);
+            }
+          }
+        }
 
         topic = forumManager.saveTopic(topic, draft);
 
@@ -6631,86 +6654,32 @@ public class DiscussionForumTool {
   	sBuffer.append("</script>");  	
   	return sBuffer.toString();
   }
-  
-  public void setObjectPermissions(Object target){
-  	Area area = null;
-  	DiscussionForum forum = null;
-  	DiscussionTopic topic = null;
-
-  	Set<DBMembershipItem> oldMembershipItemSet = null;
-  	Set<DBMembershipItem> membershipItemSet = new HashSet<>();
-
-    if (target instanceof DiscussionForum){
-    	forum = ((DiscussionForum) target);
-    	oldMembershipItemSet = uiPermissionsManager.getForumItemsSet(forum);
-    } else if (target instanceof Area){
-    	area = ((Area) target);
-    	oldMembershipItemSet = uiPermissionsManager.getAreaItemsSet(area);
-    } else if (target instanceof Topic){
-    	topic = ((DiscussionTopic) target);
-    	oldMembershipItemSet = uiPermissionsManager.getTopicItemsSet(topic);
-    }
-
-    if (permissions != null) {
-      for (PermissionBean permBean : permissions) {
-        //for group awareness
-        //DBMembershipItem membershipItem = permissionLevelManager.createDBMembershipItem(permBean.getItem().getName(), permBean.getSelectedLevel(), DBMembershipItem.TYPE_ROLE);
-        DBMembershipItem membershipItem = permissionLevelManager.createDBMembershipItem(permBean.getItem().getName(), permBean.getSelectedLevel(), permBean.getItem().getType());
-        setupMembershipItemPermission(membershipItem, permBean);
-
-        // save DBMembershiptItem here to get an id so we can add to the set
-        membershipItem = permissionLevelManager.saveDBMembershipItem(membershipItem);
-
-        membershipItemSet.add(membershipItem);
-      }
-
-      if (forum != null) {
-        final DiscussionForum f = forum;
-        forum.setMembershipItemSet(membershipItemSet);
-        membershipItemSet.forEach(i -> ((DBMembershipItemImpl) i).setForum(f));
-      } else if (area != null) {
-        final Area a = area;
-        area.setMembershipItemSet(membershipItemSet);
-        membershipItemSet.forEach(i -> ((DBMembershipItemImpl) i).setArea(a));
-      } else if (topic != null) {
-        final Topic t = topic;
-        topic.setMembershipItemSet(membershipItemSet);
-        membershipItemSet.forEach(i -> ((DBMembershipItemImpl) i).setTopic(t));
-      }
-
-      permissionLevelManager.deleteMembershipItems(oldMembershipItemSet);
-    }
-    siteMembers = null;
-  }
 
 	/**
 	 * Using a PermissionBean, constructs a PermissionMask, then constructs a PermissionLevel, and assigns it to a MembershipItem
 	 * @param membershipItem membershipItem the item on which to apply the new permission level
 	 * @param permBean the PermissionBean from which the new PermissionLevel should be based
 	 */
-	private void setupMembershipItemPermission(DBMembershipItem membershipItem, PermissionBean permBean)
-	{
-		PermissionsMask mask = new PermissionsMask();                
-		mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(permBean.getNewForum())); 
-		mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(permBean.getNewTopic()));
-		mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(permBean.getNewResponse()));
-		mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(permBean.getResponseToResponse()));
-		mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(permBean.getMovePosting()));
-		mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(permBean.getChangeSettings()));
-		mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(permBean.getPostToGradebook()));
-		mask.put(PermissionLevel.READ, Boolean.valueOf(permBean.getRead()));
-		mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(permBean.getMarkAsRead()));
-		mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(permBean.getModeratePostings()));
-		mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(permBean.getIdentifyAnonAuthors()));
-		mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(permBean.getDeleteOwn()));
-		mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(permBean.getDeleteAny()));
-		mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(permBean.getReviseOwn()));
-		mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(permBean.getReviseAny()));
-		
-		PermissionLevel level = permissionLevelManager.createPermissionLevel(permBean.getSelectedLevel(), typeManager.getCustomLevelType(), mask);
-		membershipItem.setPermissionLevel(level);
+	private PermissionsMask createMaskFromPermissionBean(PermissionBean permBean) {
+		PermissionsMask mask = new PermissionsMask();
+		mask.put(PermissionLevel.NEW_FORUM, permBean.getNewForum());
+		mask.put(PermissionLevel.NEW_TOPIC, permBean.getNewTopic());
+		mask.put(PermissionLevel.NEW_RESPONSE, permBean.getNewResponse());
+		mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, permBean.getResponseToResponse());
+		mask.put(PermissionLevel.MOVE_POSTING, permBean.getMovePosting());
+		mask.put(PermissionLevel.CHANGE_SETTINGS, permBean.getChangeSettings());
+		mask.put(PermissionLevel.POST_TO_GRADEBOOK, permBean.getPostToGradebook());
+		mask.put(PermissionLevel.READ, permBean.getRead());
+		mask.put(PermissionLevel.MARK_AS_READ, permBean.getMarkAsRead());
+		mask.put(PermissionLevel.MODERATE_POSTINGS, permBean.getModeratePostings());
+		mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, permBean.getIdentifyAnonAuthors());
+		mask.put(PermissionLevel.DELETE_OWN, permBean.getDeleteOwn());
+		mask.put(PermissionLevel.DELETE_ANY, permBean.getDeleteAny());
+		mask.put(PermissionLevel.REVISE_OWN, permBean.getReviseOwn());
+		mask.put(PermissionLevel.REVISE_ANY, permBean.getReviseAny());
+		return mask;
 	}
-  
+
   /**
    * processActionAddGroupsUsers
    * @return navigation String
@@ -7743,17 +7712,24 @@ public class DiscussionForumTool {
 
 	if (topicMembershipItemSet != null && !topicMembershipItemSet.isEmpty() ) { //&& allowedPermNames != null && !allowedPermNames.isEmpty()
 		log.debug("About to assign topicMembershipItemSet's iterator");
+
+		// TODO this needs refactoring
+
 		Iterator membershipIter = topicMembershipItemSet.iterator();
 		while (membershipIter.hasNext()) {
 			log.debug("About to get a member of membershipIter");
 			DBMembershipItem oldItem = (DBMembershipItem)membershipIter.next();
 				log.debug("About to getMembershipItemCopy()");
-				DBMembershipItem newItem = getMembershipItemCopy(oldItem);
-				if (newItem != null) {
-					newItem = permissionLevelManager.saveDBMembershipItem(newItem);
-					newTopic.addMembershipItem(newItem);
-				}
-		}
+                DBMembershipItem newItem = getMembershipItemCopy(oldItem);
+                if (newItem != null) {
+
+                    // TODO need to get the mask
+                    // PermissionsMask mask = createMaskFromPermissionBean(permission);
+                    PermissionsMask mask = new PermissionsMask();
+                    newItem = permissionLevelManager.saveDBMembershipItem(newItem, mask);
+                    newTopic.addMembershipItem(newItem);
+                }
+        }
 	}
 	// Add the attachments
 	List fromTopicAttach = forumManager.getTopicByIdWithAttachments(originalTopicId).getAttachments();

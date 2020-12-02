@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.sakaiproject.api.app.messageforums.MessageForumsTypeManager;
 import org.sakaiproject.api.common.type.Type;
 import org.sakaiproject.api.common.type.TypeManager;
-import org.sakaiproject.db.api.SqlService;
 
 /**
  * @author <a href="mailto:rshastri@iupui.edu">Rashmi Shastri</a>
@@ -75,24 +74,11 @@ public class MessageForumsTypeManagerImpl implements MessageForumsTypeManager
   private Map initPermissionTypes;
   
   private TypeManager typeManager;
-  private SqlService sqlService;
-  private Boolean autoDdl;
 
   public void init() throws Exception
   {
 	  log.info("init()");           
 	  try {
-	  	//  run ddl 
-		  /*if (autoDdl.booleanValue()){
-			  try
-			  {                        
-				  sqlService.ddl(this.getClass().getClassLoader(), "mfr");
-			  }       
-			  catch (Throwable t)
-			  {
-				  log.warn(this + ".init(): ", t);
-			  }
-		  }*/
 		  loadInitialDefaultPermissionType();
 	  }
 	  catch (Exception e) {
@@ -111,7 +97,11 @@ public class MessageForumsTypeManagerImpl implements MessageForumsTypeManager
     }
     this.typeManager = typeManager;
   }
-  
+
+  public Type getTypeByUuid(String uuid) {
+    return typeManager.getType(uuid);
+  }
+
   public String getOwnerLevelType(){
   	log.debug("getOwnerLevelType()");
   	
@@ -514,7 +504,21 @@ public class MessageForumsTypeManagerImpl implements MessageForumsTypeManager
     else
     	return null;
   }
-  
+
+  @Override
+  public String getCreatedBy(String uuid) {
+    Type type = typeManager.getType(uuid);
+    if (type != null) return type.getCreatedBy();
+    return null;
+  }
+
+  @Override
+  public String getModifiedBy(String uuid) {
+    Type type = typeManager.getType(uuid);
+    if (type != null) return type.getLastModifiedBy();
+    return null;
+  }
+
   private void loadInitialDefaultPermissionType()
   {
   	initPermissionTypes = new HashMap();
@@ -528,11 +532,4 @@ public class MessageForumsTypeManagerImpl implements MessageForumsTypeManager
   	initPermissionTypes.put(CUSTOM, getCustomLevelType());
   }
 
-  public void setSqlService(SqlService sqlService) {
-	  this.sqlService = sqlService;
-  }
-
-  public void setAutoDdl(Boolean autoDdl) {
-	  this.autoDdl = autoDdl;
-  }
 }

@@ -20,99 +20,53 @@
  **********************************************************************************/
 package org.sakaiproject.api.app.messageforums;
 
-/**
- * @author <a href="mailto:rshastri@iupui.edu">Rashmi Shastri</a>
- *
- */
-public interface MessageForumsTypeManager
-{
-	public String getOwnerLevelType();
-	
-	public String getAuthorLevelType();
-	
-	public String getNoneditingAuthorLevelType();
-	
-	public String getReviewerLevelType();
-	
-	public String getContributorLevelType();
-	
-	public String getNoneLevelType();
-	
-	public String getCustomLevelType();
-	
-  /**
-   * @return
-   */
- // public List getAvailableTypes();		
-   
-  /**
-   * @return
-   */
-  public String getPrivateMessageAreaType();
-  
-  public String getUserDefinedPrivateTopicType();
- 
+public interface MessageForumsTypeManager {
+    String getOwnerLevelType();
 
-  /**
-   * @return
-   */
-  public String getDiscussionForumType();
-   
+    String getAuthorLevelType();
 
-  /**
-   * @return
-   */
-  public String getOpenDiscussionForumType();
-   
-  
-  /**
-   * @return
-   */
-  public String getReceivedPrivateMessageType();
-  
-  
-  /**
-   * @return
-   */
-  public String getSentPrivateMessageType();
-  
-  /**
-   * @return
-   */
-  public String getDeletedPrivateMessageType();
-  
-  /**
-   * @return
-   */
-  public String getDraftPrivateMessageType();
-  
-  /**
-   * @return
-   */
-  public String getRoleType();
-  
-  /**
-   * @return
-   */
-  public String getGroupType();
-  
-  /**
-   * @return
-   */
-  public String getUserType(); 
-  
-  /**
-   * @return
-   */
-  public String getAllParticipantType(); 
-  
-  /**
-   * @return
-   */
-  public String getNotSpecifiedType();
- 
-  public String getCustomTopicType(String topicTitle);
-  
-  public String renameCustomTopicType(String oldTopicTitle, String newTopicTitle);
- 
+    String getNoneditingAuthorLevelType();
+
+    String getReviewerLevelType();
+
+    String getContributorLevelType();
+
+    String getNoneLevelType();
+
+    String getCustomLevelType();
+
+    String getPrivateMessageAreaType();
+
+    String getUserDefinedPrivateTopicType();
+
+    String getDiscussionForumType();
+
+    String getOpenDiscussionForumType();
+
+    String getReceivedPrivateMessageType();
+
+    String getSentPrivateMessageType();
+
+    String getDeletedPrivateMessageType();
+
+    String getDraftPrivateMessageType();
+
+    String getRoleType();
+
+    String getGroupType();
+
+    String getUserType();
+
+    String getAllParticipantType();
+
+    String getNotSpecifiedType();
+
+    String getCustomTopicType(String topicTitle);
+
+    String renameCustomTopicType(String oldTopicTitle, String newTopicTitle);
+
+    String getCreatedBy(String uuid);
+
+    String getModifiedBy(String uuid);
+
 }

@@ -558,148 +558,12 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
     // access control
     // seems not to be used anymore
     public boolean addEntityControl(String siteId, String groupId) throws IOException {
-
-	if (type != TYPE_FORUM_TOPIC)
-	    return false;
-
-	setMasks();
-
-	if (topic == null)
-	    topic = getTopicById(true, id);
-	if (topic == null)
-	    return false;
-
-	Set<DBMembershipItem> oldMembershipItemSet = uiPermissionsManager.getTopicItemsSet((DiscussionTopic)topic);
-
-	Set membershipItemSet = new HashSet();
-
-	String groupName = null;
-	String maintainRole = null;
-	try {
-	    Site site = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
-	    groupName = site.getGroup(groupId).getTitle();
-	    maintainRole = authzGroupService.getAuthzGroup("/site/" + site.getId()).getMaintainRole();
-	} catch (Exception e) {
-	    log.info("Unable to get site info for AddEntityControl " + e);
-	}
-
-	PermissionLevel ownerLevel = permissionLevelManager.
-	    createPermissionLevel("Owner",  typeManager.getOwnerLevelType(), ownerMask);
-	permissionLevelManager.savePermissionLevel(ownerLevel);
-
-	PermissionLevel contributorLevel = permissionLevelManager.
-	    createPermissionLevel("Contributor",  typeManager.getContributorLevelType(), contributorMask);
-	permissionLevelManager.savePermissionLevel(contributorLevel);
-
-	DBMembershipItem membershipItem = permissionLevelManager.
-	    createDBMembershipItem(groupName, "Contributor", MembershipItem.TYPE_GROUP);
-	membershipItem.setPermissionLevel(contributorLevel);
-	permissionLevelManager.saveDBMembershipItem(membershipItem);	
-
-	membershipItemSet.add(membershipItem);
-
-	membershipItem = permissionLevelManager.
-	    createDBMembershipItem(maintainRole, "Owner", MembershipItem.TYPE_ROLE);
-	membershipItem.setPermissionLevel(ownerLevel);
-	permissionLevelManager.saveDBMembershipItem(membershipItem);	
-	
-	membershipItemSet.add(membershipItem);
-
-	// now change any existing ones into null
-	for (DBMembershipItem item: oldMembershipItemSet) {
-	    if (!(maintainRole.equals(item.getName()) && item.getType().equals(MembershipItem.TYPE_ROLE) ||
-		  groupName.equals(item.getName()) && item.getType().equals(MembershipItem.TYPE_GROUP))) {
-		PermissionLevel noneLevel = permissionLevelManager.
-		    createPermissionLevel("None",  typeManager.getNoneLevelType(), noneMask);
-		permissionLevelManager.savePermissionLevel(noneLevel);
-
-		membershipItem = permissionLevelManager.
-		    createDBMembershipItem(item.getName(), "None", item.getType());
-		membershipItem.setPermissionLevel(noneLevel);
-		permissionLevelManager.saveDBMembershipItem(membershipItem);	
-		membershipItemSet.add(membershipItem);
-	    }
-	}
-
-        permissionLevelManager.deleteMembershipItems(oldMembershipItemSet);
-
-	topic.setMembershipItemSet(membershipItemSet);
-	discussionForumManager.saveTopic((DiscussionTopic) topic);
-
-	return true;
+		return false;
     };
 	
     // seems not to be used anymore
     public boolean removeEntityControl(String siteId, String groupId) throws IOException {
-
-	if (type != TYPE_FORUM_TOPIC)
-	    return false;
-
-	setMasks();
-
-	if (topic == null)
-	    topic = getTopicById(true, id);
-	if (topic == null)
-	    return false;
-
-	Set<DBMembershipItem> oldMembershipItemSet = uiPermissionsManager.getTopicItemsSet((DiscussionTopic)topic);
-
-	Set membershipItemSet = new HashSet();
-
-	String groupName = null;
-	String maintainRole = null;
-	try {
-	    Site site = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
-	    groupName = site.getGroup(groupId).getTitle();
-	    maintainRole = authzGroupService.getAuthzGroup("/site/" + site.getId()).getMaintainRole();
-	} catch (Exception e) {
-	    log.info("Unable to get site info for AddEntityControl " + e);
-	}
-
-	PermissionLevel ownerLevel = permissionLevelManager.
-	    createPermissionLevel("Owner",  typeManager.getOwnerLevelType(), ownerMask);
-	permissionLevelManager.savePermissionLevel(ownerLevel);
-
-	DBMembershipItem membershipItem = permissionLevelManager.
-	    createDBMembershipItem(maintainRole, "Owner", MembershipItem.TYPE_ROLE);
-	membershipItem.setPermissionLevel(ownerLevel);
-	permissionLevelManager.saveDBMembershipItem(membershipItem);	
-	
-	membershipItemSet.add(membershipItem);
-
-	// now change any existing ones into null
-	for (DBMembershipItem item: oldMembershipItemSet) {
- 	    if (item.getType().equals(MembershipItem.TYPE_ROLE)) {
-		if (!maintainRole.equals(item.getName())) { // that was done above, other roles contributor
-		    PermissionLevel contributorLevel = permissionLevelManager.
-			createPermissionLevel("Contributor",  typeManager.getContributorLevelType(), contributorMask);
-		    permissionLevelManager.savePermissionLevel(contributorLevel);
-
-		    membershipItem = permissionLevelManager.
-			createDBMembershipItem(item.getName(), "Contributor", item.getType());
-		    membershipItem.setPermissionLevel(contributorLevel);
-		    permissionLevelManager.saveDBMembershipItem(membershipItem);	
-		    membershipItemSet.add(membershipItem);
-		}
-	    } else {  // everything else off
-		PermissionLevel noneLevel = permissionLevelManager.
-		    createPermissionLevel("None",  typeManager.getNoneLevelType(), noneMask);
-		permissionLevelManager.savePermissionLevel(noneLevel);
-		
-		membershipItem = permissionLevelManager.
-		    createDBMembershipItem(item.getName(), "None", item.getType());
-		membershipItem.setPermissionLevel(noneLevel);
-		permissionLevelManager.saveDBMembershipItem(membershipItem);	
-		membershipItemSet.add(membershipItem);
-	    }
-	}
-
-        permissionLevelManager.deleteMembershipItems(oldMembershipItemSet);
-
-	topic.setMembershipItemSet(membershipItemSet);
-	discussionForumManager.saveTopic((DiscussionTopic) topic);
-
-	return true;
+		return false;
     };
 
     // submission
@@ -1067,7 +931,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 			item.setPermissionLevel(contributorLevel);
 			item.setPermissionLevelName("Contributor");
-			permissionLevelManager.saveDBMembershipItem(item);
+			permissionLevelManager.saveDBMembershipItem(item, );
 		    }
 		} else if (!item.getPermissionLevelName().equals("Owner")) {  // only group members are contributors
 		    // remove contributor from anything else, both groups and roles
@@ -1079,7 +943,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 		    item.setPermissionLevel(noneLevel);
 		    item.setPermissionLevelName("None");
-		    permissionLevelManager.saveDBMembershipItem(item);
+		    permissionLevelManager.saveDBMembershipItem(item, );
 		}			
 	    }
 	    for (String newGroupName: addGroupNames) {
@@ -1091,7 +955,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 		membershipItem = permissionLevelManager.
 		    createDBMembershipItem(newGroupName, "Contributor", MembershipItem.TYPE_GROUP);
 		membershipItem.setPermissionLevel(contributorLevel);
-		membershipItem = permissionLevelManager.saveDBMembershipItem(membershipItem);	
+		membershipItem = permissionLevelManager.saveDBMembershipItem(membershipItem, );
 		oldMembershipItemSet.add(membershipItem);
 	    }
 
@@ -1111,7 +975,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 			
 			item.setPermissionLevel(contributorLevel);
 			item.setPermissionLevelName("Contributor");
-			permissionLevelManager.saveDBMembershipItem(item);
+			permissionLevelManager.saveDBMembershipItem(item, );
 		    }
 		} else if (!item.getPermissionLevelName().equals("None")) {
 		    // kill other contributors
@@ -1121,7 +985,7 @@ public class ForumEntity extends HibernateDaoSupport implements LessonEntity, Fo
 
 		    item.setPermissionLevel(noneLevel);
 		    item.setPermissionLevelName("None");
-		    permissionLevelManager.saveDBMembershipItem(item);
+		    permissionLevelManager.saveDBMembershipItem(item, );
 		}			
 	    }
 	}

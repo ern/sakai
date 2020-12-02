@@ -79,7 +79,6 @@
     <bean id="org.sakaiproject.api.app.messageforums.MessageForumsTypeManager" 
         class="org.sakaiproject.component.app.messageforums.MessageForumsTypeManagerImpl" init-method="init">
         <property name="typeManager" ref="org.sakaiproject.api.common.type.TypeManager"/>
-        <property name="sqlService" ref="org.sakaiproject.db.api.SqlService"/>
     </bean>
      
     <bean id="org.sakaiproject.api.app.messageforums.DummyDataHelperApi" class="org.sakaiproject.component.app.messageforums.DummyDataHelper">
@@ -130,21 +129,21 @@
    
 
     <bean id="org.sakaiproject.api.app.messageforums.PermissionLevelManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="transactionManager">
-            <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
-        </property>
+        <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
         <property name="target">
             <bean class="org.sakaiproject.component.app.messageforums.PermissionLevelManagerImpl" init-method="init">
-                <property name="autoDdl">
-                    <value>${auto.ddl}</value>
-                </property>
-                <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+                <property name="areaManager" ref="org.sakaiproject.api.app.messageforums.AreaManager"/>
                 <property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService"/>
                 <property name="idManager" ref="org.sakaiproject.id.api.IdManager" />
+                <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService"/>
+                <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
                 <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+                <property name="transactionTemplate">
+                    <bean class="org.springframework.transaction.support.TransactionTemplate">
+                        <constructor-arg ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+                    </bean>
+                </property>
                 <property name="typeManager" ref="org.sakaiproject.api.app.messageforums.MessageForumsTypeManager"/>
-                <property name="areaManager" ref="org.sakaiproject.api.app.messageforums.AreaManager"/>
-                <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
             </bean>
         </property>
          <property name="transactionAttributes">

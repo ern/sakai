@@ -546,7 +546,9 @@ public class DiscussionForumServiceImpl implements DiscussionForumService, Entit
 
 									DBMembershipItem newItem = getMembershipItemCopy(oldItem);
 									if (newItem != null) {
-										newItem = permissionManager.saveDBMembershipItem(newItem);
+										// TODO need a proper mask
+										PermissionsMask mask = new PermissionsMask();
+										newItem = permissionManager.saveDBMembershipItem(newItem, mask);
 										newForum.addMembershipItem(newItem);
 									}
 								}
@@ -627,7 +629,9 @@ public class DiscussionForumServiceImpl implements DiscussionForumService, Entit
 										if(allowedPermNames.contains(oldItem.getName())) {
 											DBMembershipItem newItem = getMembershipItemCopy(oldItem);
 											if (newItem != null) {
-												newItem = permissionManager.saveDBMembershipItem(newItem);
+												// TODO need a proper mask
+												PermissionsMask mask = new PermissionsMask();
+												newItem = permissionManager.saveDBMembershipItem(newItem, mask);
 												newTopic.addMembershipItem(newItem);
 											}
 										}
@@ -1256,7 +1260,10 @@ public class DiscussionForumServiceImpl implements DiscussionForumService, Entit
 									}
 								}
 								// save DBMembershipItem here to get an id so we can add to the set
-								membershipItem = permissionManager.saveDBMembershipItem(membershipItem);
+
+								// TODO need a proper mask
+								PermissionsMask mask = new PermissionsMask();
+								membershipItem = permissionManager.saveDBMembershipItem(membershipItem, mask);
 								membershipItemSet.add(membershipItem);
 							}
 						}

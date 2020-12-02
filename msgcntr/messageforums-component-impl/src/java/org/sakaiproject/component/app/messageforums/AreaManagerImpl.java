@@ -361,8 +361,7 @@ public class AreaManagerImpl extends HibernateDaoSupport implements AreaManager 
     }
 
     private String getCurrentUser() {
-    	String user = sessionManager.getCurrentSessionUserId();
-  		return (user == null) ? "test-user" : user;
+    	return sessionManager.getCurrentSessionUserId();
     }
 
     private String getEventMessage(Object object) {

@@ -90,19 +90,18 @@ public interface PermissionLevelManager {
 	public List<PermissionLevel> getDefaultPermissionLevels();
 	
     public DBMembershipItem createDBMembershipItem(String name, String permissionLevelName, Integer type);
-    public DBMembershipItem saveDBMembershipItem(DBMembershipItem item);
+    public DBMembershipItem saveDBMembershipItem(DBMembershipItem item, PermissionsMask mask);
     public PermissionLevel savePermissionLevel(PermissionLevel level);
     
     /**
      * 
      * @return a non-null list of the names for the non-custom permissions
      */
-    public  List getOrderedPermissionLevelNames(); 
+    public  List<String> getOrderedPermissionLevelNames();
     
     public Boolean getCustomPermissionByName(String customPermissionName, PermissionLevel permissionLevel);
-    public List getCustomPermissions();
-  	public List<DBMembershipItem> getAllMembershipItemsForForumsForSite(final Long areaId);
-  	public List<DBMembershipItem> getAllMembershipItemsForTopicsForSite(final Long areaId);
-  	public void deleteMembershipItems(Set<DBMembershipItem> membershipSet);
-  	
+    public List<String> getCustomPermissions();
+  	public Set<DBMembershipItem> getAllMembershipItemsForForumsForSite(final Long areaId);
+  	public Set<DBMembershipItem> getAllMembershipItemsForTopicsForSite(final Long areaId);
+
 }

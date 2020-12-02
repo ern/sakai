@@ -33,15 +33,14 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.Query;
 import org.sakaiproject.api.app.messageforums.AreaManager;
 import org.sakaiproject.api.app.messageforums.DBMembershipItem;
 import org.sakaiproject.api.app.messageforums.MessageForumsTypeManager;
 import org.sakaiproject.api.app.messageforums.PermissionLevel;
 import org.sakaiproject.api.app.messageforums.PermissionLevelManager;
 import org.sakaiproject.api.app.messageforums.PermissionsMask;
-import org.sakaiproject.api.app.messageforums.Topic;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.DBMembershipItemImpl;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.PermissionLevelImpl;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.TopicImpl;
@@ -49,56 +48,27 @@ import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.hibernate.HibernateCriterionUtils;
 import org.sakaiproject.id.api.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
-import org.springframework.orm.hibernate5.HibernateCallback;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.Assert;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PermissionLevelManagerImpl extends HibernateDaoSupport implements PermissionLevelManager {
 
-	private EventTrackingService eventTrackingService;
-	private SessionManager sessionManager;
-	private IdManager idManager;
-	private MessageForumsTypeManager typeManager;
-	private AreaManager areaManager;
-	private PlatformTransactionManager transactionManager;
-	private TransactionTemplate transactionTemplate;
-	
-	private Map<String, PermissionLevel> defaultPermissionsMap;
-	
-	private static final String QUERY_BY_TYPE_UUID = "findPermissionLevelByTypeUuid";
+	@Setter private AreaManager areaManager;
+	@Setter private EventTrackingService eventTrackingService;
+	@Setter private IdManager idManager;
+	@Setter private SessionManager sessionManager;
+	@Setter private TransactionTemplate transactionTemplate;
+	@Setter private MessageForumsTypeManager typeManager;
 
-	private Boolean autoDdl;
-	
+	private final Map<String, PermissionLevel> defaultPermissionsMap = new HashMap<>();
+
 	public void init(){
 		log.info("init()");
-		Assert.notNull(transactionManager, "The 'transactionManager' argument must not be null.");
-		transactionTemplate = new TransactionTemplate(transactionManager);
-		try {
-
-			// add the default permission level and type data, if necessary
-			if (autoDdl != null && autoDdl) {
-				transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-					@Override
-					protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-						loadDefaultTypeAndPermissionLevelData();
-					}
-				});
-			}
-
-			// for performance, load the default permission level information now
-			// to make it reusable
-			initializePermissionLevelData();
-		} catch ( Exception ex ) {
-			log.error("PermissionsLevelManager - a problem occurred loading default permission level data ",ex);
-		}
-
+		transactionTemplate.executeWithoutResult(transactionStatus -> loadDefaultTypeAndPermissionLevelData());
 	}
 	
 	public PermissionLevel getPermissionLevelByName(String name){
@@ -128,12 +98,9 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 			return null;
 		}
 	}
-	
-	public  List getOrderedPermissionLevelNames(){
 
-		if (log.isDebugEnabled()){
-			log.debug("getOrderedPermissionLevelNames executing");
-		}
+	public List<String> getOrderedPermissionLevelNames() {
+		log.debug("Get ordered permission levels");
 
 		List<String> levelNames = new ArrayList<String>();
 
@@ -191,51 +158,7 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 		
 		return null;
 	}
-	
-	/**
-	 * Populates the permission level data for the case when the default permission levels
-	 * are being created, not the custom levels
-	 * @param name
-	 * @param typeUuid
-	 * @param mask
-	 * @return
-	 */
-	private PermissionLevel createDefaultPermissionLevel(String name, String typeUuid, PermissionsMask mask)
-	{
-		if (log.isDebugEnabled()){
-			log.debug("createDefaultPermissionLevel executing(" + name + "," + typeUuid + "," + mask + ")");
-		}
-		
-		if (name == null || typeUuid == null || mask == null) {      
-			throw new IllegalArgumentException("Null Argument");
-		}
-								
-		PermissionLevel newPermissionLevel = new PermissionLevelImpl();
-		Date now = new Date();
-		newPermissionLevel.setName(name);
-		newPermissionLevel.setUuid(idManager.createUuid());
-		newPermissionLevel.setCreated(now);
-		newPermissionLevel.setCreatedBy("admin");
-		newPermissionLevel.setModified(now);
-		newPermissionLevel.setModifiedBy("admin");
-		newPermissionLevel.setTypeUuid(typeUuid);
-			
-		// set permission properties using reflection
-		for (Iterator<Entry<String, Boolean>> i = mask.entrySet().iterator(); i.hasNext();){
-			Entry<String, Boolean> entry = i.next();
-			String key = entry.getKey();
-			Boolean value = entry.getValue();
-			try{
-			  PropertyUtils.setSimpleProperty(newPermissionLevel, key, value);
-			}
-			catch (Exception e){
-				throw new RuntimeException(e);
-			}
-		}										
-				
-		return newPermissionLevel;		
-	}
-	
+
 	public PermissionLevel createPermissionLevel(String name, String typeUuid, PermissionsMask mask){
 		
 		if (log.isDebugEnabled()){
@@ -245,10 +168,14 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 		if (name == null || typeUuid == null || mask == null) {      
       throw new IllegalArgumentException("Null Argument");
 		}
-								
+
+		String currentUser = getCurrentUser();
+		if (currentUser == null) {
+			currentUser = typeManager.getCreatedBy(typeUuid);
+		}
+
 		PermissionLevel newPermissionLevel = new PermissionLevelImpl();
 		Date now = new Date();
-		String currentUser = getCurrentUser();
 		newPermissionLevel.setName(name);
 		newPermissionLevel.setUuid(idManager.createUuid());
 		newPermissionLevel.setCreated(now);
@@ -298,12 +225,36 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 		return newDBMembershipItem;		
 	}
   
-  public DBMembershipItem saveDBMembershipItem(DBMembershipItem item){
-		return (DBMembershipItem) getSessionFactory().getCurrentSession().merge(item);
+  public DBMembershipItem saveDBMembershipItem(DBMembershipItem item, PermissionsMask mask){
+		if (item != null) {
+
+			// we never change the default but instead create a new one with the changes
+			PermissionLevel level = item.getPermissionLevel();
+			PermissionLevel defaultPermissionLevel = getDefaultPermissionLevel(level.getTypeUuid());
+
+			// TODO we need to sort out when something needs to be saved
+			if (defaultPermissionLevel != null) {
+				// TODO thinking of using the PermissionMask to compare permissions
+				PermissionsMask defaultPermissionMask = createMaskFromPermissionLevel(defaultPermissionLevel);
+
+				// TODO if the permission is no longer the same as the default we need to create a new one and remove the default from the list
+				// TODO if the permission is a custom and were switching back to the default then delete the custom and add default back to list
+				// TODO need a way to prevent changes to default permissions
+				// if (defaultPermissionLevel.getName().equals(level.getName()) &&
+
+
+			}
+			return (DBMembershipItem) getSessionFactory().getCurrentSession().merge(item);
+		}
+		return null;
   }
   
   public PermissionLevel savePermissionLevel(PermissionLevel level) {
-		return (PermissionLevel) getSessionFactory().getCurrentSession().merge(level);
+		if (level != null) {
+			// TODO need to prevent changes to default permissions levels
+			return (PermissionLevel) getSessionFactory().getCurrentSession().merge(level);
+		}
+		return null;
   }
 	
   public PermissionLevel getDefaultOwnerPermissionLevel(){
@@ -485,28 +436,19 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 		  throw new IllegalArgumentException("Null Argument");
 	  }
 
-	  if (log.isDebugEnabled()){
-		  log.debug("getDefaultPermissionLevel executing with typeUuid: " + typeUuid);
-	  }
+	  log.debug("Fetch Permission Level with typeUuid: {}", typeUuid);
 
-	  PermissionLevel level = null;
+	  PermissionLevel level = defaultPermissionsMap.get(typeUuid);
 
-	  if(defaultPermissionsMap != null && defaultPermissionsMap.containsKey(typeUuid)) {
-		  // check to see if it is already in the map that was created at startup
-		  level =  ((PermissionLevel)defaultPermissionsMap.get(typeUuid)).clone();
-		  if (log.isDebugEnabled()) log.debug("got Default PermissionLevel from defaultPermissionsMap as " + level);
-	  
-	  } else {
+	  if (level == null) {
 		  // retrieve it from the table
-		  HibernateCallback<PermissionLevel> hcb = session -> {
-              Query q = session.getNamedQuery(QUERY_BY_TYPE_UUID);
-              q.setParameter("typeUuid", typeUuid);
+		  // <![CDATA[from org.sakaiproject.component.app.messageforums.dao.hibernate.PermissionLevelImpl as pli where pli.typeUuid = :typeUuid]]>
+		  level = getHibernateTemplate().execute(session -> (PermissionLevelImpl) session.createCriteria(PermissionLevelImpl.class)
+				  .add(Restrictions.eq("typeUuid", typeUuid))
+				  .uniqueResult());
 
-              return (PermissionLevel) q.uniqueResult();
-          };
-
-		  level = getHibernateTemplate().execute(hcb);
-		  if (log.isDebugEnabled()) log.debug("Returned Permission Level from query was "+level);
+		  defaultPermissionsMap.put(typeUuid, level);
+		  log.debug("Returned Permission Level from query was {}", level);
 	  }
 
 	  return level;
@@ -555,8 +497,8 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
     		return null;
     }
 	
-	public List getCustomPermissions() {
-		List customPerms = new ArrayList();
+	public List<String> getCustomPermissions() {
+		List<String> customPerms = new ArrayList<>();
 		customPerms.add(PermissionLevel.NEW_FORUM);
 		customPerms.add(PermissionLevel.NEW_RESPONSE);
 		customPerms.add(PermissionLevel.NEW_RESPONSE_TO_RESPONSE);
@@ -579,110 +521,47 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
     
 	
 	private String getCurrentUser() {    
-		String user = sessionManager.getCurrentSessionUserId();
-		return (user == null) ? "test-user" : user;    
+		return sessionManager.getCurrentSessionUserId();
   }
-	
-	public void setEventTrackingService(EventTrackingService eventTrackingService) {
-		this.eventTrackingService = eventTrackingService;
+
+	public Set<DBMembershipItem> getAllMembershipItemsForForumsForSite(final Long areaId) {
+		List<DBMembershipItem> list = getHibernateTemplate().execute(session ->
+				session.createCriteria(DBMembershipItemImpl.class, "m")
+						.createAlias("m.forum", "f")
+						.createAlias("f.area", "a")
+						.setFetchMode("m.permissionLevel", FetchMode.JOIN)
+						.add(Restrictions.eq("a.id", areaId))
+						.list());
+		return new HashSet<>(list != null ? list : Collections.emptyList());
 	}
 
-	public void setTypeManager(MessageForumsTypeManager typeManager) {
-		this.typeManager = typeManager;
-	}
-
-	public void setIdManager(IdManager idManager) {
-		this.idManager = idManager;
-	}
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-
-	public void setAreaManager(AreaManager areaManager) {
-		this.areaManager = areaManager;
-	}
-
-    public List getAllMembershipItemsForForumsForSite(final Long areaId) {
-        log.debug("getAllMembershipItemsForForumsForSite executing");
-        //     <![CDATA[select membership from org.sakaiproject.component.app.messageforums.dao.hibernate.DBMembershipItemImpl as membership
-        // 		    join membership.forum as forum
-        // 		    join forum.area as area
-        // 		    left join fetch membership.permissionLevel
-        // 		    where
-        // 		    area.id = :areaId
-        // 		]]>
-        return getHibernateTemplate().execute(session ->
-                session.createCriteria(DBMembershipItemImpl.class, "m")
-                        .createAlias("m.forum", "f")
-                        .createAlias("f.area", "a")
-                        .setFetchMode("m.permissionLevel", FetchMode.JOIN)
-                        .add(Restrictions.eq("a.id", areaId))
-                        .list()
-        );
-    }
-
-    private List<Long> getAllTopicsForSite(final Long areaId) {
-        log.debug("getAllTopicsForSite executing");
-        //    <![CDATA[from org.sakaiproject.component.app.messageforums.dao.hibernate.TopicImpl as topic
-        // 		    join topic.openForum as forum
-        // 		    join forum.area as area
-        // 		    where
-        // 		    area.id = :areaId
-        // 		]]>
-        List<Topic> topicList = getHibernateTemplate().execute(session ->
+	private List<Long> getAllTopicsForSite(final Long areaId) {
+        List<Long> ids = getHibernateTemplate().execute(session ->
                 session.createCriteria(TopicImpl.class, "t")
+						.setProjection(Projections.property("id"))
                         .createAlias("t.openForum", "f")
                         .createAlias("f.area", "a")
                         .add(Restrictions.eq("a.id", areaId))
                         .list());
 
-        List<Long> ids = new ArrayList<>();
-
-        if (topicList != null) {
-            for (Topic topic : topicList) {
-                ids.add(topic.getId());
-            }
-        }
-        return ids;
+        return ids != null ? ids : Collections.emptyList();
     }
 
-    public List<DBMembershipItem> getAllMembershipItemsForTopicsForSite(final Long areaId) {
+    public Set<DBMembershipItem> getAllMembershipItemsForTopicsForSite(final Long areaId) {
         final List<Long> topicIds = getAllTopicsForSite(areaId);
 
         if (!topicIds.isEmpty()) {
-            //      <![CDATA[select membership from org.sakaiproject.component.app.messageforums.dao.hibernate.DBMembershipItemImpl as membership
-            // 		     join membership.topic as topic
-            // 		     left join fetch membership.permissionLevel
-            // 		     where
-            // 		     topic.id in ( :topicIdList )
-            // 		 ]]>
-            return getHibernateTemplate().execute(session ->
-                    session.createCriteria(DBMembershipItemImpl.class, "m")
-                            .createAlias("m.topic", "t")
-                            .setFetchMode("m.permissionLevel", FetchMode.JOIN)
-                            .add(HibernateCriterionUtils.CriterionInRestrictionSplitter("t.id", topicIds))
-                            .list());
-        }
-        return new ArrayList<>();
+				List<DBMembershipItem> list = getHibernateTemplate().execute(session ->
+						session.createCriteria(DBMembershipItemImpl.class, "m")
+								.createAlias("m.topic", "t")
+								.setFetchMode("m.permissionLevel", FetchMode.JOIN)
+								.add(HibernateCriterionUtils.CriterionInRestrictionSplitter("t.id", topicIds))
+								.list());
+				return new HashSet<>(list != null ? list : Collections.emptyList());
+		}
+        return Collections.emptySet();
     }
 
-	private void initializePermissionLevelData()
-	{
-		if (log.isDebugEnabled()){
-			log.debug("loadInitialDefaultPermissionLevel executing");
-		}
-		
-		defaultPermissionsMap = new HashMap();
-		
-		defaultPermissionsMap.put(typeManager.getOwnerLevelType(), getDefaultOwnerPermissionLevel());
-		defaultPermissionsMap.put(typeManager.getAuthorLevelType(), getDefaultAuthorPermissionLevel());
-		defaultPermissionsMap.put(typeManager.getNoneditingAuthorLevelType(), getDefaultNoneditingAuthorPermissionLevel());
-		defaultPermissionsMap.put(typeManager.getContributorLevelType(), getDefaultContributorPermissionLevel());
-		defaultPermissionsMap.put(typeManager.getReviewerLevelType(), getDefaultReviewerPermissionLevel());
-		defaultPermissionsMap.put(typeManager.getNoneLevelType(), getDefaultNonePermissionLevel());	
-	}
-	
 	private void loadDefaultTypeAndPermissionLevelData() {
 		try {
 			// first, call the methods that will load type data if it is missing
@@ -698,207 +577,173 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 			if (getDefaultPermissionLevel(ownerType) == null) {
 				PermissionsMask mask = getDefaultOwnerPermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_OWNER, ownerType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 
 			if (getDefaultPermissionLevel(authorType) == null) {
 				PermissionsMask mask = getDefaultAuthorPermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_AUTHOR, authorType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 
 			if (getDefaultPermissionLevel(contributorType) == null) {
 				PermissionsMask mask = getDefaultContributorPermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_CONTRIBUTOR, contributorType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 
 			if (getDefaultPermissionLevel(reviewerType) == null) {
 				PermissionsMask mask = getDefaultReviewerPermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_REVIEWER, reviewerType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 
 			if (getDefaultPermissionLevel(noneditingAuthorType) == null) {
 				PermissionsMask mask = getDefaultNoneditingAuthorPermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_NONEDITING_AUTHOR, noneditingAuthorType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 
 			if (getDefaultPermissionLevel(noneType) == null) {
 				PermissionsMask mask = getDefaultNonePermissionsMask();
 				PermissionLevel permLevel = createPermissionLevel(PermissionLevelManager.PERMISSION_LEVEL_NAME_NONE, noneType, mask);
-
-				permLevel = savePermissionLevel(permLevel);
+				savePermissionLevel(permLevel);
+				defaultPermissionsMap.put(permLevel.getTypeUuid(), permLevel);
 			}
 		} catch (Exception e) {
 			log.warn("Error loading initial default types and/or permissions", e);
 		}
 	}
 
-	public void deleteMembershipItems(Set<DBMembershipItem> membershipSet) {
-		if (membershipSet != null) {
-			Set<PermissionLevel> permissionLevelsToDelete = new HashSet<>();
-			Set<DBMembershipItem> membershipItemsToDelete = new HashSet<>();
-			for (DBMembershipItem item : membershipSet) {
-				if (item != null) {
-					DBMembershipItem managedItem = getHibernateTemplate().merge(item);
-					membershipItemsToDelete.add(managedItem);
-					PermissionLevel managedLevel = managedItem.getPermissionLevel();
-					if (managedLevel != null) {
-						switch (managedItem.getPermissionLevelName()) {
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_CUSTOM:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_OWNER:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_AUTHOR:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_NONEDITING_AUTHOR:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_CONTRIBUTOR:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_REVIEWER:
-							case PermissionLevelManager.PERMISSION_LEVEL_NAME_NONE:
-								getHibernateTemplate().merge(managedLevel);
-								permissionLevelsToDelete.add(managedLevel);
-								break;
-						}
-					}
-				}
-			}
-			getHibernateTemplate().deleteAll(membershipItemsToDelete);
-			getHibernateTemplate().deleteAll(permissionLevelsToDelete);
-		}
-	}
-	
 	private PermissionsMask getDefaultOwnerPermissionsMask() {
 		PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(true)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(true));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.TRUE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.TRUE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.TRUE);
+		  mask.put(PermissionLevel.READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.TRUE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.TRUE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.TRUE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.TRUE);
 		  
 		  return mask;
 	}
 	
 	private PermissionsMask getDefaultAuthorPermissionsMask() {
 		PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(true)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(false));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.TRUE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.TRUE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.TRUE);
+		  mask.put(PermissionLevel.READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.TRUE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.TRUE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.FALSE);
 		  
 		  return mask;
 	}
 	
 	private PermissionsMask getDefaultContributorPermissionsMask() {
 		PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(false)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(false));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(false));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.FALSE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.FALSE);
+		  mask.put(PermissionLevel.READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.FALSE);
 		  
 		  return mask;
 	}
 	
 	private PermissionsMask getDefaultNoneditingAuthorPermissionsMask() {
 		PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(true)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(false));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.TRUE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.FALSE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.TRUE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.TRUE);
+		  mask.put(PermissionLevel.READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.TRUE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.FALSE);
 		  
 		  return mask;
 	}
 	
 	private PermissionsMask getDefaultNonePermissionsMask() {
 		  PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(false)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(false));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(false));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(false));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.FALSE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.FALSE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.FALSE);
+		  mask.put(PermissionLevel.READ, Boolean.FALSE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.FALSE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.FALSE);
 		  
 		  return mask;
 	}
 	
 	private PermissionsMask getDefaultReviewerPermissionsMask() {
 		PermissionsMask mask = new PermissionsMask();                
-		  mask.put(PermissionLevel.NEW_FORUM, Boolean.valueOf(false)); 
-		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.CHANGE_SETTINGS,Boolean.valueOf(false));
-		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.READ, Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MARK_AS_READ,Boolean.valueOf(true));
-		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.DELETE_ANY, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_OWN, Boolean.valueOf(false));
-		  mask.put(PermissionLevel.REVISE_ANY, Boolean.valueOf(false));
+		  mask.put(PermissionLevel.NEW_FORUM, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_TOPIC, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_RESPONSE, Boolean.FALSE);
+		  mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, Boolean.FALSE);
+		  mask.put(PermissionLevel.MOVE_POSTING, Boolean.FALSE);
+		  mask.put(PermissionLevel.CHANGE_SETTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.POST_TO_GRADEBOOK, Boolean.FALSE);
+		  mask.put(PermissionLevel.READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MARK_AS_READ, Boolean.TRUE);
+		  mask.put(PermissionLevel.MODERATE_POSTINGS, Boolean.FALSE);
+		  mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.DELETE_ANY, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_OWN, Boolean.FALSE);
+		  mask.put(PermissionLevel.REVISE_ANY, Boolean.FALSE);
 		  
 		  return mask;
-	}
-	
-	public void setAutoDdl(Boolean autoDdl) {
-		this.autoDdl = autoDdl;
 	}
 	
 	public List<PermissionLevel> getDefaultPermissionLevels() {
@@ -920,7 +765,24 @@ public class PermissionLevelManagerImpl extends HibernateDaoSupport implements P
 		return defaultLevels;
 	}
 
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
-		this.transactionManager = transactionManager;
+	private PermissionsMask createMaskFromPermissionLevel(PermissionLevel level) {
+		PermissionsMask mask = new PermissionsMask();
+		mask.put(PermissionLevel.NEW_FORUM, level.getNewForum());
+		mask.put(PermissionLevel.NEW_TOPIC, level.getNewTopic());
+		mask.put(PermissionLevel.NEW_RESPONSE, level.getNewResponse());
+		mask.put(PermissionLevel.NEW_RESPONSE_TO_RESPONSE, level.getNewResponseToResponse());
+		mask.put(PermissionLevel.MOVE_POSTING, level.getMovePosting());
+		mask.put(PermissionLevel.CHANGE_SETTINGS, level.getChangeSettings());
+		mask.put(PermissionLevel.POST_TO_GRADEBOOK, level.getPostToGradebook());
+		mask.put(PermissionLevel.READ, level.getRead());
+		mask.put(PermissionLevel.MARK_AS_READ, level.getMarkAsRead());
+		mask.put(PermissionLevel.MODERATE_POSTINGS, level.getModeratePostings());
+		mask.put(PermissionLevel.IDENTIFY_ANON_AUTHORS, level.getIdentifyAnonAuthors());
+		mask.put(PermissionLevel.DELETE_OWN, level.getDeleteOwn());
+		mask.put(PermissionLevel.DELETE_ANY, level.getDeleteAny());
+		mask.put(PermissionLevel.REVISE_OWN, level.getReviseOwn());
+		mask.put(PermissionLevel.REVISE_ANY, level.getReviseAny());
+		return mask;
 	}
+
 }
