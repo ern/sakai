@@ -71,6 +71,7 @@
                 <module>gradebookng</module>
                 <module>help</module>
                 <module>hierarchy</module>
+                <module>ims</module>
                 <module>jobscheduler</module>
                 <module>jsf</module>
                 <module>jsf2</module>
@@ -160,6 +161,7 @@
                 <module>gradebook1</module>
                 <module>help</module>
                 <module>hierarchy</module>
+                <module>ims</module>
                 <module>jobscheduler</module>
                 <module>jsf</module>
                 <module>kernel</module>

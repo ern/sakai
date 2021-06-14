@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<registration>
+    <tool id="sakai.ims"
+          title="IMS"
+          description="Sakai IMS Tool">
+    </tool>
+</registration>

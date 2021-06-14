@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sakai-ims</artifactId>
+        <groupId>org.sakaiproject.ims</groupId>
+        <version>22-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>Sakai IMS QTI</name>
+    <artifactId>sakai-ims-qti</artifactId>
+    <packaging>jar</packaging>
+
+    <description>Question and Text Interoperability</description>
+
+    <properties>
+    </properties>
+
+</project>
