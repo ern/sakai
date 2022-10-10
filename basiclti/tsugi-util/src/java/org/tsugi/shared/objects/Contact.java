@@ -3,13 +3,8 @@ package org.tsugi.shared.objects;
 
 // This is used in LTI2 and CASA but differently
 
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.annotation.Generated;
 
-import javax.annotation.Generated;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

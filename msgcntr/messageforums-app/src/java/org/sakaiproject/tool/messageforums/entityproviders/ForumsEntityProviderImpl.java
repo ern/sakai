@@ -17,7 +17,7 @@ package org.sakaiproject.tool.messageforums.entityproviders;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

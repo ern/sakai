@@ -17,7 +17,7 @@ package org.sakaiproject.gradebookng.tool.pages;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.RestartResponseException;

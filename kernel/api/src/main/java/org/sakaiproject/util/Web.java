@@ -29,13 +29,10 @@ import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * <p>
@@ -534,7 +531,7 @@ public class Web
 			if ( agent != null && agent.indexOf("MSIE")>=0 )
 				fileName = java.net.URLEncoder.encode(fileName, "UTF8");
 			else if ( agent != null && agent.indexOf("Mozilla")>=0 && agent.indexOf("Safari") == -1 )
-				fileName = javax.mail.internet.MimeUtility.encodeText(fileName, "UTF8", "B");
+				fileName = jakarta.mail.internet.MimeUtility.encodeText(fileName, "UTF8", "B");
 			else
 				fileName = java.net.URLEncoder.encode(fileName, "UTF8");
 		}

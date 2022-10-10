@@ -20,11 +20,11 @@
  **********************************************************************************/
 package org.sakaiproject.jsf.syllabus;
 
-import javax.faces.component.UIComponent;
-import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentTag;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.webapp.UIComponentTag;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
 
 public class SyllabusIfTag extends UIComponentTag
 {

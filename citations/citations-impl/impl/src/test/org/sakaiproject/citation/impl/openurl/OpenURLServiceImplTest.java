@@ -19,18 +19,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.sakaiproject.citation.api.Citation;
 import org.sakaiproject.citation.api.Schema;
-import org.sakaiproject.citation.impl.openurl.ContextObject;
 import org.sakaiproject.citation.impl.openurl.ContextObject.Entity;
-import org.sakaiproject.citation.impl.openurl.ContextObjectEntity;
-import org.sakaiproject.citation.impl.openurl.OpenURLServiceImpl;
-import org.sakaiproject.citation.impl.openurl.SamplePrimoOpenURLs;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;

@@ -39,7 +39,7 @@ public class HttpClientWrapper {
     private HttpState initialHttpState;
     /**
      * This is meant for system use so you should not be constructing this,
-     * use the {@link HttpRESTUtils#makeReusableHttpClient(boolean, int, javax.servlet.http.Cookie[])} instead
+     * use the {@link HttpRESTUtils#makeReusableHttpClient(boolean, int, jakarta.servlet.http.Cookie[])} instead
      */
     public HttpClientWrapper(HttpClient httpClient, 
             MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager,

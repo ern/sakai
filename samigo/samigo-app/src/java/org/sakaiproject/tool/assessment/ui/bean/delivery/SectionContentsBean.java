@@ -39,7 +39,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-import javax.faces.model.SelectItem;
+import jakarta.faces.model.SelectItem;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Precision;

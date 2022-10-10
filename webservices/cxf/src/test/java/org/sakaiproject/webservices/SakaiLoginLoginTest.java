@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.eq;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import javax.ws.rs.core.Form;
+import jakarta.ws.rs.core.Form;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +28,6 @@ import org.junit.rules.ExpectedException;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.user.api.Authentication;
 import org.sakaiproject.user.api.AuthenticationException;
-import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.IdPwEvidence;
 
 public class SakaiLoginLoginTest extends AbstractCXFTest {

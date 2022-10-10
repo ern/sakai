@@ -16,13 +16,11 @@
 package org.sakaiproject.grading.impl.repository;
 
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +32,6 @@ import org.sakaiproject.grading.api.model.CourseGradeRecord;
 import org.sakaiproject.grading.api.model.Gradebook;
 import org.sakaiproject.grading.api.model.GradableObject;
 import org.sakaiproject.grading.api.repository.CourseGradeRecordRepository;
-import org.sakaiproject.hibernate.HibernateCriterionUtils;
 import org.sakaiproject.springframework.data.SpringCrudRepositoryImpl;
 
 public class CourseGradeRecordRepositoryImpl extends SpringCrudRepositoryImpl<CourseGradeRecord, Long>  implements CourseGradeRecordRepository {

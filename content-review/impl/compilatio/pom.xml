@@ -53,9 +53,9 @@
 			<artifactId>sakai-assignment-api</artifactId>
 		</dependency>
 		<dependency>
-	        <groupId>javax.servlet</groupId>
-	        <artifactId>javax.servlet-api</artifactId>
-	    </dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
 		<!-- Apache commons dependencies -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

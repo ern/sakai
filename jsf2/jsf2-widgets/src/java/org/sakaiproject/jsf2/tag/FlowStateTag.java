@@ -15,10 +15,10 @@
  */
 package org.sakaiproject.jsf2.tag;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentTag;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.webapp.UIComponentTag;
 
 import lombok.extern.slf4j.Slf4j;
 

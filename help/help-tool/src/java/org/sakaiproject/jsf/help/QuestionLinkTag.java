@@ -21,9 +21,9 @@
 
 package org.sakaiproject.jsf.help;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentTag;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentTag;
 
 /**
  * question link tag
@@ -36,7 +36,7 @@ public class QuestionLinkTag extends UIComponentTag
   String showLink = "false";
 
   /** 
-   * @see javax.faces.webapp.UIComponentTag#getComponentType()
+   * @see jakarta.faces.webapp.UIComponentTag#getComponentType()
    */
   public String getComponentType()
   {
@@ -44,7 +44,7 @@ public class QuestionLinkTag extends UIComponentTag
   }
 
   /** 
-   * @see javax.faces.webapp.UIComponentTag#getRendererType()
+   * @see jakarta.faces.webapp.UIComponentTag#getRendererType()
    */
   public String getRendererType()
   {
@@ -52,7 +52,7 @@ public class QuestionLinkTag extends UIComponentTag
   }
 
   /** 
-   * @see javax.faces.webapp.UIComponentTag#setProperties(javax.faces.component.UIComponent)
+   * @see jakarta.faces.webapp.UIComponentTag#setProperties(jakarta.faces.component.UIComponent)
    */
   protected void setProperties(UIComponent component)
   {

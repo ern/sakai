@@ -38,15 +38,13 @@ import java.util.TreeMap;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.time.Instant;
-import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Precision;
 import org.apache.http.client.utils.URIBuilder;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.sakaiproject.api.privacy.PrivacyManager;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -88,7 +86,6 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.api.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Web;
-import org.sakaiproject.util.foorm.Foorm;
 import org.sakaiproject.lti13.util.SakaiLineItem;
 import org.sakaiproject.lti13.util.SakaiDeepLink;
 import org.sakaiproject.lti13.util.SakaiLaunchJWT;
@@ -119,7 +116,6 @@ import org.tsugi.basiclti.ContentItem;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import net.oauth.OAuth;
 
 /**
  * Some Sakai Utility code for IMS Basic LTI This is mostly code to support the

@@ -141,7 +141,7 @@
 	</component>
 	<render-kit>
 		<renderer>
-			<component-family>javax.faces.Data</component-family>
+			<component-family>jakarta.faces.Data</component-family>
 			<renderer-type>SakaiTocTree</renderer-type>
 			<renderer-class>
 				org.sakaiproject.jsf.help.TocTreeRender
@@ -149,7 +149,7 @@
 		</renderer>
 
 		<renderer>
-			<component-family>javax.faces.Data</component-family>
+			<component-family>jakarta.faces.Data</component-family>
 			<renderer-type>CSTree</renderer-type>
 			<renderer-class>
 				org.sakaiproject.jsf.help.ContextSensitiveTreeRender
@@ -157,7 +157,7 @@
 		</renderer>
 
 		<renderer>
-			<component-family>javax.faces.Data</component-family>
+			<component-family>jakarta.faces.Data</component-family>
 			<renderer-type>HelpFrameSet</renderer-type>
 			<renderer-class>
 				org.sakaiproject.jsf.help.HelpFrameSetRender
@@ -165,7 +165,7 @@
 		</renderer>
 
 		<renderer>
-			<component-family>javax.faces.Data</component-family>
+			<component-family>jakarta.faces.Data</component-family>
 			<renderer-type>QuestionLink</renderer-type>
 			<renderer-class>
 				org.sakaiproject.jsf.help.QuestionLinkRender

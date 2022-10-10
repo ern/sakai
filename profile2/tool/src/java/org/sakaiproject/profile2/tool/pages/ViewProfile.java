@@ -18,7 +18,7 @@ package org.sakaiproject.profile2.tool.pages;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.AttributeModifier;

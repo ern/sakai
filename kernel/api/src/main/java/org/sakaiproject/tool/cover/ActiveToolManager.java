@@ -111,7 +111,7 @@ public class ActiveToolManager
 		return manager.findTools(param0, param1);
 	}
 
-	public static void register(org.sakaiproject.tool.api.Tool param0, javax.servlet.ServletContext param1)
+	public static void register(org.sakaiproject.tool.api.Tool param0, jakarta.servlet.ServletContext param1)
 	{
 		org.sakaiproject.tool.api.ActiveToolManager manager = getInstance();
 		if (manager == null) return;
@@ -119,7 +119,7 @@ public class ActiveToolManager
 		manager.register(param0, param1);
 	}
 
-	public static void register(org.w3c.dom.Document param0, javax.servlet.ServletContext param1)
+	public static void register(org.w3c.dom.Document param0, jakarta.servlet.ServletContext param1)
 	{
 		org.sakaiproject.tool.api.ActiveToolManager manager = getInstance();
 		if (manager == null) return;
@@ -127,7 +127,7 @@ public class ActiveToolManager
 		manager.register(param0, param1);
 	}
 
-	public static void register(java.io.InputStream param0, javax.servlet.ServletContext param1)
+	public static void register(java.io.InputStream param0, jakarta.servlet.ServletContext param1)
 	{
 		org.sakaiproject.tool.api.ActiveToolManager manager = getInstance();
 		if (manager == null) return;
@@ -135,7 +135,7 @@ public class ActiveToolManager
 		manager.register(param0, param1);
 	}
 
-	public static void register(java.io.File param0, javax.servlet.ServletContext param1)
+	public static void register(java.io.File param0, jakarta.servlet.ServletContext param1)
 	{
 		org.sakaiproject.tool.api.ActiveToolManager manager = getInstance();
 		if (manager == null) return;

@@ -23,14 +23,13 @@ package org.sakaiproject.portal.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.alias.api.Alias;
 import org.sakaiproject.alias.api.AliasService;
@@ -110,7 +109,7 @@ public class SiteNeighbourhoodServiceImpl implements SiteNeighbourhoodService
 	 *        styled portal simply want all of the sites with the MyWorkspace
 	 *        first. Other portals like the basic tabbed portal treats My
 	 *        Workspace separately from all of the rest of the workspaces.
-	 * @see org.sakaiproject.portal.api.PortalSiteHelper#getAllSites(javax.servlet.http.HttpServletRequest,
+	 * @see org.sakaiproject.portal.api.PortalSiteHelper#getAllSites(jakarta.servlet.http.HttpServletRequest,
 	 *      org.sakaiproject.tool.api.Session, boolean)
 	 */
 	public List<Site> getAllSites(HttpServletRequest req, Session session,

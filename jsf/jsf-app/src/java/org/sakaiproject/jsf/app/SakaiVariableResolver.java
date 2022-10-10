@@ -21,10 +21,10 @@
 
 package org.sakaiproject.jsf.app;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.EvaluationException;
-import javax.faces.el.VariableResolver;
-import javax.servlet.ServletContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.EvaluationException;
+import jakarta.faces.el.VariableResolver;
+import jakarta.servlet.ServletContext;
 
 import lombok.extern.slf4j.Slf4j;
 

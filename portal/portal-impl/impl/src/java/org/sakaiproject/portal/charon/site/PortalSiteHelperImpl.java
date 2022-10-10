@@ -37,7 +37,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.alias.api.Alias;
@@ -279,7 +279,7 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 	 * properties. There is an additional complication that the depth contains
 	 * informaiton arround.
 	 * 
-	 * @see org.sakaiproject.portal.api.PortalSiteHelper#convertSitesToMaps(javax.servlet.http.HttpServletRequest,
+	 * @see org.sakaiproject.portal.api.PortalSiteHelper#convertSitesToMaps(jakarta.servlet.http.HttpServletRequest,
 	 *      java.util.List, java.lang.String, java.lang.String,
 	 *      java.lang.String, boolean, boolean, boolean, boolean,
 	 *      java.lang.String, boolean)
@@ -431,7 +431,7 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 	/**
 	 * Explode a site into a map suitable for use in the map
 	 * 
-	 * @see org.sakaiproject.portal.api.PortalSiteHelper#convertSiteToMap(javax.servlet.http.HttpServletRequest,
+	 * @see org.sakaiproject.portal.api.PortalSiteHelper#convertSiteToMap(jakarta.servlet.http.HttpServletRequest,
 	 *      org.sakaiproject.site.api.Site, java.lang.String, java.lang.String,
 	 *      java.lang.String, boolean, boolean, boolean, boolean,
 	 *      java.lang.String, boolean, java.util.List<java.lang.String>)
@@ -593,7 +593,7 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 	 * a page is marked as a popup. If the page is a popup - it is left a page
 	 * and marked as such. restTools = true - generate resetting tool URLs.
 	 * 
-	 * @see org.sakaiproject.portal.api.PortalSiteHelper#pageListToMap(javax.servlet.http.HttpServletRequest,
+	 * @see org.sakaiproject.portal.api.PortalSiteHelper#pageListToMap(jakarta.servlet.http.HttpServletRequest,
 	 *      boolean, org.sakaiproject.site.api.Site,
 	 *      org.sakaiproject.site.api.SitePage, java.lang.String,
 	 *      java.lang.String, boolean, boolean, boolean)

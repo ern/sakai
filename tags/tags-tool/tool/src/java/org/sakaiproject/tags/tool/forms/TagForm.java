@@ -24,13 +24,12 @@
 
 package org.sakaiproject.tags.tool.forms;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.sakaiproject.tags.api.Errors;
-import org.sakaiproject.tags.api.MissingUuidException;
 import org.sakaiproject.tags.api.Tag;
 import org.sakaiproject.tags.tool.handlers.CrudHandler;
 

@@ -17,9 +17,9 @@ package org.sakaiproject.jsf2.component;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponentBase;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.component.UIComponentBase;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 import lombok.extern.slf4j.Slf4j;
 

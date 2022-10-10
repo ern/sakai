@@ -21,8 +21,8 @@
 
 package org.sakaiproject.tool.help;
 
-import javax.faces.context.FacesContext;
-import javax.faces.el.VariableResolver;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.VariableResolver;
 
 import org.sakaiproject.api.app.help.TableOfContents;
 

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
@@ -42,8 +42,6 @@ import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.entitybroker.exception.FormatUnsupportedException;
 import org.sakaiproject.entitybroker.mocks.data.MyEntity;
 import org.sakaiproject.entitybroker.mocks.data.TestData;
-import org.sakaiproject.entitybroker.rest.EntityEncodingManager;
-import org.sakaiproject.entitybroker.rest.EntityHandlerImpl;
 import org.azeckoski.reflectutils.map.ArrayOrderedMap;
 
 /**
@@ -168,7 +166,7 @@ public class EntityEncodingManagerTest extends TestCase {
     }
 
     /**
-     * Test method for {@link EntityHandlerImpl#internalOutputFormatter(EntityView, javax.servlet.http.HttpServletRequest, HttpServletResponse)}
+     * Test method for {@link EntityHandlerImpl#internalOutputFormatter(EntityView, jakarta.servlet.http.HttpServletRequest, HttpServletResponse)}
      **/
     public void testInternalOutputFormatter() {
 

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Ignore;

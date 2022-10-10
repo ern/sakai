@@ -40,7 +40,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,8 +53,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.Arrays;

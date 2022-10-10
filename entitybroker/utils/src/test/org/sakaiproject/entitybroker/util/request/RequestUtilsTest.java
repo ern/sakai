@@ -32,7 +32,6 @@ import org.sakaiproject.entitybroker.entityprovider.search.Order;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.util.http.EntityHttpServletRequest;
 import org.sakaiproject.entitybroker.util.http.EntityHttpServletResponse;
-import org.sakaiproject.entitybroker.util.request.RequestUtils;
 
 /**
  * testing the request utilities
@@ -193,7 +192,7 @@ public class RequestUtilsTest extends TestCase {
    }
 
    /**
-    * Test method for {@link org.sakaiproject.entitybroker.util.request.RequestUtils#setResponseEncoding(java.lang.String, javax.servlet.http.HttpServletResponse)}.
+    * Test method for {@link org.sakaiproject.entitybroker.util.request.RequestUtils#setResponseEncoding(java.lang.String, jakarta.servlet.http.HttpServletResponse)}.
     */
    public void testSetResponseEncoding() {
       EntityHttpServletResponse res = new EntityHttpServletResponse();

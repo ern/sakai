@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.faces.model.SelectItem;
+import jakarta.faces.model.SelectItem;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.api.app.messageforums.DiscussionForum;

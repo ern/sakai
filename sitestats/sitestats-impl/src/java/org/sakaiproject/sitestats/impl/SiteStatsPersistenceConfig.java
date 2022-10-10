@@ -18,8 +18,8 @@ package org.sakaiproject.sitestats.impl;
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;

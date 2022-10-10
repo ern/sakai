@@ -3221,13 +3221,13 @@
     <!--  <tei-class>com.sun.faces.taglib.FacesTagExtraInfo</tei-class> -->
     <body-content>JSP</body-content>
     <description>
-      <![CDATA[<p>Render an HTML option list with
+        <![CDATA[<p>Render an HTML option list with
       onchange action behavior that acts like a
       form submit button when clicked.</p>
      <p><a name="decode">Decode Behavior</a></p><ul>
-    <p>See the <a href="javax.faces.SelectManyjavax.faces.Listbox.html#decodeOne">"Decode
+    <p>See the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html#decodeOne">"Decode
       Behavior for UISelectOne Components"</a> section as well as for
-      <a href="javax.faces.SelectManyjavax.faces.commandButton.html#decodeOne">"Decode
+      <a href="jakarta.faces.SelectManyjavax.faces.commandButton.html#decodeOne">"Decode
       Behavior for UICommand Components"</a>.
 <p>Obtain the <code>Map</code> from the "requestParameterMap"
       property of the <code>ExternalContext</code>.
@@ -3239,7 +3239,7 @@ If the value in the<code>Map</code> for the value of the "clientId" property of 
       Strings, return from <code>decode()</code>.  If the value in the<code>Map</code> for the value of the "clientId" property of the
       component is not <code>null</code>, get the value of the "type"
       attribute, and convert it to lower case.  If the result is equal
-      to the String "reset" (without the quotes), return from<code>decode()</code>.  Otherwise, create a<code>javax.faces.event.ActionEvent</code> around the component,
+      to the String "reset" (without the quotes), return from<code>decode()</code>.  Otherwise, create a<code>jakarta.faces.event.ActionEvent</code> around the component,
       and pass it to the <code>queueEvent()</code> method of the
       component, which must be an instance of<code>UICommand</code>.
 
@@ -3251,7 +3251,7 @@ If the value in the<code>Map</code> for the value of the "clientId" property of 
       of the "class" attribute on the "select" element. If the component
       to be rendered is a UISelectMany, render "true" as the value of
       the "multiple" attribute.  Use the number of items as the value of
-      the "size" attribute.  See the <a href="javax.faces.SelectManyjavax.faces.Listbox.html#options">"Rendering
+      the "size" attribute.  See the <a href="jakarta.faces.SelectManyjavax.faces.Listbox.html#options">"Rendering
       the option elements" </a> specification for<code>ListboxRenderer</code> for more detail on how to render the "option" elements in this renderer.</p></ul>]]>
     </description>
     <attribute>

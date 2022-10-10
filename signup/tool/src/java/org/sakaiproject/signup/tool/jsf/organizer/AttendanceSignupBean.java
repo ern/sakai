@@ -19,9 +19,8 @@
 
 package org.sakaiproject.signup.tool.jsf.organizer;
 
-import javax.faces.component.UIData;
+import jakarta.faces.component.UIData;
 
-import org.sakaiproject.signup.logic.Permission;
 import org.sakaiproject.signup.tool.jsf.SignupMeetingWrapper;
 import org.sakaiproject.signup.tool.jsf.SignupUIBaseBean;
 

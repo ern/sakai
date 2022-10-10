@@ -120,13 +120,13 @@
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.GroupBox</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.GroupBoxRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.InstructionMessage</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.InstructionMessageRenderer</renderer-class>
     </renderer>
@@ -138,31 +138,31 @@
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.ToolBarMessage</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.ToolBarMessageRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.View</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.ViewRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.ViewTitle</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.ViewTitleRenderer</renderer-class>
     </renderer>
 
     <renderer>
-        <component-family>javax.faces.Output</component-family>
+        <component-family>jakarta.faces.Output</component-family>
         <renderer-type>org.sakaiproject.SeparatedList</renderer-type>
         <renderer-class>org.sakaiproject.jsf2.renderer.SeparatedListRenderer</renderer-class>
     </renderer>
 
     <renderer>
-        <component-family>javax.faces.Input</component-family>
+        <component-family>jakarta.faces.Input</component-family>
         <renderer-type>org.sakaiproject.Pager</renderer-type>
         <renderer-class>org.sakaiproject.jsf2.renderer.PagerRenderer</renderer-class>
     </renderer>
@@ -174,44 +174,44 @@
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.DocSection</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.DocSectionRenderer</renderer-class>
     </renderer>
 
     <renderer>
-        <component-family>javax.faces.Output</component-family>
+        <component-family>jakarta.faces.Output</component-family>
         <renderer-type>org.sakaiproject.JsfContentTypeMap</renderer-type>
         <renderer-class>org.sakaiproject.jsf2.renderer.JsfContentTypeMapRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Output</component-family>
+      <component-family>jakarta.faces.Output</component-family>
       <renderer-type>org.sakaiproject.ViewContent</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.ViewContentRenderer</renderer-class>
     </renderer>
 
     <!-- color picker -->
     <renderer>
-      <component-family>javax.faces.Input</component-family>
+      <component-family>jakarta.faces.Input</component-family>
       <renderer-type>org.sakaiproject.InputColor</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.InputColorRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Input</component-family>
+      <component-family>jakarta.faces.Input</component-family>
       <renderer-type>org.sakaiproject.InputDate</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.InputDateRenderer</renderer-class>
     </renderer>
 
     <renderer>
-      <component-family>javax.faces.Input</component-family>
+      <component-family>jakarta.faces.Input</component-family>
       <renderer-type>org.sakaiproject.InputFileUpload</renderer-type>
       <renderer-class>org.sakaiproject.jsf2.renderer.InputFileUploadRenderer</renderer-class>
     </renderer>
 
     <renderer>
-       <component-family>javax.faces.Output</component-family>
+       <component-family>jakarta.faces.Output</component-family>
        <renderer-type>org.sakaiproject.TimerBar</renderer-type>
        <renderer-class>org.sakaiproject.jsf2.renderer.TimerBarRenderer</renderer-class>
     </renderer>

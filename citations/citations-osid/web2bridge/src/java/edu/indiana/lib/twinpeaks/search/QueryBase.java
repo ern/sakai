@@ -17,14 +17,11 @@
 **********************************************************************************/
 package edu.indiana.lib.twinpeaks.search;
 
-import edu.indiana.lib.twinpeaks.util.*;
-
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.*;
 
 /**
  * This module provides a single, core implementation of QueryInterface.

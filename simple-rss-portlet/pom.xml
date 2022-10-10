@@ -108,11 +108,10 @@
       		<artifactId>portlet-api</artifactId>
       		<scope>provided</scope>
     	</dependency>
-    	<dependency>
-      		<groupId>javax.servlet</groupId>
-      		<artifactId>javax.servlet-api</artifactId>
-      		<scope>provided</scope>
-    	</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.pluto</groupId>
 	      	<artifactId>pluto-taglib</artifactId>

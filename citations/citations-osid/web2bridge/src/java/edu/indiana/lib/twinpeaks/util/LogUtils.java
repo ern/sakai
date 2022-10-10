@@ -18,18 +18,13 @@
 package edu.indiana.lib.twinpeaks.util;
 
 import java.lang.*;
-import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.*;
-import javax.xml.parsers.*;
+import jakarta.servlet.http.*;
 
 import org.w3c.dom.*;
-import org.w3c.dom.html.*;
-import org.xml.sax.*;
-
 
 
 public class LogUtils {

@@ -1,6 +1,6 @@
 package org.tsugi.lti13.objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 import java.util.List;
 

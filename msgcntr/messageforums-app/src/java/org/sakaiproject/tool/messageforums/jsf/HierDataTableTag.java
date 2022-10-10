@@ -20,15 +20,13 @@
  **********************************************************************************/
 package org.sakaiproject.tool.messageforums.jsf;
 
-import java.io.IOException;
-
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIData;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentTag;
-import javax.servlet.jsp.JspException;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIData;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
+import jakarta.faces.webapp.UIComponentTag;
+import jakarta.servlet.jsp.JspException;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

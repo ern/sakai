@@ -1,8 +1,8 @@
 package org.sakaiproject.jsf.component;
 
-import javax.faces.component.UIInput;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import jakarta.faces.component.UIInput;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.el.ValueBinding;
 
 public class CustomSelectOneRadio extends UIInput {
 	public String returnValueBindingAsString(String attr) {

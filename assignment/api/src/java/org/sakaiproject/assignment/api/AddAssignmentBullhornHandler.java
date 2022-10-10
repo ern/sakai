@@ -24,7 +24,7 @@ import java.util.Set;
 
 import java.time.Instant;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.type.StringType;

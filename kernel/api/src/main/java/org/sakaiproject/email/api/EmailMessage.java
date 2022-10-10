@@ -18,7 +18,6 @@ package org.sakaiproject.email.api;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +50,9 @@ import lombok.Setter;
  * The default character set for a message is UTF-8.
  * </p>
  *
- * @see javax.mail.Transport#send(Message)
- * @see javax.mail.Transport#send(Message, Address[])
- * @see javax.mail.internet.InternetAddress
+ * @see jakarta.mail.Transport#send(Message)
+ * @see jakarta.mail.Transport#send(Message, Address[])
+ * @see jakarta.mail.internet.InternetAddress
  */
 @Getter
 @Setter
@@ -171,7 +170,7 @@ public class EmailMessage
 	 *
 	 * @param type
 	 * @return
-	 * @see javax.mail.Message.RecipientType
+	 * @see jakarta.mail.Message.RecipientType
 	 */
 	public List<EmailAddress> getRecipients(RecipientType type)
 	{

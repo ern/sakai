@@ -21,15 +21,14 @@
 
 package org.sakaiproject.tool.assessment.ui.listener.author;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AbortProcessingException;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.ActionListener;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AbortProcessingException;
+import jakarta.faces.event.ActionEvent;
+import jakarta.faces.event.ActionListener;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.sakaiproject.tool.assessment.facade.AgentFacade;
 import org.sakaiproject.tool.assessment.facade.AssessmentFacade;
 import org.sakaiproject.tool.assessment.services.assessment.AssessmentService;
 import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
@@ -62,7 +61,7 @@ public class ExportAssessmentListener implements ActionListener
 	  AuthorizationBean authzBean = (AuthorizationBean) ContextUtil.lookupBean("authorization");
 	  if (!authzBean.isUserAllowedToEditAssessment(assessmentId, assessmentFacade.getCreatedBy(), false)) {
 		  xmlDisp.setOutcome("exportDenied");
-		  String thisIp = ( (javax.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
+		  String thisIp = ( (jakarta.servlet.http.HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
 		  // logging IP , as requested in SAK-17984
 		  log.warn("Unauthorized attempt to access /samigo-app/jsf/qti/exportAssessment.xml?exportAssessmentId=" +  assessmentId + " from IP : " + thisIp);
 		  return;

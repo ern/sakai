@@ -34,12 +34,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,7 +59,6 @@ import org.sakaiproject.event.cover.UsageSessionService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.SakaiException;
-import org.sakaiproject.messaging.api.BullhornAlert;
 import org.sakaiproject.messaging.api.MessagingService;
 import org.sakaiproject.pasystem.api.PASystem;
 import org.sakaiproject.portal.api.Editor;
@@ -811,7 +810,7 @@ public class SkinnableCharonPortal extends HttpServlet implements Portal
 	 *        The servlet request.
 	 * @param res
 	 *        The servlet response.
-	 * @throws javax.servlet.ServletException.
+	 * @throws jakarta.servlet.ServletException.
 	 * @throws java.io.IOException.
 	 */
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)

@@ -22,12 +22,10 @@
 	      	<groupId>org.sakaiproject.shortenedurl</groupId>
 	      	<artifactId>shortenedurl-api</artifactId>
 	    </dependency>
-	    
-		<!--  external dependencies -->
-	    <dependency>
-	      	<groupId>javax.servlet</groupId>
-	      	<artifactId>javax.servlet-api</artifactId>
-	    </dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
 	    <dependency>
       		<groupId>commons-lang</groupId>
       		<artifactId>commons-lang</artifactId>

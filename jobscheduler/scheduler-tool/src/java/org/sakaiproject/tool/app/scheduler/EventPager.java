@@ -18,10 +18,9 @@ package org.sakaiproject.tool.app.scheduler;
 import org.sakaiproject.api.app.scheduler.events.TriggerEvent;
 import org.sakaiproject.api.app.scheduler.events.TriggerEventManager;
 
-import javax.faces.event.PhaseId;
-import javax.faces.event.ValueChangeEvent;
-import java.text.DateFormat;
-import java.text.ParseException;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.ValueChangeEvent;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

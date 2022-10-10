@@ -23,8 +23,8 @@ package org.sakaiproject.entitybroker.util.http;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 /**

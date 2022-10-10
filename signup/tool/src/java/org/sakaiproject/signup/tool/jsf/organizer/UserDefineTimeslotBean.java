@@ -27,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.component.UIData;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.component.UIData;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionEvent;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.signup.logic.SakaiFacade;
 import org.sakaiproject.signup.model.SignupAttendee;

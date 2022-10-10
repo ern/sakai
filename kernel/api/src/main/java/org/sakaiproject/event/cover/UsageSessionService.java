@@ -155,7 +155,7 @@ public class UsageSessionService
 		return service.getOpenSessionsByServer();
 	}
 
-	public static boolean login(org.sakaiproject.user.api.Authentication param0, javax.servlet.http.HttpServletRequest param1)
+	public static boolean login(org.sakaiproject.user.api.Authentication param0, jakarta.servlet.http.HttpServletRequest param1)
 	{
 		org.sakaiproject.event.api.UsageSessionService service = getInstance();
 		if (service == null) return false;
@@ -163,7 +163,7 @@ public class UsageSessionService
 		return service.login(param0, param1);
 	}
 
-	public static boolean login(org.sakaiproject.user.api.Authentication param0, javax.servlet.http.HttpServletRequest param1, String param2)
+	public static boolean login(org.sakaiproject.user.api.Authentication param0, jakarta.servlet.http.HttpServletRequest param1, String param2)
 	{
 		org.sakaiproject.event.api.UsageSessionService service = getInstance();
 		if (service == null) return false;
