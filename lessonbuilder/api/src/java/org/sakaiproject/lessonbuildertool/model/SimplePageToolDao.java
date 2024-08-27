@@ -334,7 +334,7 @@ public interface SimplePageToolDao {
 
     public boolean doesPageFolderExist(final String siteId, final String folder);
 
-    public String getLessonSubPageJSON(String userId, boolean isInstructor, String siteId, List pages);
+    public String getLessonSubPageJSON(String userId, String siteId, List<Map<String, Object>> pages);
 
     public List<SimplePage> getTopLevelPages(String siteId);
 
