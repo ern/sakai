@@ -13,22 +13,24 @@
  ******************************************************************************/
 package org.sakaiproject.webapi.beans;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.sakaiproject.assignment.api.AssignmentReferenceReckoner;
 import org.sakaiproject.calendar.api.CalendarConstants;
 import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.time.api.TimeRange;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Getter
 @Setter
+@Slf4j
 public class CalendarEventRestBean {
 
     private String id;
@@ -46,7 +48,7 @@ public class CalendarEventRestBean {
     private RecurrenceRuleRestBean recurrence;
     private String url;
 
-    public CalendarEventRestBean(CalendarEvent ce, ContentHostingService chs) {
+    public CalendarEventRestBean(CalendarEvent ce, ContentHostingService chs, EntityManager em) {
 
         id = ce.getId();
         siteId = ce.getSiteId();
@@ -60,15 +62,20 @@ public class CalendarEventRestBean {
         duration = timeRange.duration();
         recurrence = new RecurrenceRuleRestBean(ce.getRecurrenceRule());
         assignmentId = ce.getField(CalendarConstants.NEW_ASSIGNMENT_DUEDATE_CALENDAR_ASSIGNMENT_ID);
-        if (assignmentId != null) {
+        if (StringUtils.isNotBlank(assignmentId)) {
             this.tool = "assignments";
+            String reference = AssignmentReferenceReckoner.reckoner().context(siteId).subtype("a").id(assignmentId).reckon().getReference();
+            url = em.getUrl(reference, Entity.UrlType.PORTAL).orElse("");
+        } else {
+            url = ce.getUrl();
         }
 
         attachments = ce.getAttachments().stream().map(ref -> {
-
+            String resourceId = ref.getId();
             try {
-                return new AttachmentRestBean(chs.getResource(ref.getId()));
+                return new AttachmentRestBean(chs.getResource(resourceId));
             } catch (Exception e) {
+                log.warn("Could not load resource [{}], {}", resourceId, e.toString());
                 return null;
             }
         }).collect(Collectors.toList());

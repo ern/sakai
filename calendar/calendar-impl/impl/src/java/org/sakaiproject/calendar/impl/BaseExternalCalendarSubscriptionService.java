@@ -979,9 +979,9 @@ public class BaseExternalCalendarSubscriptionService implements
 					.getPropertyFormatted(ResourceProperties.PROP_CALENDAR_EVENT_FIELDS);
 		}
 
-		public List getEvents(TimeRange range, Filter filter) throws PermissionException
-		{
-			return filterEvents(new ArrayList<CalendarEvent>(m_storage.values()), range);
+		@Override
+		public List<CalendarEvent> getEvents(TimeRange range, Filter filter) throws PermissionException {
+			return filterEvents(new ArrayList<>(m_storage.values()), range);
 		}
 
 		public boolean getExportEnabled()

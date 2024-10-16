@@ -70,7 +70,6 @@ import org.sakaiproject.calendar.api.*;
 import org.sakaiproject.calendar.api.CalendarEvent.EventAccess;
 import org.sakaiproject.calendar.api.ExternalCalendarSubscriptionService;
 import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.coursemanagement.api.CourseManagementService;
@@ -315,7 +314,7 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 	} // eventSubscriptionReference
 
 	@Override
-	public CalendarEventVector getEvents(List references, TimeRange range, boolean reverseOrder) {
+	public CalendarEventVector getEvents(List<String> references, TimeRange range, boolean reverseOrder) {
 
 		CalendarEventVector calendarEventVector = null;
 
@@ -323,48 +322,20 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 			if (range == null) {
 				range = getOneYearTimeRange();
 			}
-			List allEvents = new ArrayList();
+			List<CalendarEvent> allEvents = new ArrayList<>();
 
-			Iterator it = references.iterator();
-
-			// Add the events for each calendar in our list.
-			while (it.hasNext())
-			{
-				String calendarReference = (String) it.next();
-				Calendar calendarObj = null;
-
-				try
-				{
-					calendarObj = getCalendar(calendarReference);
-				}
-
-				catch (IdUnusedException e)
-				{
-					continue;
-				}
-
-				catch (PermissionException e)
-				{
-					continue;
-				}
-
-				if (calendarObj != null)
-				{
-					Iterator calEvent = null;
-
-					try
-					{
-						calEvent = calendarObj.getEvents(range, null).iterator();
+            // Add the events for each calendar in our list.
+            for (String reference : references) {
+                Calendar calendar;
+                try {
+                    calendar = getCalendar(reference);
+                	if (calendar != null) {
+                    	allEvents.addAll(new CalendarEventVector(calendar.getEvents(range, null).iterator()));
 					}
-
-					catch (PermissionException e1)
-					{
-						continue;
-					}
-
-					allEvents.addAll(new CalendarEventVector(calEvent));
-				}
-			}
+                } catch (IdUnusedException | PermissionException e) {
+					log.debug("could not load calendar using reference [{}], {}", reference, e.toString());
+                }
+            }
 
 			// Do a sort since each of the events implements the Comparable interface.
 			Collections.sort(allEvents);
@@ -2401,16 +2372,18 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 		 * @exception PermissionException
 		 *            if the user does not have read permission to the calendar.
 		 */
-		public List getEvents(TimeRange range, Filter filter) throws PermissionException {
+		@Override
+		public List<CalendarEvent> getEvents(TimeRange range, Filter filter) throws PermissionException {
 			return getEvents(range, filter, null);
 		}
 
-		public List getEvents(TimeRange range, Filter filter, Integer limit) throws PermissionException {
+		@Override
+		public List<CalendarEvent> getEvents(TimeRange range, Filter filter, Integer limit) throws PermissionException {
 
 			// check security (throws if not permitted)
 			unlock(AUTH_READ_CALENDAR, getReference());
 
-			List events = m_storage.getEvents(this, range, limit);
+			List<CalendarEvent> events = m_storage.getEvents(this, range, limit);
 
 			// now filter out the events to just those in the range
 			// Note: if no range, we won't filter, which means we don't expand recurring events, but just
@@ -2420,47 +2393,37 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 				events = filterEvents(events, range);
 			}
 
-			if (events.size() == 0) return events;
+			if (events.isEmpty()) return events;
 
 			// filter out based on the filter
-			if (filter != null)
-			{
-				List filtered = new Vector();
-				for (int i = 0; i < events.size(); i++)
-				{
-					Event event = (Event) events.get(i);
-					if (filter.accept(event)) filtered.add(event);
-				}
-				if (filtered.size() == 0) return filtered;
+			if (filter != null) {
+				List<CalendarEvent> filtered = new Vector<>();
+                for (CalendarEvent event : events) {
+                    if (filter.accept(event)) filtered.add(event);
+                }
+				if (filtered.isEmpty()) return filtered;
 				events = filtered;
 			}
 
 			// remove any events that are grouped, and that the current user does not have permission to see
 			Collection groupsAllowed = getGroupsAllowGetEvent();
-			List allowedEvents = new Vector();
-			for (Iterator i = events.iterator(); i.hasNext();)
-			{
-				CalendarEvent event = (CalendarEvent) i.next();
-				if (event.getAccess() == EventAccess.SITE)
-				{
-					allowedEvents.add(event);
-				}
-				
-				else
-				{
-					// if the user's Groups overlap the event's group refs it's grouped to, keep it
-					if (EntityCollections.isIntersectionEntityRefsToEntities(event.getGroups(), groupsAllowed))
-					{
-						allowedEvents.add(event);
-					}
-				}
-			}
+			List<CalendarEvent> allowedEvents = new Vector<>();
+            for (CalendarEvent event : events) {
+                if (event.getAccess() == EventAccess.SITE) {
+                    allowedEvents.add(event);
+                } else {
+                    // if the user's Groups overlap the event's group refs it's grouped to, keep it
+                    if (EntityCollections.isIntersectionEntityRefsToEntities(event.getGroups(), groupsAllowed)) {
+                        allowedEvents.add(event);
+                    }
+                }
+            }
 
 			// sort - natural order is date ascending
 			Collections.sort(allowedEvents);
 
 			return allowedEvents;
-		} // getEvents
+		}
 
 		/**
 		 * Filter the events to only those in the time range.
@@ -2471,21 +2434,15 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 		 *        The time range.
 		 * @return A list of events from the incoming list that overlap the given time range.
 		 */
-		protected List filterEvents(List events, TimeRange range)
-		{
-			List filtered = new Vector();
-			for (int i = 0; i < events.size(); i++)
-			{
-				CalendarEvent event = (CalendarEvent) events.get(i);
-
-				// resolve the event to the list of events in this range
-				List resolved = ((BaseCalendarEventEdit) event).resolve(range);
-				filtered.addAll(resolved);
-			}
-
+		protected List<CalendarEvent> filterEvents(List<CalendarEvent> events, TimeRange range) {
+			List<CalendarEvent> filtered = new Vector<>();
+            for (CalendarEvent event : events) {
+                // resolve the event to the list of events in this range
+                List<CalendarEvent> resolved = ((BaseCalendarEventEdit) event).resolve(range);
+                filtered.addAll(resolved);
+            }
 			return filtered;
-
-		} // filterEvents
+		}
 
 		/**
 		 * Return a specific calendar event, as specified by event id.
@@ -3991,9 +3948,9 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 		 *        The time range bounds for the events returned.
 		 * @return a List (CalendarEvent) of all events and recurrences within the time range, including this, possibly empty.
 		 */
-		protected List resolve(TimeRange range)
+		protected List<CalendarEvent> resolve(TimeRange range)
 		{
-			List rv = new Vector();
+			List<CalendarEvent> rv = new ArrayList<>();
 
 			// for no rules, use the event if it's in range
 			if (m_singleRule == null)

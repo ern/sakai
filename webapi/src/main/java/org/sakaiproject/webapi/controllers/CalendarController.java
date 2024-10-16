@@ -13,33 +13,26 @@
  ******************************************************************************/
 package org.sakaiproject.webapi.controllers;
 
-import org.sakaiproject.assignment.api.AssignmentReferenceReckoner;
+import lombok.extern.slf4j.Slf4j;
 import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.calendar.api.CalendarService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.portal.api.PortalService;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.webapi.beans.CalendarEventRestBean;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -63,25 +56,7 @@ public class CalendarController extends AbstractSakaiApiController {
     @Autowired
     private UserDirectoryService userDirectoryService;
 
-    private Function<CalendarEvent, CalendarEventRestBean> convert = ce -> {
-
-        CalendarEventRestBean bean = new CalendarEventRestBean(ce, contentHostingService);
-
-        try {
-            if (!StringUtils.isBlank(bean.getAssignmentId())) {
-                String ref = AssignmentReferenceReckoner.reckoner().context(bean.getSiteId()).subtype("a").id(bean.getAssignmentId()).reckon().getReference();
-                if (ref != null) {
-                    Optional<String> url = entityManager.getUrl(ref, Entity.UrlType.PORTAL);
-                    if (url.isPresent()) {
-                        bean.setUrl(url.get());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.warn("Failed to create bean for calendar event: {}", e.toString());
-        }
-        return bean;
-    };
+    private final Function<CalendarEvent, CalendarEventRestBean> convert = ce -> new CalendarEventRestBean(ce, contentHostingService, entityManager);
 
     @GetMapping(value = "/users/current/calendar", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> getCurrentUserCalendar() throws UserNotDefinedException {
@@ -92,9 +67,11 @@ public class CalendarController extends AbstractSakaiApiController {
             .map(siteId -> calendarService.calendarReference(siteId, "main"))
             .collect(Collectors.toList());
 
-        return Map.of(
-            "events", calendarService.getEvents(refs, null, false).stream().map(convert).collect(Collectors.toList())
-        );
+        List<CalendarEventRestBean> beans = calendarService.getEvents(refs, null, false).stream()
+                .map(convert)
+                .collect(Collectors.toList());
+
+        return Map.of("events", beans);
     }
 
     @GetMapping(value = "/sites/{siteId}/calendar", produces = MediaType.APPLICATION_JSON_VALUE)

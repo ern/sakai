@@ -34,7 +34,7 @@ import org.sakaiproject.time.api.TimeRange;
 * grained time range access to the events returned.</p>
 */
 public class CalendarEventVector
-	extends Vector
+	extends Vector<CalendarEvent>
 {
 	/**
 	* Construct empty.
@@ -48,7 +48,7 @@ public class CalendarEventVector
 	* Construct
 	* @param events An interator on CalendarEvents to load into the vector.
 	*/
-	public CalendarEventVector(Iterator events)
+	public CalendarEventVector(Iterator<CalendarEvent> events)
 	{
 		super();
 
@@ -57,7 +57,7 @@ public class CalendarEventVector
 			add(events.next());
 		}
 
-	}	// CalendarEventVector
+	}
 
 	/**
 	* Return an iterator on events in the CalendarEventVector.
@@ -65,26 +65,18 @@ public class CalendarEventVector
 	* @param range A time range to limit the iterated events.  May be null; all events will be returned.
 	* @return an iterator on CalendarEvent objects in the CalendarEventVector (may be empty).
 	*/
-	public Iterator getEvents(TimeRange range)
-	{
+	public Iterator<CalendarEvent> getEvents(TimeRange range) {
 		// pull the range of events from vector
-		Vector events = new Vector();
-		Iterator it = iterator();
-		while (it.hasNext())
-		{
-			CalendarEvent test = (CalendarEvent)it.next();
-			if (range.overlaps(test.getRange()))
-			{
-				events.add(test);
-			}
-			// %%% if test is past range, we can stop now...
-		}
-
+		Vector<CalendarEvent> events = new Vector<>();
+        for (CalendarEvent test : this) {
+            if (range.overlaps(test.getRange())) {
+                events.add(test);
+            }
+            // %%% if test is past range, we can stop now...
+        }
 		return events.iterator();
-
-	}	// getEvents
-
-}	// CalendarEventVector
+	}
+}
 
 
 

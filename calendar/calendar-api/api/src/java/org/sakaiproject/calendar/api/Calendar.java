@@ -106,7 +106,7 @@ public interface Calendar
 	 * @exception PermissionException if the user does not have read permission to the calendar.
 	 */
 	default List<CalendarEvent> getEvents(TimeRange range, Filter filter, Integer limit) throws PermissionException {
-		return Collections.<CalendarEvent>emptyList();
+		return Collections.emptyList();
 	}
 
 	/**

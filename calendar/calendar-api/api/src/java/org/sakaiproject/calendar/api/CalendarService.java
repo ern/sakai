@@ -371,7 +371,7 @@ public interface CalendarService
 	 * @param reverseOrder CalendarEventVector object will be ordered reverse.       
 	 * @return CalendarEventVector object with the union of all events from the list of calendars in the given time range.
 	 */
-	public CalendarEventVector getEvents(List references, TimeRange range, boolean reverseOrder);
+	public CalendarEventVector getEvents(List<String> references, TimeRange range, boolean reverseOrder);
 
 	/**
 	 * Retrieves a list of events for the current user, filtered by the supplied options. This method
